@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
 [Bb]in/
 [Oo]bj/
@@ -17,8 +15,6 @@ TestResults
 *.sln.docstates
 
 # Build results
-<<<<<<< HEAD
-
 [Dd]ebug/
 [Rr]elease/
 x64/
@@ -34,7 +30,6 @@ build/
 [Dd]ebug/
 [Rr]elease/
 x64/
->>>>>>> 41e9aea6431ca85f1d173183f056b9762e7181c5
 *_i.c
 *_p.c
 *.ilk
@@ -50,10 +45,8 @@ x64/
 *.tli
 *.tlh
 *.tmp
-<<<<<<< HEAD
 *.tmp_proj
 =======
->>>>>>> 41e9aea6431ca85f1d173183f056b9762e7181c5
 *.log
 *.vspscc
 *.vssscc
@@ -63,7 +56,6 @@ x64/
 *.log
 *.scc
 =======
->>>>>>> 41e9aea6431ca85f1d173183f056b9762e7181c5
 
 # Visual C++ cache files
 ipch/
@@ -74,7 +66,6 @@ ipch/
 <<<<<<< HEAD
 *.cachefile
 =======
->>>>>>> 41e9aea6431ca85f1d173183f056b9762e7181c5
 
 # Visual Studio profiler
 *.psess
@@ -85,7 +76,6 @@ ipch/
 *.gpState
 
 # ReSharper is a .NET coding add-in
-<<<<<<< HEAD
 _ReSharper*/
 *.[Rr]e[Ss]harper
 
@@ -96,19 +86,16 @@ _TeamCity*
 *.dotCover
 =======
 _ReSharper*
->>>>>>> 41e9aea6431ca85f1d173183f056b9762e7181c5
 
 # NCrunch
 *.ncrunch*
 .*crunch*.local.xml
 
-<<<<<<< HEAD
 # Installshield output folder
 [Ee]xpress/
 =======
 # Installshield output folder 
 [Ee]xpress
->>>>>>> 41e9aea6431ca85f1d173183f056b9762e7181c5
 
 # DocProject is a documentation generator add-in
 DocProject/buildhelp/
@@ -139,7 +126,6 @@ publish
 
 # NuGet Packages Directory
 packages
->>>>>>> 41e9aea6431ca85f1d173183f056b9762e7181c5
 
 # Windows Azure Build Output
 csx
@@ -149,7 +135,6 @@ csx
 AppPackages/
 
 # Others
-<<<<<<< HEAD
 sql/
 *.Cache
 ClientBin/
@@ -175,14 +160,12 @@ ClientBin
 ~$*
 *.dbmdl
 Generated_Code #added for RIA/Silverlight projects
->>>>>>> 41e9aea6431ca85f1d173183f056b9762e7181c5
 
 # Backup & report files from converting an old project file to a newer
 # Visual Studio version. Backup files are not needed, because we have git ;-)
 _UpgradeReport_Files/
 Backup*/
 UpgradeLog*.XML
-<<<<<<< HEAD
 UpgradeLog*.htm
 
 # SQL Server files
@@ -212,4 +195,3 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 =======
->>>>>>> 41e9aea6431ca85f1d173183f056b9762e7181c5
