@@ -11,12 +11,28 @@ namespace Thesis.Clustering
     {
         public static IEnumerable<T> Sample<T>(this IList<T> data, int n = 1)
         {
-            if (n < 1)
+            int count = data.Count();
+            int i = 0;
+            if (n < 1 || n > count)
                 throw new ArgumentOutOfRangeException("n");
             Random rnd = new Random();
-            int max = data.Count;
-            for (int i = 0; i < n; i++)
-                yield return data[rnd.Next(max)];
+            //int max = data.Count;
+            //for (int i = 0; i < n; i++)
+            //    yield return data[rnd.Next(max)];
+            double p = (double)n / (double)count;
+            foreach (var item in data)
+            {
+                if (rnd.NextDouble() < p)
+                {
+                    count--;
+                    i++;
+                    p = (double)n / (double)count;
+                    yield return item;
+                }
+                if (i == n)
+                    yield break;
+            }
+            //return data.Select(x => x);
         }
     }
 
