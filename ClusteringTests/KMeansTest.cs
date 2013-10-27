@@ -56,11 +56,12 @@ namespace ClusteringTests
         }
 
         [TestMethod]
+        [Timeout(30000)] //чтобы не уходило в бесконечный цикл
         public void ClusterizeTest()
         {
             var kmeans = new KMeans<Point>(_distance, _mean);
             var clusters = kmeans.Clusterize(4, GetData());
-            Assert.AreEqual(4, clusters.Count);
+            Assert.AreEqual(4, clusters.Count());
 
             Assert.IsTrue(clusters.Any(items => items.Any(p => p.X == 1 && p.Y == 1) 
                 && items.Any(p => p.X == 1 && p.Y == 1.1)));

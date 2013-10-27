@@ -16,9 +16,7 @@ namespace Thesis.Clustering
             if (n < 1 || n > count)
                 throw new ArgumentOutOfRangeException("n");
             Random rnd = new Random();
-            //int max = data.Count;
-            //for (int i = 0; i < n; i++)
-            //    yield return data[rnd.Next(max)];
+
             double p = (double)n / (double)count;
             foreach (var item in data)
             {
@@ -32,7 +30,6 @@ namespace Thesis.Clustering
                 if (i == n)
                     yield break;
             }
-            //return data.Select(x => x);
         }
     }
 
@@ -52,7 +49,7 @@ namespace Thesis.Clustering
         }
 
         /// <param name="n">Количество кластеров.</param>
-        public IList<IList<T>> Clusterize(int n, IList<T> points)
+        public IEnumerable<IGrouping<T, T>> Clusterize(int n, IList<T> points)
         {
             if (n > points.Count)
                 throw new ArgumentException("Количество кластеров не может быть больше количества входных элементов.");
@@ -61,13 +58,20 @@ namespace Thesis.Clustering
                 throw new ArgumentNullException("data");
 
             //get centers by random
-            var centers = points.Sample(n);
-            //group by nearest center
-            var clusters = points.GroupBy(p => centers.MinBy(c => _distanceFunc(c, p)));
-            //new centers are means of the clusters
-            var newCenters = clusters.Select(cl => _meanFunc(cl));
+            var newCenters = points.Sample(n);
+            IEnumerable<T> centers;
+            IEnumerable<IGrouping<T, T>> clusters;
+            do
+            {
+                centers = newCenters;
+                //group by nearest center
+                clusters = points.GroupBy(p => centers.MinBy(c => _distanceFunc(c, p)));
+                //new centers are means of the clusters
+                newCenters = clusters.Select(cl => _meanFunc(cl));
+            } 
+            while (!centers.SequenceEqual(newCenters));
 
-            throw new NotImplementedException();
+            return clusters;
         }
     }
 }
