@@ -11,6 +11,9 @@ namespace Thesis.Clustering
     {
         public static IEnumerable<T> Sample<T>(this IList<T> data, int n = 1)
         {
+            if (data == null)
+                throw new ArgumentNullException();
+
             int count = data.Count();
             int i = 0;
             if (n < 1 || n > count)
