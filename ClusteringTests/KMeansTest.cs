@@ -26,6 +26,20 @@ namespace ClusteringTests
                     return Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
                 };
 
+        readonly Func<IEnumerable<Point>, Point> _mean = (items) =>
+        {
+            var result = new Point(0, 0);
+            foreach (var x in items)
+            {
+                result.X += x.X;
+                result.Y += x.Y;
+            }
+            int n = items.Count();
+            result.X /= n;
+            result.Y /= n;
+            return result;
+        };
+
         Point[] GetData()
         {
             return new Point[] 
@@ -42,7 +56,7 @@ namespace ClusteringTests
         [TestMethod]
         public void ClusterizeTest()
         {
-            var kmeans = new KMeans<Point>(_distance);
+            var kmeans = new KMeans<Point>(_distance, _mean);
             var clusters = kmeans.Clusterize(4, GetData());
             Assert.AreEqual(4, clusters.Count);
 
@@ -61,7 +75,7 @@ namespace ClusteringTests
         [ExpectedException(typeof(ArgumentException))]
         public void ClusterizeArgTest()
         {
-            var kmeans = new KMeans<Point>(_distance);
+            var kmeans = new KMeans<Point>(_distance, _mean);
             var clusters = kmeans.Clusterize(7, GetData());
         }
     }
