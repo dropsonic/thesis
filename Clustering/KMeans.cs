@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MoreLinq;
+using System.Diagnostics;
 
 namespace Thesis.Clustering
 {
     public static class ListExt
     {
+        /// <remarks>
+        /// http://stackoverflow.com/questions/48087/select-a-random-n-elements-from-listt-in-c-sharp/48089#48089
+        /// </remarks>
         public static IEnumerable<T> Sample<T>(this IList<T> data, int n = 1)
         {
             if (data == null)
@@ -70,7 +74,8 @@ namespace Thesis.Clustering
                 //group by nearest center
                 clusters = points.GroupBy(p => centers.MinBy(c => _distanceFunc(c, p)));
                 //new centers are means of the clusters
-                newCenters = clusters.Select(cl => _meanFunc(cl));
+                newCenters = clusters.Select(cl => _meanFunc(cl)).ToArray();
+                //Debug.WriteLine("i = {0}: {1} clusters, {2} centers", i, clusters.Count(), newCenters.Count());
             } 
             while (!centers.SequenceEqual(newCenters));
 

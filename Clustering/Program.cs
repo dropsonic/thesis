@@ -57,7 +57,13 @@ namespace Thesis.Clustering
         static void Main(string[] args)
         {
             var kmeans = new KMeans<Point>(_distance, _mean);
-            kmeans.Clusterize(4, GetData());
+            var clusters = kmeans.Clusterize(4, GetData());
+            foreach (var cluster in clusters)
+            {
+                foreach (var item in cluster)
+                    Console.WriteLine("{0}, {1}", item.X, item.Y);
+                Console.WriteLine();
+            }
         }
     }
 }
