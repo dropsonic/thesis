@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thesis.Clustering;
+using System.Diagnostics;
 
 namespace ClusteringTests
 {
     [TestClass]
     public class KMeansTest
     {
+        [DebuggerDisplay("X = {X}, Y = {Y}")]
         struct Point
         {
             public double X { get; set; }

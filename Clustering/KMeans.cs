@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MoreLinq;
 
 namespace Thesis.Clustering
 {
@@ -46,7 +47,9 @@ namespace Thesis.Clustering
             //get centers by random
             var centers = points.Sample(n);
             //group by nearest center
-            points.GroupBy(p => centers.Min(c => _distanceFunc(c, p)));
+            var clusters = points.GroupBy(p => centers.MinBy(c => _distanceFunc(c, p)));
+            //new centers are means of the clusters
+            var newCenters = clusters.Select(cl => _meanFunc(cl));
 
             throw new NotImplementedException();
         }
