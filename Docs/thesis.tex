@@ -1,0 +1,38 @@
+\documentclass[oneside,final,14pt]{extarticle}
+\usepackage[onehalfspacing]{setspace} % 1,5 интервал
+\usepackage[top=2.0cm,bottom=2.0cm,left=2.0cm,right=1.0cm]{geometry} % поля
+\usepackage{lscape} % поддержка альбомной ориентации страниц
+\usepackage{indentfirst} % красная строка
+
+\usepackage[cm-default]{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+%\setromanfont{Cambria}
+\setromanfont{Times New Roman}
+\setsansfont{Calibri}
+\setmonofont{Consolas}
+\defaultfontfeatures{Scale=MatchLowercase} % одинаковый рост строчных букв у разных гарнитур
+\usepackage{ulem} % поддержка подчёркиваний
+
+% Поддержка русского языка и русскоязычных стилей
+\usepackage{polyglossia}
+\setmainlanguage[babelshorthands=true]{russian} % основной язык - русский
+\setotherlanguage[variant=us]{english} % дополнительный язык - английский
+
+\usepackage{graphicx} % поддержка изображений
+\graphicspath{{images/}} % путь к каталогу с изображениями
+
+\usepackage{amstext} % поддержка кириллицы в математических формулах
+\usepackage{amssymb} % дополнительные символы в математических формулах
+
+
+% Красивые таблицы
+\usepackage{makecell}
+\usepackage{multirow}
+
+\begin{document}
+\section*{Мой диплом в \XeLaTeX}
+Мой диплом на 90\% состоит из воды. Значит, мой диплом~— человек.
+\subsection*{Кафедра 308}
+В настоящее время кафедра осуществляет подготовку по двухуровневой системе «бакалавр-магистр» по образовательным программам направления 230400 «Информационные системы и технологии» (бакалавр) профили «Информационные системы аэрокосмических комплексов», «Информационные системы испытаний космических летательных аппаратов» и магистров направления 230100 «Вычислительная техника и информатика» по программе «Программное и алгоритмическое обеспечение систем идентификации объектов по их изображениям». Нормативный срок обучения по программе бакалавриата — 4 года, а по программе магистратуры — 2 года. Обучение студентов осуществляется как на госбюджетной (бесплатной), так и на контрактной (платной) основах. 
+\end{document}
