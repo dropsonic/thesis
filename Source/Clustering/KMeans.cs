@@ -68,6 +68,12 @@ namespace Thesis.Clustering
             var newCenters = points.Sample(n);
             IEnumerable<T> centers;
             IEnumerable<IGrouping<T, T>> clusters;
+
+            Debug.WriteLine("******************************");
+            Debug.WriteLine("Original centers:");
+
+            foreach (var center in newCenters)
+                Debug.WriteLine("  {0}", center);
             do
             {
                 centers = newCenters;
@@ -75,7 +81,19 @@ namespace Thesis.Clustering
                 clusters = points.GroupBy(p => centers.MinBy(c => _distanceFunc(c, p)));
                 //new centers are means of the clusters
                 newCenters = clusters.Select(cl => _meanFunc(cl)).ToArray();
-                //Debug.WriteLine("i = {0}: {1} clusters, {2} centers", i, clusters.Count(), newCenters.Count());
+
+                Debug.WriteLine("******************************");
+                Debug.WriteLine("Iteration:");
+                Debug.WriteLine("  New centers:");
+                foreach (var center in newCenters)
+                    Debug.WriteLine("    {0}", center);
+                Debug.WriteLine("  Clusters:");
+                foreach (var cluster in clusters)
+                {
+                    foreach (var item in cluster)
+                        Debug.WriteLine("    {0}", item);
+                    Debug.WriteLine("    ----");
+                }
             } 
             while (!centers.SequenceEqual(newCenters));
 
