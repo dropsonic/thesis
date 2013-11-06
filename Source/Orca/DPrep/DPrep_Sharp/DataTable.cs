@@ -30,20 +30,22 @@ namespace Thesis.DPrep
 
         private void LoadFields(string filename)
         {
-            var infile = new StreamReader(filename);
-            while (!infile.EndOfStream)
+            using (var infile = new StreamReader(filename))
             {
-                string line = infile.ReadLine();
-                var tokens = Tokenize(line, _delimiters);
-                if (tokens.Count > 0)
+                while (!infile.EndOfStream)
                 {
-                    Field newField = new Field(tokens);
-                    _fields.Add(newField);
+                    string line = infile.ReadLine();
+                    var tokens = Tokenize(line, _delimiters);
+                    if (tokens.Length > 0)
+                    {
+                        Field newField = new Field(tokens);
+                        _fields.Add(newField);
+                    }
                 }
             }
         }
 
-        private IList<string> Tokenize(string line, char[] delimiters)
+        private string[] Tokenize(string line, char[] delimiters)
         {
             if (delimiters == null)
                 throw new ArgumentNullException("delimiters");
@@ -71,6 +73,34 @@ namespace Thesis.DPrep
                 return _fields.Count(f => f.Type == Field.FieldType.Discrete ||
                                           f.Type == Field.FieldType.DiscreteCompiled);
             }
+        }
+
+        private void WriteWeightFile(string filename)
+        {
+            using (var writer = new StreamWriter(filename, false))
+            {
+                foreach (var field in _fields)
+                    if (field.Type != Field.FieldType.IgnoreFeature)
+                        writer.WriteLine("{0} {1}", field.Name, field.Type == Field.FieldType.Continuous ? 1.0 : 0.4);
+            }
+        }
+
+        private int[] GetFields(Field.FieldType type)
+        {
+            //return _fields
+            throw new NotImplementedException();
+        }
+
+        private bool LoadRecord(string[] tokens, int lineNo, ref Record record)
+        {
+            // check to make sure there are the correct number of tokens
+            // if there are an incorrect number ignore the line
+            if (tokens.Length != _fields.Count)
+                //throw new ArgumentException("Incorrect number of fields");
+                // skip to next iteration of loop
+                return false;
+            //record.Real = //new List<
+            throw new NotImplementedException();
         }
     }
 }
