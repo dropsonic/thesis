@@ -43,15 +43,17 @@ namespace Thesis.DPrep
             }
         }
 
-        private IList<string> Tokenize(string line, IList<char> delimiters)
+        private IList<string> Tokenize(string line, char[] delimiters)
         {
-            //--------------------
+            if (delimiters == null)
+                throw new ArgumentNullException("delimiters");
+            if (delimiters.Length == 0)
+                throw new ArgumentException("No delimiters specified.");
             // Strip comments (original; remove comments in this version)
-            //
-            bool comment = false;
             line = line.Remove(line.IndexOf('%'));
-
-            throw new NotImplementedException();
+            // Split string into tokens
+            var tokens = line.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            return tokens;
         }
     }
 }
