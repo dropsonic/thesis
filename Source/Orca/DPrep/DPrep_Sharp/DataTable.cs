@@ -55,5 +55,22 @@ namespace Thesis.DPrep
             var tokens = line.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             return tokens;
         }
+
+        private int RealFieldsCount
+        {
+            get
+            {
+                return _fields.Count(f => f.Type == Field.FieldType.Continuous);
+            }
+        }
+
+        private int DiscreteFieldsCount
+        {
+            get
+            {
+                return _fields.Count(f => f.Type == Field.FieldType.Discrete ||
+                                          f.Type == Field.FieldType.DiscreteCompiled);
+            }
+        }
     }
 }
