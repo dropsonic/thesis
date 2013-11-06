@@ -58,7 +58,7 @@ namespace Thesis.DPrep
             return tokens;
         }
 
-        private int RealFieldsCount
+        public int RealFieldsCount
         {
             get
             {
@@ -66,7 +66,7 @@ namespace Thesis.DPrep
             }
         }
 
-        private int DiscreteFieldsCount
+        public int DiscreteFieldsCount
         {
             get
             {
@@ -75,7 +75,7 @@ namespace Thesis.DPrep
             }
         }
 
-        private void WriteWeightFile(string filename)
+        public void WriteWeightFile(string filename)
         {
             using (var writer = new StreamWriter(filename, false))
             {

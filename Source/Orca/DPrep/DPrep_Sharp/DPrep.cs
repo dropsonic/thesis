@@ -20,10 +20,16 @@ namespace Thesis.DPrep
             Random random = new Random(parameters.Seed);
             List<string> files = new List<string>();
             files.Add(parameters.DataFile);
+            
             DataTable dataTable = new DataTable(parameters.DataFile, 
                                                 parameters.NamesFiles, 
                                                 parameters.MissingR, 
                                                 parameters.MissingD);
+            //Write weight file
+            dataTable.WriteWeightFile(parameters.WeightFile);
+            //Load the Scale File
+            
+            RStats rStats = new RStats(dataTable.RealFieldsCount);
         }
     }
 }

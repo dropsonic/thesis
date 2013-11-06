@@ -48,6 +48,7 @@ namespace Thesis.DPrep
         public string DataFile { get; set; }
         public string NamesFiles { get; set; }
         public string DestinationFile { get; set; }
+        public string WeightFile { get; set; }
 
         public Scale Scaling { get; set; }
         public string ScaleFile { get; set; }
