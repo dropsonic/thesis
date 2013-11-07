@@ -3,6 +3,7 @@
 \usepackage[top=2.0cm,bottom=2.0cm,left=2.0cm,right=1.0cm]{geometry} % поля
 \usepackage{lscape} % поддержка альбомной ориентации страниц
 \usepackage{indentfirst} % красная строка
+\setlength\parindent{1.5cm} % установка величины отступа красной строки
 
 \usepackage[cm-default]{fontspec}
 \usepackage{xunicode}
@@ -32,8 +33,9 @@
 %Формат заголовков
 \usepackage{titlesec}
 %\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries\MakeUppercase}{\thechapter}{10pt}{}
-\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\LARGE\bfseries}{\thechapter}{10pt}{}
-\titleformat{\section}[hang]{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries}{\thechapter}{10pt}{}
+\titleformat{\section}[hang]{\sloppy\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[hang]{\sloppy\normalsize\bfseries}{\thesubsection}{1em}{}
 \titlespacing*{\chapter}{\parindent}{-30pt}{8pt}
 \titlespacing*{\section}{\parindent}{*4}{*4}
 \titlespacing*{\subsection}{\parindent}{*4}{*4}
