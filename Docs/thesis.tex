@@ -42,7 +42,10 @@
 \titlespacing*{\subsection}{\parindent}{*1}{*1}
 
 %Формат списков
-\renewcommand\labelitemi{–} %в ненумерованных списках использовать в качестве символа короткое тире
+\usepackage{enumitem}
+\usepackage{calc}
+\setlist{nolistsep} %убрать лишний интервал между элементами списка
+\setlist[itemize,1]{label={–}, labelindent=\parindent, leftmargin=*} %маркированные списки: символ - короткое тире, выравнивание символа по красной строке
 
 \begin{document}
 \include{chapter1}
