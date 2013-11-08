@@ -20,8 +20,12 @@
 \setmainlanguage[babelshorthands=true]{russian} % основной язык - русский
 \setotherlanguage[variant=us]{english} % дополнительный язык - английский
 
+%\usepackage{amsmath}
+% Формулы
 \usepackage{amstext} % поддержка кириллицы в математических формулах
 \usepackage{amssymb} % дополнительные символы в математических формулах
+\usepackage{chngcntr} % управление нумерацией
+\counterwithout{equation}{chapter} % сквозная нумерация формул
 
 % Формат заголовков
 \usepackage{titlesec}
