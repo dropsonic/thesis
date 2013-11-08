@@ -50,12 +50,16 @@
 \usepackage{multirow}
 
 % Формат рисунков и таблиц
-\usepackage[figureposition=above, tableposition=top]{caption} % подписи
-\captionsetup{labelsep=endash, textformat=simple, figurename=Рисунок, tablename=Таблица, figurewithin=none, tablewithin=none}
+\usepackage{caption} % подписи
+\captionsetup{labelsep=endash, textformat=simple, figurename=Рисунок, tablename=Таблица, figurewithin=none, tablewithin=none} % разделитель подписи и названия - короткое тире, заголовок - название float'a и номер, имена рисунков и таблиц по ГОСТу, сквозная нумерация рисунков и таблиц
+\captionsetup[figure]{position=above}
+\captionsetup[table]{singlelinecheck=false, position=top, justification=raggedright}
 % подписи многостраничных таблиц
 \DeclareCaptionLabelFormat{continued}{#1~#2 (\textit{продолжение})}
 \captionsetup[ContinuedFloat]{labelformat=continued}
-\usepackage{floatrow} % размещение
+\usepackage{floatrow} % пакет для настройки размещения float'ов и их подписей
+\floatsetup[table]{style=plaintop, justification=justified} % название над таблицей, таблица выровнена по ширине влево
+
 
 \begin{document}
 \include{chapter1}
