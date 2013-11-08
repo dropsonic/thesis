@@ -9,10 +9,10 @@
 \usepackage{xunicode}
 \usepackage{xltxtra}
 %\setromanfont{Cambria}
-\setromanfont{Times New Roman}
+\setromanfont[Mapping=tex-text]{Times New Roman}
 \setsansfont{Calibri}
 \setmonofont{Consolas}
-\defaultfontfeatures{Scale=MatchLowercase} % одинаковый рост строчных букв у разных гарнитур
+\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text} % одинаковый рост строчных букв у разных гарнитур
 \usepackage{ulem} % поддержка подчёркиваний
 
 % Поддержка русского языка и русскоязычных стилей
@@ -52,6 +52,7 @@
 % Формат рисунков и таблиц
 \usepackage{caption} % подписи
 \usepackage{floatrow} % размещение
+\captionsetup{labelsep=endash}
 
 \begin{document}
 \include{chapter1}
