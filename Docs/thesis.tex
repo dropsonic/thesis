@@ -50,9 +50,12 @@
 \usepackage{multirow}
 
 % Формат рисунков и таблиц
-\usepackage{caption} % подписи
+\usepackage[figureposition=above, tableposition=top]{caption} % подписи
+\captionsetup{labelsep=endash, textformat=simple, figurename=Рисунок, tablename=Таблица, figurewithin=none, tablewithin=none}
+% подписи многостраничных таблиц
+\DeclareCaptionLabelFormat{continued}{#1~#2 (\textit{продолжение})}
+\captionsetup[ContinuedFloat]{labelformat=continued}
 \usepackage{floatrow} % размещение
-\captionsetup{labelsep=endash}
 
 \begin{document}
 \include{chapter1}
