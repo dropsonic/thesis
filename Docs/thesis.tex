@@ -20,31 +20,34 @@
 \setmainlanguage[babelshorthands=true]{russian} % основной язык - русский
 \setotherlanguage[variant=us]{english} % дополнительный язык - английский
 
-\usepackage{graphicx} % поддержка изображений
-\graphicspath{{images/}} % путь к каталогу с изображениями
-
 \usepackage{amstext} % поддержка кириллицы в математических формулах
 \usepackage{amssymb} % дополнительные символы в математических формулах
+
+% Формат заголовков
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries}{\thechapter}{10pt}{}
+\titleformat{\section}[hang]{\sloppy\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[hang]{\sloppy\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\chapter}{\parindent}{-30pt}{*4}
+\titlespacing*{\section}{\parindent}{*1}{*2}
+\titlespacing*{\subsection}{\parindent}{*1}{*1}
+
+% Формат списков
+\usepackage{enumitem}
+\setlist{nolistsep} % убрать лишний интервал между элементами списка
+\setlist[itemize,1]{label={–}, labelindent=\parindent, leftmargin=*} % маркированные списки: символ - короткое тире, выравнивание символа по красной строке
+
+% Поддержка изображений
+\usepackage{graphicx}
+\graphicspath{{images/chapter1}{images/chapter2}{images/chapter3}{images/chapter4}} % пути к каталогам с изображениями
 
 % Красивые таблицы
 \usepackage{makecell}
 \usepackage{multirow}
 
-%Формат заголовков
-\usepackage{titlesec}
-%\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries\MakeUppercase}{\thechapter}{10pt}{}
-\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries}{\thechapter}{10pt}{}
-\titleformat{\section}[hang]{\sloppy\large\bfseries}{\thesection}{1em}{}
-\titleformat{\subsection}[hang]{\sloppy\normalsize\bfseries}{\thesubsection}{1em}{}
-%\titlespacing*{\chapter}{\parindent}{-30pt}{8pt}
-\titlespacing*{\chapter}{\parindent}{-30pt}{*4}
-\titlespacing*{\section}{\parindent}{*1}{*2}
-\titlespacing*{\subsection}{\parindent}{*1}{*1}
-
-%Формат списков
-\usepackage{enumitem}
-\setlist{nolistsep} %убрать лишний интервал между элементами списка
-\setlist[itemize,1]{label={–}, labelindent=\parindent, leftmargin=*} %маркированные списки: символ - короткое тире, выравнивание символа по красной строке
+% Формат рисунков и таблиц
+\usepackage{caption} % подписи
+\usepackage{floatrow} % размещение
 
 \begin{document}
 \include{chapter1}
