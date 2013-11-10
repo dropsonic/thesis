@@ -41,12 +41,13 @@
 \titlespacing*{\section}{\parindent}{*1}{*2}
 \titlespacing*{\subsection}{\parindent}{*1}{*1}
 
-%\newcommand{\spchapter}[1]{\chapter*{\centering #1}\addcontentsline{toc}{chapter}{#1}}
 \newcommand{\spchapter}[1]{
+	\clearpage
 	\begin{center}
 		\righthyphenmin62{\sloppy{\textbf{\Large{#1}}}}
 	\end{center}
-	\addcontentsline{toc}{chapter}{#1}}
+	\addcontentsline{toc}{chapter}{#1}
+	\par}
 
 % Формат списков
 \usepackage{enumitem}
@@ -126,7 +127,6 @@
 	\bibliography{thesis}
 	
 	\appendix
-	\appendixname
 	%\begin{appendices}
 		\include{appendix1}
 		\include{appendix2}
