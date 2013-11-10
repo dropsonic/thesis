@@ -6,6 +6,8 @@
 \usepackage{indentfirst} % красная строка
 \setlength\parindent{1.5cm} % установка величины отступа красной строки
 
+\usepackage{etoolbox} % позволяет добавлять произвольный код в начало любой команды
+
 % Шрифты
 \usepackage[cm-default]{fontspec}
 \usepackage{xunicode}
@@ -38,6 +40,13 @@
 \titlespacing*{\chapter}{\parindent}{-30pt}{*4}
 \titlespacing*{\section}{\parindent}{*1}{*2}
 \titlespacing*{\subsection}{\parindent}{*1}{*1}
+
+%\newcommand{\spchapter}[1]{\chapter*{\centering #1}\addcontentsline{toc}{chapter}{#1}}
+\newcommand{\spchapter}[1]{
+	\begin{center}
+		\righthyphenmin62{\sloppy{\textbf{\Large{#1}}}}
+	\end{center}
+	\addcontentsline{toc}{chapter}{#1}}
 
 % Формат списков
 \usepackage{enumitem}
@@ -81,17 +90,45 @@
 \usepackage[subfigure,titles]{tocloft}
 \renewcommand{\cftchapleader}{\bfseries\cftdotfill{\cftdotsep}}
 
+% Подсчёт объектов (для реферата)
+\usepackage{totcount}
+\regtotcounter{figure} % рисунки
+\regtotcounter{table} % таблицы
+% подсчёт приложений
+\newtotcounter{appendixcount}
+\usepackage{apptools}
+\pretocmd{\chapter}{\IfAppendix{\addtocounter{appendixcount}{1}}{}}{}{}
+% подсчёт страниц
+\usepackage{lastpage}
+\newcommand{\pagecount}{\pageref{LastPage}}
+% подсчёт использованных источников
+\newtotcounter{refcount}
+\pretocmd{\bibitem}{\addtocounter{refcount}{1}}{}{}
+
+% Оформление приложений
+%\usepackage[title, titletoc, header]{appendix}
+\usepackage{appendix}
+
 \begin{document}
-\includepdf[pages={1}]{title.pdf} % титульник
-\includepdf[pages={1,2}]{assignment.pdf} % задание
-\setcounter{page}{3} % начать нумерацию страниц с №3
-\tableofcontents
-\include{referat}
-\include{intro}
-\include{chapter1}
-\include{chapter2}
-\include{chapter3}
-\include{conclusion}
-\addcontentsline{toc}{chapter}{\bibname}
-\bibliography{thesis}
+	\includepdf[pages={1}]{title.pdf} % титульник
+	\includepdf[pages={1,2}]{assignment.pdf} % задание
+	\setcounter{page}{3} % начать нумерацию страниц с №3
+	\include{referat}
+	\tableofcontents
+	
+	\include{intro}
+	\include{chapter1}
+	\include{chapter2}
+	\include{chapter3}
+	\include{conclusion}
+	
+	\addcontentsline{toc}{chapter}{\bibname}
+	\bibliography{thesis}
+	
+	\appendix
+	\appendixname
+	%\begin{appendices}
+		\include{appendix1}
+		\include{appendix2}
+	%\end{appendices}
 \end{document}
