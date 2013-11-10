@@ -1,18 +1,19 @@
 \documentclass[oneside,final,14pt]{extreport}
+\usepackage{pdfpages} % поддержка вставки страниц из pdf-файлов
 \usepackage[onehalfspacing]{setspace} % 1,5 интервал
 \usepackage[top=2.0cm,bottom=2.0cm,left=2.0cm,right=1.0cm]{geometry} % поля
 \usepackage{lscape} % поддержка альбомной ориентации страниц
 \usepackage{indentfirst} % красная строка
 \setlength\parindent{1.5cm} % установка величины отступа красной строки
 
+% Шрифты
 \usepackage[cm-default]{fontspec}
 \usepackage{xunicode}
 \usepackage{xltxtra}
-%\setromanfont{Cambria}
 \setromanfont[Mapping=tex-text]{Times New Roman}
 \setsansfont{Calibri}
 \setmonofont{Consolas}
-\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text} % одинаковый рост строчных букв у разных гарнитур
+\defaultfontfeatures{Scale=MatchLowercase, Mapping=tex-text} % одинаковый рост строчных букв у разных гарнитур, маппинги TeXовских лигатур вроде -- и ---
 \usepackage{ulem} % поддержка подчёркиваний
 
 % Поддержка русского языка и русскоязычных стилей
@@ -29,7 +30,7 @@
 
 % Формат заголовков
 \usepackage{titlesec}
-\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries}{\thechapter}{10pt}{}
+\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries}{\thechapter}{10pt}{} % righthypenmin62 - не переносить слова в названиях глав
 \titleformat{\section}[hang]{\sloppy\large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}[hang]{\sloppy\normalsize\bfseries}{\thesubsection}{1em}{}
 \titlespacing*{\chapter}{\parindent}{-30pt}{*4}
@@ -64,8 +65,10 @@
 \usepackage{floatrow} % пакет для настройки размещения float'ов и их подписей
 \floatsetup[table]{style=plaintop, justification=justified} % название над таблицей, таблица выровнена по ширине влево
 
-
 \begin{document}
+\includepdf[pages={1}]{title_repaired.pdf} % титульник
+\includepdf[pages={1,2}]{assignment.pdf} % задание
+\setcounter{page}{3} % начать нумерацию страниц с №3
 \include{referat}
 \include{intro}
 \include{chapter1}
