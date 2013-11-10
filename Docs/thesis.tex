@@ -31,9 +31,10 @@
 
 % Формат заголовков
 \usepackage{titlesec}
-\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries}{\thechapter}{10pt}{} % righthypenmin62 - не переносить слова в названиях глав
-\titleformat{\section}[hang]{\sloppy\large\bfseries}{\thesection}{1em}{}
-\titleformat{\subsection}[hang]{\sloppy\normalsize\bfseries}{\thesubsection}{1em}{}
+\newcommand{\nhspacesize}{10pt}
+\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries}{\thechapter}{\nhspacesize}{} % righthypenmin62 - не переносить слова в названиях глав
+\titleformat{\section}[hang]{\sloppy\large\bfseries}{\thesection}{\nhspacesize}{}
+\titleformat{\subsection}[hang]{\sloppy\normalsize\bfseries}{\thesubsection}{\nhspacesize}{}
 \titlespacing*{\chapter}{\parindent}{-30pt}{*4}
 \titlespacing*{\section}{\parindent}{*1}{*2}
 \titlespacing*{\subsection}{\parindent}{*1}{*1}
@@ -77,7 +78,8 @@
 
 % Оглавление
 \gappto\captionsrussian{\renewcommand{\contentsname}{Содержание}}
-\usepackage{tocloft}
+\usepackage[subfigure,titles]{tocloft}
+\renewcommand{\cftchapleader}{\bfseries\cftdotfill{\cftdotsep}}
 
 \begin{document}
 \includepdf[pages={1}]{title.pdf} % титульник
