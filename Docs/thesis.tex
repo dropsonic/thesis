@@ -117,6 +117,9 @@
 % задание своего формата заголовков для приложений
 \pretocmd{\appendix}{
 	\titleformat{\chapter}[display]{\nohyphenation\sloppy\normalsize\centering}{\MakeUppercase{\chaptertitlename} \thechapter}{\nhspacesize}{\bfseries}{}
+	\counterwithin{equation}{chapter}
+	\counterwithin{figure}{chapter}
+	\counterwithin{table}{chapter}
 }{}{}
 
 \begin{document}
@@ -133,13 +136,12 @@
 	\include{conclusion}
 	
 	\addcontentsline{toc}{chapter}{\bibname}
+	\nocite{*}
 	\bibliography{thesis}
 	
 	\appendix
-%	\appendixtitleon
-%	\appendixtitletocon
 	\begin{appendices}
-	\include{appendix1}
-	\include{appendix2}
+		\include{appendix1}
+		\include{appendix2}
 	\end{appendices}
 \end{document}
