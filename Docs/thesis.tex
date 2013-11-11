@@ -112,7 +112,7 @@
 \pretocmd{\bibitem}{\addtocounter{refcount}{1}}{}{}
 
 % Оформление приложений
-%\usepackage{appendix}
+\usepackage[title, titletoc]{appendix}
 % задание своего формата заголовков для приложений
 \pretocmd{\appendix}{
 	\titleformat{\chapter}[display]{\nohyphenation\sloppy\normalsize\centering}{\MakeUppercase{\chaptertitlename} \thechapter}{\nhspacesize}{\bfseries}{}
@@ -137,6 +137,8 @@
 	\appendix
 %	\appendixtitleon
 %	\appendixtitletocon
+	\begin{appendices}
 	\include{appendix1}
 	\include{appendix2}
+	\end{appendices}
 \end{document}
