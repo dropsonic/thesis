@@ -35,20 +35,20 @@
 % Формат заголовков
 \usepackage{titlesec}
 \newcommand{\nhspacesize}{10pt}
-\titleformat{\chapter}[hang]{\righthyphenmin62\sloppy\Large\bfseries}{\thechapter}{\nhspacesize}{} % righthypenmin62 - не переносить слова в названиях глав
-\titleformat{\section}[hang]{\sloppy\large\bfseries}{\thesection}{\nhspacesize}{}
+\newcommand{\nohyphenation}{\righthyphenmin62}
+\titleformat{\chapter}[hang]{\nohyphenation\sloppy\Large\bfseries}{\thechapter}{\nhspacesize}{} % righthypenmin62 - не переносить слова в названиях глав
+\titleformat{\section}[hang]{\nohyphenation\sloppy\large\bfseries}{\thesection}{\nhspacesize}{}
 \titleformat{\subsection}[hang]{\sloppy\normalsize\bfseries}{\thesubsection}{\nhspacesize}{}
 \titlespacing*{\chapter}{\parindent}{-30pt}{*4}
 \titlespacing*{\section}{\parindent}{*1}{*2}
 \titlespacing*{\subsection}{\parindent}{*1}{*1}
-
+% Новый формат заголовков - специальные разделы (реферат, вступление, заключение и т.п.)
 \newcommand{\spchapterStar}[1]{
 	\clearpage
 	\begin{center}
-		\righthyphenmin62{\sloppy{\textbf{\Large{#1}}}}
+		\nohyphenation{\sloppy{\textbf{\Large{#1}}}}
 	\end{center}
 	\par}
-
 \newcommand{\spchapter}[1]{
 	\spchapterStar{#1}
 	\addcontentsline{toc}{chapter}{#1}}
@@ -113,7 +113,7 @@
 
 % Оформление приложений
 %\usepackage[title, titletoc, header]{appendix}
-\usepackage{appendix}
+%\usepackage{appendix}
 
 \begin{document}
 	\includepdf[pages={1}]{title.pdf} % титульник
@@ -132,8 +132,9 @@
 	\bibliography{thesis}
 	
 	\appendix
-	%\begin{appendices}
-		\include{appendix1}
-		\include{appendix2}
-	%\end{appendices}
+%	\appendixtitleon
+%	\appendixtitletocon
+	%\titleformat{\chapter}[display]{\righthyphenmin62\sloppy\Large\bfseries}{\thechapter}{\nhspacesize}{}
+	\include{appendix1}
+	\include{appendix2}
 \end{document}
