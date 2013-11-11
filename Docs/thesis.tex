@@ -6,7 +6,8 @@
 \usepackage{indentfirst} % красная строка
 \setlength\parindent{1.5cm} % установка величины отступа красной строки
 
-\usepackage{etoolbox} % позволяет добавлять произвольный код в начало любой команды
+\usepackage{etoolbox} % позволяет добавлять произвольный код в начало любой команды, и содержит прочие подобные доп. функции для программирования
+\usepackage{suffix} % позволяет легко определять команды со звёздочкой (starred version of command)
 
 % Шрифты
 \usepackage[cm-default]{fontspec}
@@ -41,13 +42,17 @@
 \titlespacing*{\section}{\parindent}{*1}{*2}
 \titlespacing*{\subsection}{\parindent}{*1}{*1}
 
-\newcommand{\spchapter}[1]{
+\newcommand{\spchapterStar}[1]{
 	\clearpage
 	\begin{center}
 		\righthyphenmin62{\sloppy{\textbf{\Large{#1}}}}
 	\end{center}
-	\addcontentsline{toc}{chapter}{#1}
 	\par}
+
+\newcommand{\spchapter}[1]{
+	\spchapterStar{#1}
+	\addcontentsline{toc}{chapter}{#1}}
+\WithSuffix\newcommand\spchapter*[1]{\spchapterStar{#1}}
 
 % Формат списков
 \usepackage{enumitem}
