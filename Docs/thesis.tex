@@ -71,6 +71,7 @@
 % Красивые таблицы
 \usepackage{makecell}
 \usepackage{multirow}
+\usepackage{longtable}
 
 % Формат рисунков и таблиц
 \usepackage{caption} % подписи
@@ -99,8 +100,8 @@
 
 % Подсчёт объектов (для реферата)
 \usepackage{totcount}
-\regtotcounter{figure} % рисунки
-\regtotcounter{table} % таблицы
+%\regtotcounter{figure} % рисунки
+%\regtotcounter{table} % таблицы
 % подсчёт приложений
 \newtotcounter{appendixcount}
 \usepackage{apptools}
@@ -111,6 +112,11 @@
 % подсчёт использованных источников
 \newtotcounter{refcount}
 \pretocmd{\bibitem}{\addtocounter{refcount}{1}}{}{}
+% подсчёт рисунков и таблиц
+\newtotcounter{figurecount}
+\newtotcounter{tablecount}
+\AfterEndEnvironment{figure}{\addtocounter{figurecount}{1}}
+\AfterEndEnvironment{table}{\addtocounter{tablecount}{1}}
 
 % Оформление приложений
 \usepackage[title, titletoc]{appendix}
