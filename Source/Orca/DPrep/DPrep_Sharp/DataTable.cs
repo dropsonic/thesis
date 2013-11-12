@@ -16,6 +16,7 @@ namespace Thesis.DPrep
 
         private readonly char[] _fieldsDelimiters = { '.', ',', ':', ';' };
         private readonly char[] _recordDelimiters = { ',', ':', ';' };
+        private const string _noValueReplacement = "?";
 
         private IList<Field> _fields = new List<Field>();
 
@@ -82,12 +83,12 @@ namespace Thesis.DPrep
             }
         }
 
-        private int[] GetFields(Field.FieldType type)
-        {
-            //return _fields
-            //TODO: this
-            throw new NotImplementedException();
-        }
+        //private int[] GetFields(Field.FieldType type)
+        //{
+        //    //return _fields
+        //    //TODO: this
+        //    throw new NotImplementedException();
+        //}
 
         /// <param name="valid">true, if the record was correctly loaded; false, if the record had errors and was ignored</param>
         /// <returns>true, if able to retrieve the next record; false, if unable to get the next record</returns>
@@ -111,15 +112,55 @@ namespace Thesis.DPrep
 
         private bool LoadRecord(string[] tokens, ref Record record, int lineNo)
         {
-            //TODO: this
             // check to make sure there are the correct number of tokens
             // if there are an incorrect number ignore the line
             if (tokens.Length != _fields.Count)
                 //throw new ArgumentException("Incorrect number of fields");
                 // skip to next iteration of loop
                 return false;
-            //record.Real = //new List<
-            throw new NotImplementedException();
+
+            record = new Record() { Discrete = new List<int>(), Real = new List<float>() };
+            for (int i = 0; i < _fields.Count; i++)
+            {
+                if (_fields[i].Type == Field.FieldType.IgnoreFeature)
+                    continue;
+                if (tokens[i] == _noValueReplacement)
+                {
+                    switch (_fields[i].Type)
+                    {
+                        case Field.FieldType.Continuous:
+                            record.Real.Add(_missingR); break;
+                        case Field.FieldType.Discrete:
+                        case Field.FieldType.DiscreteCompiled:
+                            record.Discrete.Add(_missingD); break;
+                    }
+                }
+                else
+                {
+                    switch (_fields[i].Type)
+                    {
+                        case Field.FieldType.Continuous:
+                            record.Real.Add(float.Parse(tokens[i])); break;
+                        case Field.FieldType.Discrete:
+                            int value = _fields[i].Values.IndexOf(tokens[i]);
+                            if (value != -1)
+                                record.Discrete.Add(value);
+                            else
+                                return false;
+                            break;
+                        case Field.FieldType.DiscreteCompiled:
+                            int valuec = _fields[i].Values.IndexOf(tokens[i]);
+                            if (valuec != -1)
+                                record.Discrete.Add(valuec);
+                            else
+                                // Add new value to the field description.
+                                _fields[i].Values.Add(tokens[i]);
+                            break;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private void ResetFileCounter()

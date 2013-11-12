@@ -11,6 +11,9 @@ namespace Thesis.DPrep
         public enum FieldType
         {
             Discrete = 0,
+            /// <summary>
+            /// Discrete Data Driven
+            /// </summary>
             DiscreteCompiled = 1,
             Continuous = 2,
             IgnoreFeature = 3
