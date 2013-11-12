@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Thesis.DPrep
 {
-    class DataTable
+    class DataTable : IDisposable
     {
         private string _dataFile;
         private string _fieldsFile;
@@ -18,6 +18,9 @@ namespace Thesis.DPrep
 
         private IList<Field> _fields = new List<Field>();
 
+        private StreamReader _infile;
+        private int _example;
+
         public DataTable(string dataFile, string fieldsFile, float missingR, int missingD)
         {
             _dataFile = dataFile;
@@ -26,6 +29,9 @@ namespace Thesis.DPrep
             _missingD = missingD;
 
             LoadFields(fieldsFile);
+
+            _infile = new StreamReader(dataFile);
+            _example = 0;
         }
 
         private void LoadFields(string filename)
@@ -35,7 +41,7 @@ namespace Thesis.DPrep
                 while (!infile.EndOfStream)
                 {
                     string line = infile.ReadLine();
-                    var tokens = Tokenize(line, _delimiters);
+                    var tokens = ParserHelper.Tokenize(line, _delimiters);
                     if (tokens.Length > 0)
                     {
                         Field newField = new Field(tokens);
@@ -43,19 +49,6 @@ namespace Thesis.DPrep
                     }
                 }
             }
-        }
-
-        private string[] Tokenize(string line, char[] delimiters)
-        {
-            if (delimiters == null)
-                throw new ArgumentNullException("delimiters");
-            if (delimiters.Length == 0)
-                throw new ArgumentException("No delimiters specified.");
-            // Strip comments (original; remove comments in this version)
-            line = line.Remove(line.IndexOf('%'));
-            // Split string into tokens
-            var tokens = line.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-            return tokens;
         }
 
         public int RealFieldsCount
@@ -88,11 +81,19 @@ namespace Thesis.DPrep
         private int[] GetFields(Field.FieldType type)
         {
             //return _fields
+            //TODO: this
+            throw new NotImplementedException();
+        }
+
+        private bool GetNextRecord(out Record r, out bool valid)
+        {
+            //TODO: this
             throw new NotImplementedException();
         }
 
         private bool LoadRecord(string[] tokens, int lineNo, ref Record record)
         {
+            //TODO: this
             // check to make sure there are the correct number of tokens
             // if there are an incorrect number ignore the line
             if (tokens.Length != _fields.Count)
@@ -102,5 +103,99 @@ namespace Thesis.DPrep
             //record.Real = //new List<
             throw new NotImplementedException();
         }
+
+        private void ResetFileCounter()
+        {
+            _infile.BaseStream.Seek(0, SeekOrigin.Begin);
+        }
+
+        /// <summary>
+        /// Converts the data set to a binary file.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns>Number of converted records.</returns>
+        public int ConvertToBinary(string filename)
+        {
+            ResetFileCounter();
+            using (var stream = File.Create(filename))
+            {
+                using (var outfile = new BinaryWriter(stream))
+                {
+                    bool status = true;
+                    int numRecords = 0;
+                    int numReal = RealFieldsCount;
+                    int numDiscrete = DiscreteFieldsCount;
+
+                    //-------------------------------
+                    // just allocating space for the
+                    // header information 
+                    outfile.Write(numRecords);
+                    outfile.Write(numReal);
+                    outfile.Write(numDiscrete);
+
+                    //----------------------
+                    // write the example to the file
+                    //
+                    int recordNumber = 1;
+                    while (status)
+                    {
+                        Record R;
+                        bool valid;
+                        status = GetNextRecord(out R, out valid);
+                        if (status && valid)
+                        {
+                            // write index number
+                            outfile.Write(recordNumber);
+                            if (numReal > 0)
+                                outfile.Write(R.Real.ToArray());
+                            if (numDiscrete > 0)
+                                outfile.Write(R.Discrete.ToArray());
+                            numRecords++;
+                            recordNumber++;
+                        }
+                    }
+
+                    //-----------------------------
+	                // go back to the beginning and 
+	                // write header information
+	                //
+                    outfile.Seek(0, SeekOrigin.Begin);
+                    outfile.Write(numRecords);
+                    outfile.Close();
+
+                    return numRecords;
+                }
+            }
+        }
+
+        #region IDisposable
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+ 
+        private bool m_Disposed = false;
+ 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!m_Disposed)
+            {
+                if (disposing)
+                {
+                // Managed resources are released here.
+                    _infile.Close();
+                }
+ 
+                // Unmanaged resources are released here.
+                m_Disposed = true;
+            }
+        }
+ 
+        ~DataTable()    
+        {        
+            Dispose(false);
+        }
+        #endregion
     }
 }

@@ -25,11 +25,19 @@ namespace Thesis.DPrep
                                                 parameters.NamesFiles, 
                                                 parameters.MissingR, 
                                                 parameters.MissingD);
-            //Write weight file
+            // Write weight file
             dataTable.WriteWeightFile(parameters.WeightFile);
-            //Load the Scale File
             
+            // Load the Scale File
             RStats rStats = new RStats(dataTable.RealFieldsCount);
+            if (!String.IsNullOrEmpty(parameters.ScaleFile))
+            {
+                rStats.Load(parameters.ScaleFile);
+            }
+
+            string outputName = parameters.TempFileStem + ".out";
+            files.Add(outputName);
+            int convertedRecords = dataTable.ConvertToBinary(outputName);
         }
     }
 }
