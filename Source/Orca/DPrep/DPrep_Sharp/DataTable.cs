@@ -83,13 +83,6 @@ namespace Thesis.DPrep
             }
         }
 
-        //private int[] GetFields(Field.FieldType type)
-        //{
-        //    //return _fields
-        //    //TODO: this
-        //    throw new NotImplementedException();
-        //}
-
         /// <param name="valid">true, if the record was correctly loaded; false, if the record had errors and was ignored</param>
         /// <returns>true, if able to retrieve the next record; false, if unable to get the next record</returns>
         private bool GetNextRecord(ref Record r, out bool valid)

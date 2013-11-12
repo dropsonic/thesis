@@ -38,6 +38,9 @@ namespace Thesis.DPrep
             string outputName = parameters.TempFileStem + ".out";
             files.Add(outputName);
             int convertedRecords = dataTable.ConvertToBinary(outputName);
+
+            if (convertedRecords == 0)
+                throw new Exception("No records converted.");
         }
     }
 }
