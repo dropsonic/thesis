@@ -40,6 +40,17 @@ namespace Thesis.DPrep
             Cleaning = Clean.Final;
             TempFileStem = "tmp";
             Seed = (int)DateTime.Now.Ticks;
+            MissingR = -989898;
+            MissingD = -1;
+            WeightFile = "weights";
+        }
+
+        public Parameters(string dataFile, string namesFile, string destFile)
+            : this()
+        {
+            DataFile = dataFile;
+            NamesFiles = namesFile;
+            DestinationFile = destFile;
         }
 
         private int _iterations;
