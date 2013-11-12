@@ -14,11 +14,15 @@ namespace Thesis.DPrep
         private float _missingR;
         private int _missingD;
 
-        private char[] _delimiters = { '.', ',', ':', ';' };
+        private readonly char[] _fieldsDelimiters = { '.', ',', ':', ';' };
+        private readonly char[] _recordDelimiters = { ',', ':', ';' };
 
         private IList<Field> _fields = new List<Field>();
 
         private StreamReader _infile;
+        /// <summary>
+        /// Example number.
+        /// </summary>
         private int _example;
 
         public DataTable(string dataFile, string fieldsFile, float missingR, int missingD)
@@ -41,7 +45,7 @@ namespace Thesis.DPrep
                 while (!infile.EndOfStream)
                 {
                     string line = infile.ReadLine();
-                    var tokens = ParserHelper.Tokenize(line, _delimiters);
+                    var tokens = ParserHelper.Tokenize(line, _fieldsDelimiters);
                     if (tokens.Length > 0)
                     {
                         Field newField = new Field(tokens);
@@ -85,13 +89,27 @@ namespace Thesis.DPrep
             throw new NotImplementedException();
         }
 
-        private bool GetNextRecord(out Record r, out bool valid)
+        /// <param name="valid">true, if the record was correctly loaded; false, if the record had errors and was ignored</param>
+        /// <returns>true, if able to retrieve the next record; false, if unable to get the next record</returns>
+        private bool GetNextRecord(ref Record r, out bool valid)
         {
-            //TODO: this
-            throw new NotImplementedException();
+            if (!_infile.EndOfStream)
+            {
+                string line = _infile.ReadLine();
+                string[] tokens = ParserHelper.Tokenize(line, _recordDelimiters);
+                valid = LoadRecord(tokens, ref r, _example);
+                // update the example number
+                _example++;
+                return true;
+            }
+            else
+            {
+                valid = false;
+                return false;
+            }
         }
 
-        private bool LoadRecord(string[] tokens, int lineNo, ref Record record)
+        private bool LoadRecord(string[] tokens, ref Record record, int lineNo)
         {
             //TODO: this
             // check to make sure there are the correct number of tokens
@@ -139,9 +157,9 @@ namespace Thesis.DPrep
                     int recordNumber = 1;
                     while (status)
                     {
-                        Record R;
+                        Record R = new Record();
                         bool valid;
-                        status = GetNextRecord(out R, out valid);
+                        status = GetNextRecord(ref R, out valid);
                         if (status && valid)
                         {
                             // write index number
