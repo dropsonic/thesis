@@ -9,7 +9,7 @@ namespace Thesis.DPrep
 {
     class RStats
     {
-        private char[] _delimiters = { ',', ':', ';' };
+        private char[] _delimiters = { ',', ':', ';', ' '};
 
         public IList<float> Max { get; set; }
         public IList<float> Min { get; set; }
@@ -18,7 +18,7 @@ namespace Thesis.DPrep
 
         public RStats(int size)
         {
-            if (size < 1)
+            if (size < 0)
                 throw new ArgumentOutOfRangeException("size");
             Max = new List<float>(size);
             Min = new List<float>(size);

@@ -15,7 +15,9 @@ namespace Thesis.DPrep
             if (delimiters.Length == 0)
                 throw new ArgumentException("No delimiters specified.");
             // Strip comments (original; remove comments in this version)
-            line = line.Remove(line.IndexOf('%'));
+            int index = line.IndexOf('%');
+            if (index >= 0)
+                line = line.Remove(index);
             // Split string into tokens
             var tokens = line.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             return tokens;

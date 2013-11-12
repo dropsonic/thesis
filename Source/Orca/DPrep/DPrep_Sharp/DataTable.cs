@@ -14,8 +14,8 @@ namespace Thesis.DPrep
         private float _missingR;
         private int _missingD;
 
-        private readonly char[] _fieldsDelimiters = { '.', ',', ':', ';' };
-        private readonly char[] _recordDelimiters = { ',', ':', ';' };
+        private readonly char[] _fieldsDelimiters = { '.', ',', ':', ';', ' ' };
+        private readonly char[] _recordDelimiters = { ',', ':', ';', ' ' };
         private const string _noValueReplacement = "?";
 
         private IList<Field> _fields = new List<Field>();
