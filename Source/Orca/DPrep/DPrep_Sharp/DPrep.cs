@@ -41,6 +41,11 @@ namespace Thesis.DPrep
 
             if (convertedRecords == 0)
                 throw new Exception("No records converted.");
+
+            if (parameters.Scaling != Parameters.Scale.None)
+            {
+
+            }
         }
     }
 }
