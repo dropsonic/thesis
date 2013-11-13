@@ -52,7 +52,7 @@ namespace Thesis.DPrep
 
         private void SeekPosition(int pos)
         {
-            if (pos < 0 || pos < _records)
+            if (pos < 0 || pos > _records)
                 throw new ArgumentOutOfRangeException("pos");
 
             long filepos = 3 * sizeof(int) + pos * sizeof(float) + pos * sizeof(int);
@@ -235,9 +235,9 @@ namespace Thesis.DPrep
                     temp = new byte[sizeInBytes];
                     Buffer.BlockCopy(D, 0, temp, 0, sizeInBytes);
                     outfile.Write(temp);
-
-                    outfile.Close();
                 }
+
+                outfile.Close();
 	        }
         }
 
@@ -297,9 +297,9 @@ namespace Thesis.DPrep
                     temp = new byte[sizeInBytes];
                     Buffer.BlockCopy(D, 0, temp, 0, sizeInBytes);
                     outfile.Write(temp);
-
-                    outfile.Close();
                 }
+
+                outfile.Close();
             }
         }
 
