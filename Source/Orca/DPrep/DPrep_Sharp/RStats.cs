@@ -11,19 +11,19 @@ namespace Thesis.DPrep
     {
         private char[] _delimiters = { ',', ':', ';', ' '};
 
-        public IList<float> Max { get; set; }
-        public IList<float> Min { get; set; }
-        public IList<float> Mean { get; set; }
-        public IList<float> Std { get; set; }
+        public float[] Max { get; set; }
+        public float[] Min { get; set; }
+        public float[] Mean { get; set; }
+        public float[] Std { get; set; }
 
         public RStats(int size)
         {
             if (size < 0)
                 throw new ArgumentOutOfRangeException("size");
-            Max = new List<float>(size);
-            Min = new List<float>(size);
-            Mean = new List<float>(size);
-            Std = new List<float>(size);
+            Max = new float[size];
+            Min = new float[size];
+            Mean = new float[size];
+            Std = new float[size];
         }
 
         public void Load(string filename)
@@ -34,7 +34,7 @@ namespace Thesis.DPrep
                 {
                     string line = infile.ReadLine();
                     var tokens = ParserHelper.Tokenize(line, _delimiters);
-                    IList<float> v = Std;
+                    float[] v = Std;
                     if (tokens.Length > 0)
                     {
                         switch (tokens[0])

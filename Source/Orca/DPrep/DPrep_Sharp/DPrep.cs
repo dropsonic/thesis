@@ -20,12 +20,18 @@ namespace Thesis.DPrep
             Random random = new Random(parameters.Seed);
             List<string> files = new List<string>();
             files.Add(parameters.DataFile);
-            
+
+            //-------------------------------------------------------------
+            // Create the DataTable (load the Names File)
+            //
             DataTable dataTable = new DataTable(parameters.DataFile, 
                                                 parameters.NamesFiles, 
                                                 parameters.MissingR, 
                                                 parameters.MissingD);
+
+            //-------------------------------------------------------------
             // Write weight file
+            //
             dataTable.WriteWeightFile(parameters.WeightFile);
             
             // Load the Scale File
