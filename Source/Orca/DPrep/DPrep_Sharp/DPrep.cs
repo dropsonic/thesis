@@ -44,7 +44,22 @@ namespace Thesis.DPrep
 
             if (parameters.Scaling != Parameters.Scale.None)
             {
+                BFile bfile = new BFile(outputName, parameters.MissingR, parameters.MissingD);
+                string scaleOutputName = parameters.TempFileStem + ".scale";
+                files.Add(scaleOutputName);
 
+                if (parameters.Scaling == Parameters.Scale.ZeroToOne)
+                {
+                    if (String.IsNullOrEmpty(parameters.ScaleFile))
+                        bfile.GetMaxMin(rStats.Max, rStats.Min);
+                    bfile.ScaleZeroToOne(scaleOutputName, rStats.Max, rStats.Min);
+                }
+                else if (parameters.Scaling == Parameters.Scale.Std)
+                {
+                    if (String.IsNullOrEmpty(parameters.ScaleFile))
+                        bfile.GetMeanStd(rStats.Mean, rStats.Std);
+                    bfile.ScaleStd(scaleOutputName, rStats.Mean, rStats.Std);
+                }
             }
         }
     }
