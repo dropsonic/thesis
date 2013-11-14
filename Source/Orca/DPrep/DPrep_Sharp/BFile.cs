@@ -370,12 +370,40 @@ namespace Thesis.DPrep
                     //--------------------------------------
                     // concatenate tmp files in random order
                     //
+                    int[] order = new int[nTmpFiles];
+                    for (int i = 0; i < nTmpFiles; i++)
+                        order[i] = i;
 
+                    // The modern version of the Fisher–Yates shuffle (the Knuth shuffle)
+                    for (int i = order.Length; i > 0; i--)
+                    {
+                        int j = rand.Next(i + 1);
+                        int temp = order[i];
+                        order[i] = order[j];
+                        order[j] = temp;
+                    }
+
+                    for (int i = 0; i < order.Length; i++)
+                    {
+                        int count = blockSize;
+                        BinaryReader infile = tmpFilesIn[order[i]];
+                        while (count == blockSize)
+                        {
+                            byte[] temp = infile.ReadBytes(blockSize);
+                            count = temp.Length;
+                            outfile.Write(temp);
+                        }
+                    }
+
+                    outfile.Close();
                 }
             }
             finally
             {
-
+                // close temporary files
+                for (int i = 0; i < tmpFilesIn.Length; i++)
+                    if (tmpFilesIn[i] != null)
+                        tmpFilesIn[i].Dispose();
             }
         }
 
