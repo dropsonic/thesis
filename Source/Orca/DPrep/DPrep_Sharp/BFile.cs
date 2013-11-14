@@ -225,16 +225,8 @@ namespace Thesis.DPrep
                     }
 
                     outfile.Write(id);
-
-                    int sizeInBytes = Rscale.Length * sizeof(float);
-                    byte[] temp = new byte[sizeInBytes];
-                    Buffer.BlockCopy(Rscale, 0, temp, 0, sizeInBytes);
-                    outfile.Write(temp);
-
-                    sizeInBytes = D.Length * sizeof(int);
-                    temp = new byte[sizeInBytes];
-                    Buffer.BlockCopy(D, 0, temp, 0, sizeInBytes);
-                    outfile.Write(temp);
+                    outfile.Write(Rscale);
+                    outfile.Write(D);
                 }
 
                 outfile.Close();
@@ -287,19 +279,103 @@ namespace Thesis.DPrep
                     }
 
                     outfile.Write(id);
-
-                    int sizeInBytes = Rscale.Length * sizeof(float);
-                    byte[] temp = new byte[sizeInBytes];
-                    Buffer.BlockCopy(Rscale, 0, temp, 0, sizeInBytes);
-                    outfile.Write(temp);
-
-                    sizeInBytes = D.Length * sizeof(int);
-                    temp = new byte[sizeInBytes];
-                    Buffer.BlockCopy(D, 0, temp, 0, sizeInBytes);
-                    outfile.Write(temp);
+                    outfile.Write(Rscale);
+                    outfile.Write(D);
                 }
 
                 outfile.Close();
+            }
+        }
+
+        public void MultiShuffle(string destFile, int iterations, int tmpFiles, int seed)
+        {
+            if (tmpFiles <= 0)
+                throw new ArgumentOutOfRangeException("tmpfiles");
+
+            Random rand = new Random(seed);
+            for (int i = 0; i < iterations; i++)
+            {
+                Shuffle(destFile, 10000, tmpFiles, rand);
+                SetFileReader(destFile);
+            }
+        }
+
+        private void Shuffle(string file, int blockSize, int nTmpFiles, Random rand)
+        {
+            //-------------------------
+            // set up tmp file names
+            //
+            string[] tmpFileNames = new string[nTmpFiles];
+            for (int i = 0; i < nTmpFiles; i++)
+                tmpFileNames[i] = file + ".tmp." + i.ToString();
+
+
+            //-------------------------------
+            // open files for writing
+            //
+            BinaryWriter[] tmpFilesOut = new BinaryWriter[nTmpFiles];
+            try
+            {
+                for (int i = 0; i < tmpFileNames.Length; i++)
+                    tmpFilesOut[i] = new BinaryWriter(File.Create(tmpFileNames[i]));
+
+                //--------------------------------
+                // read in data file and randomly shuffle examples to
+                // temporary files
+                //
+                SeekPosition(0);
+
+                while (_index < _records)
+                {
+                    int id;
+                    float[] R;
+                    int[] D;
+                    GetNext(out id, out R, out D);
+                    int index = rand.Next(tmpFilesOut.Length);
+
+                    tmpFilesOut[index].Write(id);
+                    tmpFilesOut[index].Write(R);
+                    tmpFilesOut[index].Write(D);
+                }
+            }
+            finally
+            {
+                // close temporary files
+                for (int i = 0; i < tmpFilesOut.Length; i++)
+                    if (tmpFilesOut[i] != null)
+                        tmpFilesOut[i].Dispose();
+            }
+
+            //-------------------------------
+            // open tmpfiles for reading 
+            //
+            
+            BinaryReader[] tmpFilesIn = new BinaryReader[nTmpFiles];
+            try
+            {
+                for (int i = 0; i < tmpFilesIn.Length; i++)
+                    tmpFilesIn[i] = new BinaryReader(File.OpenRead(tmpFileNames[i]));
+
+                //-----------------------------------
+                // open final destination file
+                //
+
+                using (var outstream = File.Create(file))
+                using (var outfile = new BinaryWriter(outstream))
+                {
+                    outfile.Write(_records);
+                    outfile.Write(_realFieldsCount);
+                    outfile.Write(_discreteFieldsCount);
+
+                    //--------------------------------------
+                    // concatenate tmp files in random order
+                    //
+
+                }
+            }
+            finally
+            {
+
             }
         }
 

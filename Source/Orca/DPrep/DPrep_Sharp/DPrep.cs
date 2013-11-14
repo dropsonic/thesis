@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,14 +34,19 @@ namespace Thesis.DPrep
             // Write weight file
             //
             dataTable.WriteWeightFile(parameters.WeightFile);
-            
-            // Load the Scale File
+
+            //-------------------------------------------------------------
+            // Load the Scale File 
+            //
             RStats rStats = new RStats(dataTable.RealFieldsCount);
             if (!String.IsNullOrEmpty(parameters.ScaleFile))
             {
                 rStats.Load(parameters.ScaleFile);
             }
 
+            //-------------------------------------------------------------
+            // Convert Data set to binary format
+            //
             string outputName = parameters.TempFileStem + ".out";
             files.Add(outputName);
             int convertedRecords = dataTable.ConvertToBinary(outputName);
@@ -48,24 +54,55 @@ namespace Thesis.DPrep
             if (convertedRecords == 0)
                 throw new Exception("No records converted.");
 
+            //-------------------------------------------------------------
+            // Scale data set 
+            //
             if (parameters.Scaling != Parameters.Scale.None)
             {
-                BFile bfile = new BFile(outputName, parameters.MissingR, parameters.MissingD);
+                BFile bFile = new BFile(outputName, parameters.MissingR, parameters.MissingD);
                 string scaleOutputName = parameters.TempFileStem + ".scale";
                 files.Add(scaleOutputName);
 
                 if (parameters.Scaling == Parameters.Scale.ZeroToOne)
                 {
                     if (String.IsNullOrEmpty(parameters.ScaleFile))
-                        bfile.GetMaxMin(rStats.Max, rStats.Min);
-                    bfile.ScaleZeroToOne(scaleOutputName, rStats.Max, rStats.Min);
+                        bFile.GetMaxMin(rStats.Max, rStats.Min);
+                    bFile.ScaleZeroToOne(scaleOutputName, rStats.Max, rStats.Min);
                 }
                 else if (parameters.Scaling == Parameters.Scale.Std)
                 {
                     if (String.IsNullOrEmpty(parameters.ScaleFile))
-                        bfile.GetMeanStd(rStats.Mean, rStats.Std);
-                    bfile.ScaleStd(scaleOutputName, rStats.Mean, rStats.Std);
+                        bFile.GetMeanStd(rStats.Mean, rStats.Std);
+                    bFile.ScaleStd(scaleOutputName, rStats.Mean, rStats.Std);
                 }
+            }
+
+            //-------------------------------------------------------------
+            // Randomize data set 
+            //
+            if (parameters.Randomize)
+            {
+                BFile bScale = new BFile(files.Last(), parameters.MissingR, parameters.MissingD);
+                string randOutputFile = parameters.TempFileStem + ".rand";
+                files.Add(randOutputFile);
+                bScale.MultiShuffle(randOutputFile, parameters.Iterations, parameters.RandFiles, parameters.Seed);
+            }
+
+            //-------------------------------------------------------------
+            // rename last temporary file to destination file
+            //
+            File.Move(files.Last(), parameters.DestinationFile);
+
+            //-------------------------------------------------------------
+            // clean temporary files 
+            //
+            for (int i = 1; i < files.Count; i++)
+            {
+                try
+                {
+                    File.Delete(files[i]);
+                }
+                catch { }
             }
         }
     }
