@@ -304,6 +304,7 @@ namespace Thesis.DPrep
                 Shuffle(destFile, 10000, tmpFiles, rand);
                 SetFileReader(destFile);
             }
+            ResetFileReader();
         }
 
         private void Shuffle(string file, int blockSize, int nTmpFiles, Random rand)
