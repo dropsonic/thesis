@@ -43,6 +43,12 @@ namespace Thesis.DPrep
             _index = 0;
         }
 
+        private void ResetFileReader()
+        {
+            if (_infile != null)
+                _infile.Dispose();
+        }
+
         private void ReadHeader()
         {
             _records = _infile.ReadInt32();
@@ -359,6 +365,8 @@ namespace Thesis.DPrep
                 //-----------------------------------
                 // open final destination file
                 //
+
+                ResetFileReader(); // closes original file
 
                 using (var outstream = File.Create(file))
                 using (var outfile = new BinaryWriter(outstream))
