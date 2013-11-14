@@ -37,7 +37,7 @@ namespace Thesis.DPrep
         {
             // if infile_ already points to a file, close it
             if (_infile != null)
-                _infile.Close();
+                _infile.Dispose();
 
             _infile = new BinaryReader(File.OpenRead(filename));
             _index = 0;
@@ -56,7 +56,7 @@ namespace Thesis.DPrep
                 throw new ArgumentOutOfRangeException("pos");
 
             long filepos = 3 * sizeof(int) + pos * sizeof(float) + pos * sizeof(int);
-            _infile.BaseStream.Seek(pos, SeekOrigin.Begin);
+            _infile.BaseStream.Seek(filepos, SeekOrigin.Begin);
             _index = pos;
         }
 
@@ -375,7 +375,7 @@ namespace Thesis.DPrep
                         order[i] = i;
 
                     // The modern version of the Fisher–Yates shuffle (the Knuth shuffle)
-                    for (int i = order.Length; i > 0; i--)
+                    for (int i = order.Length-1; i >= 0; i--)
                     {
                         int j = rand.Next(i + 1);
                         int temp = order[i];

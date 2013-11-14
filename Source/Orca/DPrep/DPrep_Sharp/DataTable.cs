@@ -146,8 +146,11 @@ namespace Thesis.DPrep
                             if (valuec != -1)
                                 record.Discrete.Add(valuec);
                             else
+                            {
                                 // Add new value to the field description.
                                 _fields[i].Values.Add(tokens[i]);
+                                record.Discrete.Add(_fields[i].Values.Count - 1);
+                            }
                             break;
                     }
                 }
