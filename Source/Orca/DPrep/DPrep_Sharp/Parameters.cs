@@ -25,20 +25,12 @@ namespace Thesis.DPrep
             None = 2
         }
 
-        public enum Clean
-        {
-            Final = 0,
-            During = 1,
-            None = 2
-        }
-
         public Parameters()
         {
             Scaling = Scale.ZeroToOne;
             Randomize = true;
             Iterations = 5;
             RandFiles = 10;
-            Cleaning = Clean.Final;
             TempFileStem = "tmp";
             Seed = (int)DateTime.Now.Ticks;
             MissingR = float.NaN;
@@ -88,8 +80,6 @@ namespace Thesis.DPrep
         }
 
         public int Seed { get; set; }
-
-        public Clean Cleaning { get; set; }
 
         public string TempFileStem { get; set; }
 
