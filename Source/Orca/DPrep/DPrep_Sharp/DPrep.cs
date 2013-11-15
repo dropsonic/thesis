@@ -54,6 +54,8 @@ namespace Thesis.DPrep
             if (convertedRecords == 0)
                 throw new Exception("No records converted.");
 
+            dataTable.Dispose();
+
             //-------------------------------------------------------------
             // Scale data set 
             //
