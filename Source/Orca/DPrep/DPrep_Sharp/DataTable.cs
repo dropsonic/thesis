@@ -21,10 +21,6 @@ namespace Thesis.DPrep
         private IList<Field> _fields = new List<Field>();
 
         private StreamReader _infile;
-        /// <summary>
-        /// Example number.
-        /// </summary>
-        private int _example;
 
         public DataTable(string dataFile, string fieldsFile, float missingR, int missingD)
         {
@@ -36,7 +32,6 @@ namespace Thesis.DPrep
             LoadFields(fieldsFile);
 
             _infile = new StreamReader(dataFile);
-            _example = 0;
         }
 
         private void LoadFields(string filename)
@@ -91,9 +86,7 @@ namespace Thesis.DPrep
             {
                 string line = _infile.ReadLine();
                 string[] tokens = ParserHelper.Tokenize(line, _recordDelimiters);
-                valid = LoadRecord(tokens, ref r, _example);
-                // update the example number
-                _example++;
+                valid = LoadRecord(tokens, ref r);
                 return true;
             }
             else
@@ -103,7 +96,7 @@ namespace Thesis.DPrep
             }
         }
 
-        private bool LoadRecord(string[] tokens, ref Record record, int lineNo)
+        private bool LoadRecord(string[] tokens, ref Record record)
         {
             // check to make sure there are the correct number of tokens
             // if there are an incorrect number ignore the line
