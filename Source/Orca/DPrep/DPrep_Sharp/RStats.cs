@@ -29,6 +29,8 @@ namespace Thesis.DPrep
 
         public void Load(string filename)
         {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+
             using (var infile = new StreamReader(filename))
             {
                 while (!infile.EndOfStream)

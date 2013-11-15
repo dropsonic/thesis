@@ -25,6 +25,8 @@ namespace Thesis.DPrep
 
         public BFile(string filename, float missingR, int missingD)
         {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+
             _dataFile = filename;
             _missingR = missingR;
             _missingD = missingD;
@@ -35,6 +37,8 @@ namespace Thesis.DPrep
 
         private void SetFileReader(string filename)
         {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+
             // if infile_ already points to a file, close it
             if (_infile != null)
                 _infile.Dispose();
@@ -184,6 +188,10 @@ namespace Thesis.DPrep
         /// </summary>
         public void ScaleZeroToOne(string filename, float[] max, float[] min)
         {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+            Contract.Requires<ArgumentNullException>(max != null);
+            Contract.Requires<ArgumentNullException>(min != null);
+
             //-------------------------------
 	        // open file for writing
 	        //
@@ -244,6 +252,10 @@ namespace Thesis.DPrep
         /// </summary>
         public void ScaleStd(string filename, float[] mean, float[] std)
         {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+            Contract.Requires<ArgumentNullException>(mean != null);
+            Contract.Requires<ArgumentNullException>(std != null);
+
             //-------------------------------
             // open file for writing
             //
@@ -309,6 +321,11 @@ namespace Thesis.DPrep
 
         private void Shuffle(string file, int blockSize, int nTmpFiles, Random rand)
         {
+            Contract.Requires(!String.IsNullOrEmpty(file));
+            Contract.Requires<ArgumentOutOfRangeException>(blockSize > 0);
+            Contract.Requires<ArgumentOutOfRangeException>(nTmpFiles > 0);
+            Contract.Requires<ArgumentNullException>(rand != null);
+
             //-------------------------
             // set up tmp file names
             //

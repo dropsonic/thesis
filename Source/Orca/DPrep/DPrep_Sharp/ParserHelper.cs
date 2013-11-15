@@ -11,6 +11,7 @@ namespace Thesis.DPrep
     {
         internal static string[] Tokenize(string line, char[] delimiters)
         {
+            Contract.Requires<ArgumentNullException>(line != null);
             Contract.Requires<ArgumentNullException>(delimiters != null);
             Contract.Requires<ArgumentException>(delimiters.Length > 0, "No delimiters specified.");
 

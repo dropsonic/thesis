@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace Thesis.DPrep
 {
@@ -18,6 +19,8 @@ namespace Thesis.DPrep
 
         public static void Run(Parameters parameters)
         {
+            Contract.Requires<ArgumentNullException>(parameters != null);
+
             Random random = new Random(parameters.Seed);
             List<string> files = new List<string>();
             files.Add(parameters.DataFile);

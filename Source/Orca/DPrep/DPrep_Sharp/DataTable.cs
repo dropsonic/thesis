@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace Thesis.DPrep
 {
@@ -24,6 +25,9 @@ namespace Thesis.DPrep
 
         public DataTable(string dataFile, string fieldsFile, float missingR, int missingD)
         {
+            Contract.Requires(!String.IsNullOrEmpty(dataFile));
+            Contract.Requires(!String.IsNullOrEmpty(fieldsFile));
+
             _dataFile = dataFile;
             _fieldsFile = fieldsFile;
             _missingR = missingR;
@@ -36,6 +40,8 @@ namespace Thesis.DPrep
 
         private void LoadFields(string filename)
         {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+
             using (var infile = new StreamReader(filename))
             {
                 while (!infile.EndOfStream)
@@ -70,6 +76,8 @@ namespace Thesis.DPrep
 
         public void WriteWeightFile(string filename)
         {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+
             using (var writer = new StreamWriter(filename, false))
             {
                 foreach (var field in _fields)
@@ -98,6 +106,8 @@ namespace Thesis.DPrep
 
         private bool LoadRecord(string[] tokens, ref Record record)
         {
+            Contract.Requires<ArgumentNullException>(tokens != null);
+
             // check to make sure there are the correct number of tokens
             // if there are an incorrect number ignore the line
             if (tokens.Length != _fields.Count)
@@ -163,6 +173,8 @@ namespace Thesis.DPrep
         /// <returns>Number of converted records.</returns>
         public int ConvertToBinary(string filename)
         {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+
             ResetFileCounter();
             using (var stream = File.Create(filename))
             {
