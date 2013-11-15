@@ -23,6 +23,9 @@ namespace Thesis.DPrep
 
         private StreamReader _infile;
 
+        private int _realFieldsCount;
+        private int _discreteFieldsCount;
+
         public DataTable(string dataFile, string fieldsFile, float missingR, int missingD)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
@@ -55,13 +58,17 @@ namespace Thesis.DPrep
                     }
                 }
             }
+
+            _realFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Continuous);
+            _discreteFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Discrete || 
+                                                      f.Type == Field.FieldType.DiscreteDataDriven);
         }
 
         public int RealFieldsCount
         {
             get
             {
-                return _fields.Count(f => f.Type == Field.FieldType.Continuous);
+                return _realFieldsCount;
             }
         }
 
@@ -69,8 +76,7 @@ namespace Thesis.DPrep
         {
             get
             {
-                return _fields.Count(f => f.Type == Field.FieldType.Discrete ||
-                                          f.Type == Field.FieldType.DiscreteDataDriven);
+                return _discreteFieldsCount;
             }
         }
 
@@ -88,33 +94,44 @@ namespace Thesis.DPrep
 
         /// <param name="valid">true, if the record was correctly loaded; false, if the record had errors and was ignored</param>
         /// <returns>true, if able to retrieve the next record; false, if unable to get the next record</returns>
-        private bool GetNextRecord(ref Record r, out bool valid)
+        private bool GetNextRecord(out float[] real, out int[] discrete, out bool valid)
         {
             if (!_infile.EndOfStream)
             {
                 string line = _infile.ReadLine();
                 string[] tokens = ParserHelper.Tokenize(line, _recordDelimiters);
-                valid = LoadRecord(tokens, ref r);
+                valid = LoadRecord(tokens, out real, out discrete);
                 return true;
             }
             else
             {
                 valid = false;
+                real = null;
+                discrete = null;
                 return false;
             }
         }
 
-        private bool LoadRecord(string[] tokens, ref Record record)
+        private bool LoadRecord(string[] tokens, out float[] real, out int[] discrete)
         {
             Contract.Requires<ArgumentNullException>(tokens != null);
 
             // check to make sure there are the correct number of tokens
             // if there are an incorrect number ignore the line
             if (tokens.Length != _fields.Count)
+            {
                 // skip to next iteration of loop
+                real = null;
+                discrete = null;
                 return false;
+            }
 
-            record = new Record() { Discrete = new List<int>(), Real = new List<float>() };
+            real = new float[_realFieldsCount];
+            discrete = new int[_discreteFieldsCount];
+            int iReal = 0;
+            int iDiscrete = 0;
+
+
             for (int i = 0; i < _fields.Count; i++)
             {
                 if (_fields[i].Type == Field.FieldType.IgnoreFeature)
@@ -124,10 +141,10 @@ namespace Thesis.DPrep
                     switch (_fields[i].Type)
                     {
                         case Field.FieldType.Continuous:
-                            record.Real.Add(_missingR); break;
+                            real[iReal++] = _missingR; break;
                         case Field.FieldType.Discrete:
                         case Field.FieldType.DiscreteDataDriven:
-                            record.Discrete.Add(_missingD); break;
+                            discrete[iDiscrete++] = _missingD; break;
                     }
                 }
                 else
@@ -135,23 +152,23 @@ namespace Thesis.DPrep
                     switch (_fields[i].Type)
                     {
                         case Field.FieldType.Continuous:
-                            record.Real.Add(float.Parse(tokens[i])); break;
+                            real[iReal++] = float.Parse(tokens[i]); break;
                         case Field.FieldType.Discrete:
                             int value = _fields[i].Values.IndexOf(tokens[i]);
                             if (value != -1)
-                                record.Discrete.Add(value);
+                                discrete[iDiscrete++] = value;
                             else
                                 return false;
                             break;
                         case Field.FieldType.DiscreteDataDriven:
                             int valuec = _fields[i].Values.IndexOf(tokens[i]);
                             if (valuec != -1)
-                                record.Discrete.Add(valuec);
+                                discrete[iDiscrete++] = valuec;
                             else
                             {
                                 // Add new value to the field description.
                                 _fields[i].Values.Add(tokens[i]);
-                                record.Discrete.Add(_fields[i].Values.Count - 1);
+                                discrete[iDiscrete++] = _fields[i].Values.Count - 1;
                             }
                             break;
                     }
@@ -182,15 +199,13 @@ namespace Thesis.DPrep
                 {
                     bool status = true;
                     int numRecords = 0;
-                    int numReal = RealFieldsCount;
-                    int numDiscrete = DiscreteFieldsCount;
 
                     //-------------------------------
                     // just allocating space for the
                     // header information 
                     outfile.Write(numRecords);
-                    outfile.Write(numReal);
-                    outfile.Write(numDiscrete);
+                    outfile.Write(_realFieldsCount);
+                    outfile.Write(_discreteFieldsCount);
 
                     //----------------------
                     // write the example to the file
@@ -198,17 +213,18 @@ namespace Thesis.DPrep
                     int recordNumber = 1;
                     while (status)
                     {
-                        Record R = new Record();
+                        float[] real;
+                        int[] discrete;
                         bool valid;
-                        status = GetNextRecord(ref R, out valid);
+                        status = GetNextRecord(out real, out discrete, out valid);
                         if (status && valid)
                         {
                             // write index number
                             outfile.Write(recordNumber);
-                            if (numReal > 0)
-                                outfile.Write(R.Real.ToArray());
-                            if (numDiscrete > 0)
-                                outfile.Write(R.Discrete.ToArray());
+                            if (_realFieldsCount > 0)
+                                outfile.Write(real);
+                            if (_discreteFieldsCount > 0)
+                                outfile.Write(discrete);
                             numRecords++;
                             recordNumber++;
                         }

@@ -120,7 +120,6 @@
     <Compile Include="ParserHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Record.cs" />
     <Compile Include="RStats.cs" />
   </ItemGroup>
   <ItemGroup>
