@@ -70,7 +70,7 @@ namespace Thesis.DPrep
             get
             {
                 return _fields.Count(f => f.Type == Field.FieldType.Discrete ||
-                                          f.Type == Field.FieldType.DiscreteCompiled);
+                                          f.Type == Field.FieldType.DiscreteDataDriven);
             }
         }
 
@@ -126,7 +126,7 @@ namespace Thesis.DPrep
                         case Field.FieldType.Continuous:
                             record.Real.Add(_missingR); break;
                         case Field.FieldType.Discrete:
-                        case Field.FieldType.DiscreteCompiled:
+                        case Field.FieldType.DiscreteDataDriven:
                             record.Discrete.Add(_missingD); break;
                     }
                 }
@@ -143,7 +143,7 @@ namespace Thesis.DPrep
                             else
                                 return false;
                             break;
-                        case Field.FieldType.DiscreteCompiled:
+                        case Field.FieldType.DiscreteDataDriven:
                             int valuec = _fields[i].Values.IndexOf(tokens[i]);
                             if (valuec != -1)
                                 record.Discrete.Add(valuec);

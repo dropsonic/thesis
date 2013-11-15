@@ -15,7 +15,7 @@ namespace Thesis.DPrep
             /// <summary>
             /// Discrete Data Driven
             /// </summary>
-            DiscreteCompiled = 1,
+            DiscreteDataDriven = 1,
             Continuous = 2,
             IgnoreFeature = 3
         }
@@ -51,7 +51,7 @@ namespace Thesis.DPrep
                         Type = FieldType.Continuous;
                         break;
                     case "discrete":
-                        Type = FieldType.DiscreteCompiled;
+                        Type = FieldType.DiscreteDataDriven;
                         break;
                     default:
                         //Discrete type of field: adding all of it's values
