@@ -41,7 +41,7 @@ namespace Thesis.DPrep
             Cleaning = Clean.Final;
             TempFileStem = "tmp";
             Seed = (int)DateTime.Now.Ticks;
-            MissingR = -989898;
+            MissingR = float.NaN;
             MissingD = -1;
             WeightFile = "weights";
         }
