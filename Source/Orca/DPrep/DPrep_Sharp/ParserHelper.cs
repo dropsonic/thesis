@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace Thesis.DPrep
 {
@@ -10,10 +11,9 @@ namespace Thesis.DPrep
     {
         internal static string[] Tokenize(string line, char[] delimiters)
         {
-            if (delimiters == null)
-                throw new ArgumentNullException("delimiters");
-            if (delimiters.Length == 0)
-                throw new ArgumentException("No delimiters specified.");
+            Contract.Requires<ArgumentNullException>(delimiters != null);
+            Contract.Requires<ArgumentException>(delimiters.Length > 0, "No delimiters specified.");
+
             // Strip comments (original; remove comments in this version)
             int index = line.IndexOf('%');
             if (index >= 0)

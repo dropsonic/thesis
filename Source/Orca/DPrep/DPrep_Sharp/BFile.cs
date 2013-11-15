@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,6 @@ namespace Thesis.DPrep
     class BFile : IDisposable
     {
         BinaryReader _infile;
-        int _example;
 
         string _dataFile;
 
@@ -58,8 +58,8 @@ namespace Thesis.DPrep
 
         private void SeekPosition(int pos)
         {
-            if (pos < 0 || pos > _records)
-                throw new ArgumentOutOfRangeException("pos");
+            Contract.Requires<ArgumentOutOfRangeException>(pos >= 0);
+            Contract.Requires<ArgumentOutOfRangeException>(pos < _records);
 
             long filepos = 3 * sizeof(int) + pos * sizeof(float) + pos * sizeof(int);
             _infile.BaseStream.Seek(filepos, SeekOrigin.Begin);
@@ -295,8 +295,8 @@ namespace Thesis.DPrep
 
         public void MultiShuffle(string destFile, int iterations, int tmpFiles, int seed)
         {
-            if (tmpFiles <= 0)
-                throw new ArgumentOutOfRangeException("tmpfiles");
+            Contract.Requires<ArgumentOutOfRangeException>(iterations > 0);
+            Contract.Requires<ArgumentOutOfRangeException>(tmpFiles > 0);
 
             Random rand = new Random(seed);
             for (int i = 0; i < iterations; i++)

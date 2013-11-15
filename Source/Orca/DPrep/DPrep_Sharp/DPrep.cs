@@ -107,7 +107,7 @@ namespace Thesis.DPrep
                 {
                     File.Delete(files[i]);
                 }
-                catch (Exception ex) 
+                catch
                 { }
             }
         }

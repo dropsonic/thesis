@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace Thesis.DPrep
 {
@@ -31,10 +32,8 @@ namespace Thesis.DPrep
         public Field(IList<string> s)
             : this()
         {
-            if (s == null)
-                throw new ArgumentNullException("s");
-            if (s.Count < 1)
-                throw new ArgumentException("s");
+            Contract.Requires<ArgumentNullException>(s != null);
+            Contract.Requires<ArgumentException>(s.Count > 0);
 
             Values = new List<string>();
             Name = s[0];

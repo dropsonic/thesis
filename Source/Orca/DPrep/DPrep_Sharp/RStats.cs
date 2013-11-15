@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace Thesis.DPrep
 {
@@ -18,8 +19,8 @@ namespace Thesis.DPrep
 
         public RStats(int size)
         {
-            if (size < 0)
-                throw new ArgumentOutOfRangeException("size");
+            Contract.Requires<ArgumentOutOfRangeException>(size >= 0);
+
             Max = new float[size];
             Min = new float[size];
             Mean = new float[size];

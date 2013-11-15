@@ -108,7 +108,6 @@ namespace Thesis.DPrep
             // check to make sure there are the correct number of tokens
             // if there are an incorrect number ignore the line
             if (tokens.Length != _fields.Count)
-                //throw new ArgumentException("Incorrect number of fields");
                 // skip to next iteration of loop
                 return false;
 

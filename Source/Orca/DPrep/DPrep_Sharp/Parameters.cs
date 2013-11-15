@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace Thesis.DPrep
 {
@@ -71,8 +72,7 @@ namespace Thesis.DPrep
             get { return _iterations; }
             set 
             {
-                if (value < 1)
-                    throw new ArgumentOutOfRangeException();
+                Contract.Requires<ArgumentOutOfRangeException>(value > 0);
                 _iterations = value;
             }
         }
@@ -80,10 +80,9 @@ namespace Thesis.DPrep
         public int RandFiles
         {
             get { return _randFiles; }
-            set 
+            set
             {
-                if (value < 1)
-                    throw new ArgumentOutOfRangeException(); 
+                Contract.Requires<ArgumentOutOfRangeException>(value > 0);
                 _randFiles = value;
             }
         }
