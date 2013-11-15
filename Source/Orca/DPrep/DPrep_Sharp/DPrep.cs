@@ -75,6 +75,8 @@ namespace Thesis.DPrep
                         bFile.GetMeanStd(rStats.Mean, rStats.Std);
                     bFile.ScaleStd(scaleOutputName, rStats.Mean, rStats.Std);
                 }
+
+                bFile.Dispose();
             }
 
             //-------------------------------------------------------------
@@ -86,11 +88,14 @@ namespace Thesis.DPrep
                 string randOutputFile = parameters.TempFileStem + ".rand";
                 files.Add(randOutputFile);
                 bScale.MultiShuffle(randOutputFile, parameters.Iterations, parameters.RandFiles, parameters.Seed);
+                bScale.Dispose();
             }
 
             //-------------------------------------------------------------
             // rename last temporary file to destination file
             //
+            if (File.Exists(parameters.DestinationFile))
+                File.Delete(parameters.DestinationFile);
             File.Move(files.Last(), parameters.DestinationFile);
 
             //-------------------------------------------------------------
@@ -102,7 +107,8 @@ namespace Thesis.DPrep
                 {
                     File.Delete(files[i]);
                 }
-                catch { }
+                catch (Exception ex) 
+                { }
             }
         }
     }

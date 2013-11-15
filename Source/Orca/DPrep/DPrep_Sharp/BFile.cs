@@ -414,6 +414,12 @@ namespace Thesis.DPrep
                     if (tmpFilesIn[i] != null)
                         tmpFilesIn[i].Dispose();
             }
+
+            //-------------------------------
+            // delete tmpfiles 
+            //
+            foreach (var fileName in tmpFileNames)
+                File.Delete(fileName);
         }
 
         public int RecordsCount
