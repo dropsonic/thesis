@@ -18,6 +18,7 @@ namespace Thesis.DPrep
 
             Parameters parameters = new Parameters(args[0], args[1], args[2]);
             DPrep.Run(parameters);
+            Console.WriteLine("Done!");
         }
     }
 }
