@@ -18,12 +18,12 @@
 \item определить индекс технического уровня программного продукта.
 \end{itemize}
 
-Функционально-технические характеристики разрабатываемого программного продукта представлены в таблице~\ref{tab:econom:characteristics}.
+Функционально-технические характеристики разрабатываемого программного продукта представлены в таблице~\ref{tab:economics:characteristics}.
 
-\begin{table}
+\begin{table}[h]
 \caption{Функционально-технические характеристики}
 \nohyphenation
-\label{tab:econom:characteristics}
+\label{tab:economics:characteristics}
 
 \begin{tabular}{|C{120.05pt}|C{77.95pt}|C{72pt}|C{72pt}|C{108pt}|}
 \hline
@@ -43,3 +43,23 @@
 \hline
 \end{tabular}
 \end{table}
+
+Индекс технического уровня разрабатываемого программного продукта определяется по формуле~\ref{eq:economics:techindex}:
+
+\begin{equation}\label{eq:economics:techindex}
+J_ТУ = \sum\limits_{i=1}^{n} \frac{\alpha_i}{\alpha_{i0}} \mu_i ,
+\end{equation}
+
+\begin{description}
+\item[где $\alpha_i$]~---~уровень $i$-й функционально-технической харатеристики проектируемого алгоритма;
+\item [$\alpha_{i0}$]~---~уровень $i$-й функционально-технической харатеристики базового алгоритма;
+\item [$\mu_i$]~---~значимость $i$-го параметра;
+\item [$n$]~---~количество рассматриваемых параметров.
+\end{description}
+
+\begin{equation*}
+J_ТУ = \frac{9}{2} \cdot 0.05 + \frac{10}{5} \cdot 0.2 + \frac{10}{3} \cdot 0.15 + \frac{8}{8} \cdot 0.2 + \frac{7}{9} \cdot 0.2 = 1.48.
+\end{equation*}
+\smallskip
+
+Значение показателя технического уровня разрабатываемого программного продукта превышает 1 и равно 1.48. Полученный результат является подтверждением целесообразности разработки продукта.
