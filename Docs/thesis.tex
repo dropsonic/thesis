@@ -27,11 +27,15 @@
 
 % Формулы
 \usepackage{amsmath}
-%\usepackage{icomma} % запятая в качестве десятичного разделителя
-\usepackage{amstext} % поддержка кириллицы в математических формулах
+\usepackage{amstext} % поддержка текста внутри формул
 \usepackage{amssymb} % дополнительные символы в математических формулах
+%\usepackage{icomma} % запятая в качестве десятичного разделителя
 \usepackage{chngcntr} % управление нумерацией
 \counterwithout{equation}{chapter} % сквозная нумерация формул
+% поддержка кириллицы в формулах (не работает, хотя должно)
+%\usepackage{unicode-math}
+%\setmathfont[math-style=TeX]{Cambria Math}
+%\usepackage[warn]{mathtext}
 
 % Формат заголовков
 \usepackage{titlesec}
