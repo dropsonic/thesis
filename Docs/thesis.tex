@@ -35,14 +35,17 @@
 
 % Формат заголовков
 \usepackage{titlesec}
+\setcounter{secnumdepth}{3} % включает нумерацию subsubsection
 \newcommand{\nhspacesize}{10pt}
 \newcommand{\nohyphenation}{\righthyphenmin62}
 \titleformat{\chapter}[hang]{\nohyphenation\sloppy\Large\bfseries}{\thechapter}{\nhspacesize}{} % righthypenmin62 - не переносить слова в названиях глав
 \titleformat{\section}[hang]{\nohyphenation\sloppy\large\bfseries}{\thesection}{\nhspacesize}{}
 \titleformat{\subsection}[hang]{\sloppy\normalsize\bfseries}{\thesubsection}{\nhspacesize}{}
+\titleformat{\subsubsection}[hang]{\sloppy\normalsize\bfseries}{\thesubsubsection}{\nhspacesize}{}
 \titlespacing*{\chapter}{\parindent}{-30pt}{*4}
 \titlespacing*{\section}{\parindent}{*1}{*2}
 \titlespacing*{\subsection}{\parindent}{*1}{*1}
+\titlespacing*{\subsubsection}{\parindent}{*1}{*1}
 % Новый формат заголовков - специальные разделы (реферат, вступление, заключение и т.п.)
 \newcommand{\spchapterStar}[1]{
 	\clearpage
