@@ -69,14 +69,28 @@
 \usepackage{svg} % поддержка вставки векторных (SVG) изображений (из Inkscape) - команда includesvg
 
 % Таблицы
-\usepackage{makecell}
+%\usepackage{makecell}
+\usepackage{array}
+%\usepackage{tabularx}
 \usepackage{longtable}
 \usepackage{multirow}
-\usepackage{array}
-\usepackage{tabularx}
-\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+%\newcolumntype{CL}[1]{>{\arraybackslash}m{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+%\newcolumntype{CR}[1]{>{\raggedright\arraybackslash}m{#1}}
+%\newcolumntype{TL}[1]{>{\arraybackslash}p{#1}}
+%\newcolumntype{TC}[1]{>{\centering\arraybackslash}p{#1}
+%\newcolumntype{TR}[1]{>{\raggedright\arraybackslash}p{#1}}
+%\newcolumntype{BL}[1]{>{\arraybackslash}b{#1}}
+%\newcolumntype{BC}[1]{>{\centering\arraybackslash}b{#1}}
+%\newcolumntype{BR}[1]{>{\raggedright\arraybackslash}b{#1}}
 %\newcommand{\ptw}[1]{#1\linewidth}
+
 \setlength{\extrarowheight}{4pt}
+%\renewcommand{\arraystretch}{1.5}
+%\newcommand{\tn}{\tabularnewline}
+%\newcommand{\tnhl}{\tabularnewline\hline}
+%\newcommand{\tncl}[1]{\tabularnewline\cline{#1}}
 
 % Формат рисунков и таблиц
 \usepackage{caption} % подписи
