@@ -13,6 +13,18 @@
   timestamp = {2013.11.11}
 }
 
+@BOOK{LabourProtOnCC,
+  title = {Охрана труда на ВЦ. Методическими указаниями к дипломному проектированию},
+  publisher = {МАИ},
+  year = {1991},
+  author = {Н.И. Бобков, Т.В. Голованова},
+  address = {М.},
+  language = {russian},
+  numpages = {16},
+  owner = {PAN},
+  timestamp = {2013.11.11}
+}
+
 @BOOK{GOST2_105,
   title = {ГОСТ 2.105--95 «Единая система конструкторской документации. Общие
 	требования к текстовым документам»},
@@ -32,7 +44,7 @@
   year = {2005},
   address = {М.},
   language = {russian},
-  numpages = {59},
+  numpages = {156},
   owner = {PAN},
   timestamp = {2013.11.11}
 }
