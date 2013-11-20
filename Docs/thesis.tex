@@ -107,8 +107,10 @@
 \captionsetup[figure]{position=above}
 \captionsetup[table]{singlelinecheck=false, position=top, justification=raggedright}
 % подписи многостраничных таблиц
-\DeclareCaptionLabelFormat{continued}{#1~#2 (\textit{продолжение})}
-\captionsetup[ContinuedFloat]{labelformat=continued}
+\newcommand{\LTcontcaption}[1]{\captionsetup{justification=raggedleft, singlelinecheck=false,position=top,font=it}\caption*{Продолжение таблицы~\ref{#1}}}
+\newcommand{\LTendcaption}[1]{\captionsetup{justification=raggedleft, singlelinecheck=false,position=top,font=it}\caption*{ Окончание таблицы~\ref{#1}}}
+%\DeclareCaptionLabelFormat{continued}{#1~#2 (\textit{продолжение})}
+%\captionsetup[ContinuedFloat]{labelformat=continued}
 \usepackage{floatrow} % пакет для настройки размещения float'ов и их подписей
 \floatsetup[table]{style=plaintop, justification=justified} % название над таблицей, таблица выровнена по ширине влево
 
