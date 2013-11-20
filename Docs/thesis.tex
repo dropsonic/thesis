@@ -84,6 +84,7 @@
 %\usepackage{makecell}
 %\usepackage{tabularx}
 \usepackage{array}
+\usepackage{supertabular}
 \usepackage{longtable}
 \usepackage{multirow}
 
@@ -150,6 +151,7 @@
 \newtotcounter{tablecount}
 \AfterEndEnvironment{figure}{\addtocounter{figurecount}{1}}
 \AfterEndEnvironment{table}{\addtocounter{tablecount}{1}}
+\AfterEndEnvironment{longtable}{\addtocounter{tablecount}{1}}
 
 % Оформление приложений
 \usepackage[title, titletoc]{appendix}
