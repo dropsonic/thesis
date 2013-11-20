@@ -17,10 +17,25 @@
   title = {Охрана труда на ВЦ. Методическими указаниями к дипломному проектированию},
   publisher = {МАИ},
   year = {1991},
-  author = {Н.И. Бобков, Т.В. Голованова},
+  author = {Н.И. Бобков and Т.В. Голованова},
   address = {М.},
   language = {russian},
   numpages = {16},
+  owner = {PAN},
+  timestamp = {2013.11.11}
+}
+
+@BOOK{EconomicsMethodic,
+  title = {Экономическое обоснование дипломных проектов (работ) по приборо-
+	и радиоприборостроению},
+  publisher = {ИВАКО Аналитик},
+  year = {2008},
+  editor = {Панагушин В.П.},
+  author = {Панагушин В.П. and Ковалева Т.С. and Малютина О.А. and Михайловская
+	Н.М. and Прозорова В.С. and Чайка Н.К.},
+  address = {М.},
+  language = {russian},
+  numpages = {44},
   owner = {PAN},
   timestamp = {2013.11.11}
 }
