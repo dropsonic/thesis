@@ -31,12 +31,9 @@ namespace Thesis.DPrep
             DataTable dataTable = new DataTable(parameters.DataFile, 
                                                 parameters.NamesFiles, 
                                                 parameters.MissingR, 
-                                                parameters.MissingD);
-
-            //-------------------------------------------------------------
-            // Write weight file
-            //
-            dataTable.WriteWeightFile(parameters.WeightFile);
+                                                parameters.MissingD,
+                                                parameters.RealWeight,
+                                                parameters.DiscreteWeight);
 
             //-------------------------------------------------------------
             // Load the Scale File 

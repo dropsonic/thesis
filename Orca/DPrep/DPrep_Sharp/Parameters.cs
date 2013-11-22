@@ -35,7 +35,8 @@ namespace Thesis.DPrep
             Seed = (int)DateTime.Now.Ticks;
             MissingR = float.NaN;
             MissingD = -1;
-            WeightFile = "weights";
+            DiscreteWeight = 0.4f;
+            RealWeight = 1.0f;
         }
 
         public Parameters(string dataFile, string namesFile, string destFile)
@@ -52,7 +53,6 @@ namespace Thesis.DPrep
         public string DataFile { get; set; }
         public string NamesFiles { get; set; }
         public string DestinationFile { get; set; }
-        public string WeightFile { get; set; }
 
         public Scale Scaling { get; set; }
         public string ScaleFile { get; set; }
@@ -85,5 +85,14 @@ namespace Thesis.DPrep
 
         public int MissingD { get; set; }
         public float MissingR { get; set; }
+
+        /// <summary>
+        /// Weight value for all discrete variables.
+        /// </summary>
+        public float DiscreteWeight { get; set; }
+        /// <summary>
+        /// Weight value for all continuous variables.
+        /// </summary>
+        public float RealWeight { get; set; }
     }
 }

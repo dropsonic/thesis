@@ -14,6 +14,8 @@ namespace Thesis.DPrep
         private string _fieldsFile;
         private float _missingR;
         private int _missingD;
+        private float _realWeight;
+        private float _discreteWeight;
 
         private readonly char[] _fieldsDelimiters = { '.', ',', ':', ';', ' ' };
         private readonly char[] _recordDelimiters = { ',', ':', ';', ' ' };
@@ -23,10 +25,10 @@ namespace Thesis.DPrep
 
         private StreamReader _infile;
 
-        private int _realFieldsCount;
-        private int _discreteFieldsCount;
+        public int RealFieldsCount { get; private set; }
+        public int DiscreteFieldsCount { get; private set; }
 
-        public DataTable(string dataFile, string fieldsFile, float missingR, int missingD)
+        public DataTable(string dataFile, string fieldsFile, float missingR, int missingD, float realWeight, float discreteWeight)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
             Contract.Requires(!String.IsNullOrEmpty(fieldsFile));
@@ -35,6 +37,8 @@ namespace Thesis.DPrep
             _fieldsFile = fieldsFile;
             _missingR = missingR;
             _missingD = missingD;
+            _realWeight = realWeight;
+            _discreteWeight = discreteWeight;
 
             LoadFields(fieldsFile);
 
@@ -53,43 +57,15 @@ namespace Thesis.DPrep
                     var tokens = ParserHelper.Tokenize(line, _fieldsDelimiters);
                     if (tokens.Length > 0)
                     {
-                        Field newField = new Field(tokens);
+                        Field newField = new Field(tokens, _realWeight, _discreteWeight);
                         _fields.Add(newField);
                     }
                 }
             }
 
-            _realFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Continuous);
-            _discreteFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Discrete || 
+            RealFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Continuous);
+            DiscreteFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Discrete || 
                                                       f.Type == Field.FieldType.DiscreteDataDriven);
-        }
-
-        public int RealFieldsCount
-        {
-            get
-            {
-                return _realFieldsCount;
-            }
-        }
-
-        public int DiscreteFieldsCount
-        {
-            get
-            {
-                return _discreteFieldsCount;
-            }
-        }
-
-        public void WriteWeightFile(string filename)
-        {
-            Contract.Requires(!String.IsNullOrEmpty(filename));
-
-            using (var writer = new StreamWriter(filename, false))
-            {
-                foreach (var field in _fields)
-                    if (field.Type != Field.FieldType.IgnoreFeature)
-                        writer.WriteLine("{0} {1}", field.Name, field.Type == Field.FieldType.Continuous ? 1.0 : 0.4);
-            }
         }
 
         /// <param name="valid">true, if the record was correctly loaded; false, if the record had errors and was ignored</param>
@@ -126,8 +102,8 @@ namespace Thesis.DPrep
                 return false;
             }
 
-            real = new float[_realFieldsCount];
-            discrete = new int[_discreteFieldsCount];
+            real = new float[RealFieldsCount];
+            discrete = new int[DiscreteFieldsCount];
             int iReal = 0;
             int iDiscrete = 0;
 
@@ -193,53 +169,36 @@ namespace Thesis.DPrep
             Contract.Requires(!String.IsNullOrEmpty(filename));
 
             ResetFileCounter();
-            using (var stream = File.Create(filename))
+
+            using (var outfile = new BinaryOutFile(filename, _fields))
             {
-                using (var outfile = new BinaryWriter(stream))
+                bool status = true;
+                int numRecords = 0;
+
+                //----------------------
+                // write the example to the file
+                //
+                int recordNumber = 1;
+                while (status)
                 {
-                    bool status = true;
-                    int numRecords = 0;
-
-                    //-------------------------------
-                    // just allocating space for the
-                    // header information 
-                    outfile.Write(numRecords);
-                    outfile.Write(_realFieldsCount);
-                    outfile.Write(_discreteFieldsCount);
-
-                    //----------------------
-                    // write the example to the file
-                    //
-                    int recordNumber = 1;
-                    while (status)
+                    float[] real;
+                    int[] discrete;
+                    bool valid;
+                    status = GetNextRecord(out real, out discrete, out valid);
+                    if (status && valid)
                     {
-                        float[] real;
-                        int[] discrete;
-                        bool valid;
-                        status = GetNextRecord(out real, out discrete, out valid);
-                        if (status && valid)
-                        {
-                            // write index number
-                            outfile.Write(recordNumber);
-                            if (_realFieldsCount > 0)
-                                outfile.Write(real);
-                            if (_discreteFieldsCount > 0)
-                                outfile.Write(discrete);
-                            numRecords++;
-                            recordNumber++;
-                        }
+                        outfile.WriteRecord(numRecords, real, discrete);
+                        numRecords++;
+                        recordNumber++;
                     }
-
-                    //-----------------------------
-	                // go back to the beginning and 
-	                // write header information
-	                //
-                    outfile.Seek(0, SeekOrigin.Begin);
-                    outfile.Write(numRecords);
-                    outfile.Close();
-
-                    return numRecords;
                 }
+
+                //-----------------------------
+	            // write header information
+	            //
+                outfile.WriteHeader(numRecords);
+
+                return numRecords;
             }
         }
 

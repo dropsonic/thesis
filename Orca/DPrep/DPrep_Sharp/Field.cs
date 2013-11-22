@@ -29,36 +29,59 @@ namespace Thesis.DPrep
         /// </summary>
         public IList<string> Values { get; set; }
 
-        public Field(IList<string> s)
+        public float Weight { get; set; }
+
+        private bool HasWeight 
+        { 
+            get { return float.IsNaN(Weight); } 
+        }
+
+        public Field(IList<string> s, float realWeight, float discreteWeight)
             : this()
         {
             Contract.Requires<ArgumentNullException>(s != null);
             Contract.Requires<ArgumentException>(s.Count > 0);
 
             Values = new List<string>();
-            Name = s[0];
 
-            if (s.Count == 1)
+            Weight = float.NaN; // no weight
+            int i = 0; // start token
+            float weight;
+            if (float.TryParse(s[0], out weight)) // if weight is defined
+            {
+                Weight = weight;
+                i++;
+            }
+
+            Name = s[i++];
+
+            if (s.Count == i)
                 Type = FieldType.IgnoreFeature;
             else
             {
-                switch (s[1])
+                switch (s[i++])
                 {
                     case "ignore":
                         Type = FieldType.IgnoreFeature;
                         break;
                     case "continuous":
                         Type = FieldType.Continuous;
+                        if (!HasWeight)
+                            Weight = realWeight;
                         break;
                     case "discrete":
                         Type = FieldType.DiscreteDataDriven;
+                        if (!HasWeight)
+                            Weight = discreteWeight;
                         break;
                     default:
                         //Discrete type of field: adding all of it's values
                         Type = FieldType.Discrete;
                         Values = new List<string>(s.Count-1);
-                        for (int i = 1; i < s.Count; i++)
-                            Values.Add(s[i]);
+                        for (int j = 1; j < s.Count; j++)
+                            Values.Add(s[j]);
+                        if (!HasWeight)
+                            Weight = discreteWeight;
                         break;
                 }
             }

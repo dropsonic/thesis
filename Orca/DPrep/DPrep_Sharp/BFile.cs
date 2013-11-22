@@ -10,15 +10,9 @@ namespace Thesis.DPrep
 {
     class BFile : IDisposable
     {
-        BinaryReader _infile;
+        BinaryInFile _infile;
 
         string _dataFile;
-
-        int _index;
-
-        int _records;
-        int _realFieldsCount;
-        int _discreteFieldsCount;
 
         float _missingR;
         int _missingD;
@@ -43,21 +37,13 @@ namespace Thesis.DPrep
             if (_infile != null)
                 _infile.Dispose();
 
-            _infile = new BinaryReader(File.OpenRead(filename));
-            _index = 0;
+            _infile = new BinaryInFile(filename);
         }
 
         private void ResetFileReader()
         {
             if (_infile != null)
                 _infile.Dispose();
-        }
-
-        private void ReadHeader()
-        {
-            _records = _infile.ReadInt32();
-            _realFieldsCount = _infile.ReadInt32();
-            _discreteFieldsCount = _infile.ReadInt32();
         }
 
         private void SeekPosition(int pos)
@@ -439,29 +425,7 @@ namespace Thesis.DPrep
                 File.Delete(fileName);
         }
 
-        public int RecordsCount
-        {
-            get
-            {
-                return _records;
-            }
-        }
 
-        public int RealFieldsCount
-        {
-            get
-            {
-                return _realFieldsCount;
-            }
-        }
-
-        public int DiscreteFieldsCount
-        {
-            get
-            {
-                return _discreteFieldsCount;
-            }
-        }
         
         #region IDisposable
         public void Dispose()
