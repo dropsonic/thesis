@@ -106,8 +106,7 @@ namespace Thesis.Orca
         public Parameters()
         {
             // outlier options
-            ScoreF = 0; // average
-            DistF = 1; // weighted
+            ScoreF = DistanceType.Average;
             NumOutliers = 30;
             K = 5;
             Cutoff = 0;
