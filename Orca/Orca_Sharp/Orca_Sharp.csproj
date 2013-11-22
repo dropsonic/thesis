@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatchInFile.cs" />
+    <Compile Include="Orca.cs" />
     <Compile Include="Outlier.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Program.cs" />

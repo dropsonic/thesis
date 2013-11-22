@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Thesis.Orca
 {
-    struct Outlier : IComparable<Outlier>
+    public struct Outlier : IComparable<Outlier>
     {
         public int Index { get; set; }
         public double Score { get; set; }

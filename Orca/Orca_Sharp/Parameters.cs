@@ -25,16 +25,6 @@ namespace Thesis.Orca
         }
 
         public string DataFile { get; set; }
-        public string ReferenceFiles { get; set; }
-        public string WeightFile { get; set; }
-
-        /// <summary>
-        /// Are data file and reference file the same.
-        /// </summary>
-        public bool DataAndRefNotSame
-        {
-            get { return DataFile == ReferenceFiles; }
-        }
 
         /// <summary>
         /// Distance score type.
