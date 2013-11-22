@@ -52,10 +52,10 @@ namespace Thesis.DPrep
             if (!_headerWritten)
                 WriteHeader();
 
-            //long oldPos = _outfile.BaseStream.Position;
+            long oldPos = _outfile.BaseStream.Position;
             _outfile.Seek(0, SeekOrigin.Begin);
             _outfile.Write(numRecords);
-            //_outfile.BaseStream.Position = oldPos;
+            _outfile.BaseStream.Position = oldPos;
         }
 
         private void WriteFieldsWeight(IEnumerable<Field> fields)
