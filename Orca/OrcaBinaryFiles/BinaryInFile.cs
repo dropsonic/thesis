@@ -17,7 +17,7 @@ namespace Thesis.Orca.BinaryFiles
 
         public int Index { get; set; }
 
-        public int Records { get; private set; }
+        public int RecordsCount { get; private set; }
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
 
@@ -43,7 +43,7 @@ namespace Thesis.Orca.BinaryFiles
             long oldPos = _infile.BaseStream.Position;
 
             _infile.BaseStream.Position = 0;
-            Records = _infile.ReadInt32();
+            RecordsCount = _infile.ReadInt32();
             RealFieldsCount = _infile.ReadInt32();
             DiscreteFieldsCount = _infile.ReadInt32();
 
@@ -56,7 +56,7 @@ namespace Thesis.Orca.BinaryFiles
         public void SeekPosition(int pos)
         {
             Contract.Requires<ArgumentOutOfRangeException>(pos >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(pos < Records);
+            Contract.Requires<ArgumentOutOfRangeException>(pos < RecordsCount);
 
             long filepos = HeaderSize + pos * RealFieldsCount * sizeof(float) + pos * DiscreteFieldsCount * sizeof(int);
             _infile.BaseStream.Position = filepos;
@@ -101,7 +101,7 @@ namespace Thesis.Orca.BinaryFiles
         public void ForEach(Action<int, float[], int[]> action)
         {
             SeekPosition(0);
-            while (Index < Records)
+            while (Index < RecordsCount)
             {
                 int id;
                 float[] real;
