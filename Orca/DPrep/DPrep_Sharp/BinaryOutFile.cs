@@ -33,7 +33,7 @@ namespace Thesis.DPrep
 
         private void WriteHeader()
         {
-            long oldPos = _outfile.BaseStream.Position;
+            //long oldPos = _outfile.BaseStream.Position;
 
             _outfile.Seek(0, SeekOrigin.Begin);
             _outfile.Write((int)0); // number of records
@@ -43,16 +43,19 @@ namespace Thesis.DPrep
             WriteFieldsWeight(_fields.Where(f => f.Type == Field.FieldType.Discrete));
             WriteFieldsWeight(_fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven));
 
-            _outfile.BaseStream.Position = oldPos;
+            //_outfile.BaseStream.Position = oldPos;
             _headerWritten = true;
         }
 
         public void WriteHeader(int numRecords)
         {
-            long oldPos = _outfile.BaseStream.Position;
+            if (!_headerWritten)
+                WriteHeader();
+
+            //long oldPos = _outfile.BaseStream.Position;
             _outfile.Seek(0, SeekOrigin.Begin);
             _outfile.Write(numRecords);
-            _outfile.BaseStream.Position = oldPos;
+            //_outfile.BaseStream.Position = oldPos;
         }
 
         private void WriteFieldsWeight(IEnumerable<Field> fields)
@@ -74,6 +77,14 @@ namespace Thesis.DPrep
                 _outfile.Write(real);
             if (DiscreteFieldsCount > 0)
                 _outfile.Write(discrete);
+        }
+
+        public void Write(byte[] data)
+        {
+            if (!_headerWritten)
+                WriteHeader();
+
+            _outfile.Write(data);
         }
 
         #region IDisposable

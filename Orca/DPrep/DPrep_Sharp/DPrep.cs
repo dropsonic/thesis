@@ -86,7 +86,7 @@ namespace Thesis.DPrep
             //
             if (parameters.Randomize)
             {
-                BFile bScale = new BFile(files.Last(), parameters.MissingR, parameters.MissingD);
+                ShuffleFile bScale = new ShuffleFile(files.Last(), dataTable.Fields, parameters.MissingR, parameters.MissingD);
                 string randOutputFile = parameters.TempFileStem + ".rand";
                 files.Add(randOutputFile);
                 bScale.MultiShuffle(randOutputFile, parameters.Iterations, parameters.RandFiles, parameters.Seed);

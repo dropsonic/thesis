@@ -111,7 +111,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BFile.cs" />
+    <Compile Include="ShuffleFile.cs" />
     <Compile Include="BinaryInFile.cs" />
     <Compile Include="BinaryOutFile.cs" />
     <Compile Include="BinaryExtensions.cs" />
@@ -123,6 +123,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RStats.cs" />
+    <Compile Include="ScaleFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
