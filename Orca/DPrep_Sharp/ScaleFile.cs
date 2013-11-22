@@ -11,18 +11,22 @@ namespace Thesis.DPrep
     {
         BinaryInFile _infile;
 
-        IEnumerable<Field> _fields;
+        float[] _realWeights;
+        float[] _discreteWeights;
 
         float _missingR;
         int _missingD;
 
-        public ScaleFile(string dataFile, IEnumerable<Field> fields, float missingR, int missingD)
+        public ScaleFile(string dataFile, float[] realWeights, float[] discreteWeights, float missingR, int missingD)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
-            Contract.Requires<ArgumentNullException>(fields != null);
+            Contract.Requires<ArgumentNullException>(realWeights != null);
+            Contract.Requires<ArgumentNullException>(discreteWeights != null);
 
             _infile = new BinaryInFile(dataFile);
-            _fields = fields;
+
+            _realWeights = realWeights;
+            _discreteWeights = discreteWeights;
             _missingR = missingR;
             _missingD = missingD;
         }
@@ -117,7 +121,7 @@ namespace Thesis.DPrep
             //-------------------------------
             // open file for writing
             //
-            using (var outfile = new BinaryOutFile(filename, _fields))
+            using (var outfile = new BinaryOutFile(filename, _realWeights, _discreteWeights))
             {
                 float[] range = new float[_infile.RealFieldsCount];
 
@@ -167,7 +171,7 @@ namespace Thesis.DPrep
             //-------------------------------
             // open file for writing
             //
-            using (var outfile = new BinaryOutFile(filename, _fields))
+            using (var outfile = new BinaryOutFile(filename, _realWeights, _discreteWeights))
             {
                 //--------------------------------
                 // read in file and scale it

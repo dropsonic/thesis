@@ -23,10 +23,8 @@ namespace Thesis.DPrep
 
         private List<Field> _fields = new List<Field>();
 
-        public IReadOnlyCollection<Field> Fields
-        {
-            get { return _fields.AsReadOnly(); }
-        }
+        public float[] RealWeights { get; private set; }
+        public float[] DiscreteWeights { get; private set; }
 
         private StreamReader _infile;
 
@@ -71,6 +69,11 @@ namespace Thesis.DPrep
             RealFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Continuous);
             DiscreteFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Discrete || 
                                                       f.Type == Field.FieldType.DiscreteDataDriven);
+
+            RealWeights = _fields.Where(f => f.Type == Field.FieldType.Continuous).Select(f => f.Weight).ToArray();
+            DiscreteWeights = _fields.Where(f => f.Type == Field.FieldType.Discrete)
+                                     .Concat(_fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven))
+                                     .Select(f => f.Weight).ToArray();
         }
 
         /// <param name="valid">true, if the record was correctly loaded; false, if the record had errors and was ignored</param>
@@ -175,7 +178,7 @@ namespace Thesis.DPrep
 
             ResetFileCounter();
 
-            using (var outfile = new BinaryOutFile(filename, _fields))
+            using (var outfile = new BinaryOutFile(filename, RealWeights, DiscreteWeights))
             {
                 bool status = true;
                 int numRecords = 0;

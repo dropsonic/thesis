@@ -11,19 +11,23 @@ namespace Thesis.DPrep
     class ShuffleFile : IDisposable
     {
         BinaryInFile _infile;
-        IEnumerable<Field> _fields;
+
+        float[] _realWeights;
+        float[] _discreteWeights;
 
         string _dataFile;
 
         float _missingR;
         int _missingD;
 
-        public ShuffleFile(string dataFile, IEnumerable<Field> fields, float missingR, int missingD)
+        public ShuffleFile(string dataFile, float[] realWeights, float[] discreteWeights, float missingR, int missingD)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
-            Contract.Requires<ArgumentNullException>(fields != null);
+            Contract.Requires<ArgumentNullException>(realWeights != null);
+            Contract.Requires<ArgumentNullException>(discreteWeights != null);
 
-            _fields = fields;
+            _realWeights = realWeights;
+            _discreteWeights = discreteWeights;
             _dataFile = dataFile;
             _missingR = missingR;
             _missingD = missingD;
@@ -124,7 +128,7 @@ namespace Thesis.DPrep
 
                 ResetFileReader(); // closes original file
 
-                using (var outfile = new BinaryOutFile(filename, _fields))
+                using (var outfile = new BinaryOutFile(filename, _realWeights, _discreteWeights))
                 {
                     outfile.WriteHeader(_infile.Records);
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics.Contracts;
 
 namespace Thesis.DPrep
 {
@@ -15,19 +16,27 @@ namespace Thesis.DPrep
         BinaryWriter _outfile;
 
         int _index;
-        IEnumerable<Field> _fields;
         bool _headerWritten = false;
+
+        float[] _realWeights;
+        float[] _discreteWeights;
 
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
 
-        public BinaryOutFile(string filename, IEnumerable<Field> fields)
+        public BinaryOutFile(string filename, float[] realWeights, float[] discreteWeights)
         {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+            Contract.Requires<ArgumentNullException>(realWeights != null);
+            Contract.Requires<ArgumentNullException>(discreteWeights != null);
+
             _outfile = new BinaryWriter(File.Create(filename));
-            _fields = fields;
-            RealFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Continuous);
-            DiscreteFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Discrete ||
-                                                     f.Type == Field.FieldType.DiscreteDataDriven);
+
+            _realWeights = realWeights;
+            _discreteWeights = discreteWeights;
+            RealFieldsCount = realWeights.Length;
+            DiscreteFieldsCount = discreteWeights.Length;
+
             WriteHeader();
         }
 
@@ -39,9 +48,8 @@ namespace Thesis.DPrep
             _outfile.Write((int)0); // number of records
             _outfile.Write(RealFieldsCount);
             _outfile.Write(DiscreteFieldsCount);
-            WriteFieldsWeight(_fields.Where(f => f.Type == Field.FieldType.Continuous));
-            WriteFieldsWeight(_fields.Where(f => f.Type == Field.FieldType.Discrete));
-            WriteFieldsWeight(_fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven));
+            _outfile.Write(_realWeights);
+            _outfile.Write(_discreteWeights);
 
             //_outfile.BaseStream.Position = oldPos;
             _headerWritten = true;
@@ -56,15 +64,6 @@ namespace Thesis.DPrep
             _outfile.Seek(0, SeekOrigin.Begin);
             _outfile.Write(numRecords);
             _outfile.BaseStream.Position = oldPos;
-        }
-
-        private void WriteFieldsWeight(IEnumerable<Field> fields)
-        {
-            foreach (var field in fields)
-            {
-                //_outfile.Write(field.Name);
-                _outfile.Write(field.Weight);
-            }
         }
 
         public void WriteRecord(int id, float[] real, int[] discrete)
