@@ -61,24 +61,24 @@ namespace Thesis.DPrep
             //
             if (parameters.Scaling != Parameters.Scale.None)
             {
-                BFile bFile = new BFile(outputName, parameters.MissingR, parameters.MissingD);
+                ScaleFile scaleFile = new ScaleFile(outputName, dataTable.Fields, parameters.MissingR, parameters.MissingD);
                 string scaleOutputName = parameters.TempFileStem + ".scale";
                 files.Add(scaleOutputName);
 
                 if (parameters.Scaling == Parameters.Scale.ZeroToOne)
                 {
                     if (String.IsNullOrEmpty(parameters.ScaleFile))
-                        bFile.GetMaxMin(rStats.Max, rStats.Min);
-                    bFile.ScaleZeroToOne(scaleOutputName, rStats.Max, rStats.Min);
+                        scaleFile.GetMaxMin(rStats.Max, rStats.Min);
+                    scaleFile.ScaleZeroToOne(scaleOutputName, rStats.Max, rStats.Min);
                 }
                 else if (parameters.Scaling == Parameters.Scale.Std)
                 {
                     if (String.IsNullOrEmpty(parameters.ScaleFile))
-                        bFile.GetMeanStd(rStats.Mean, rStats.Std);
-                    bFile.ScaleStd(scaleOutputName, rStats.Mean, rStats.Std);
+                        scaleFile.GetMeanStd(rStats.Mean, rStats.Std);
+                    scaleFile.ScaleStd(scaleOutputName, rStats.Mean, rStats.Std);
                 }
 
-                bFile.Dispose();
+                scaleFile.Dispose();
             }
 
             //-------------------------------------------------------------

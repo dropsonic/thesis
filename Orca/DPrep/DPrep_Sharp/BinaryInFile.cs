@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,22 +15,26 @@ namespace Thesis.DPrep
     {
         BinaryReader _infile;
 
-        int _index;
-        Dictionary<string, float> _weights;
+        public int Index { get; set; }
 
         public int Records { get; private set; }
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
 
-        public IReadOnlyDictionary<string, float> Weights
+        public float[] RealWeights { get; private set; }
+        public int[] DiscreteWeights { get; private set; }
+
+        private int HeaderSize
         {
-            get { return _weights; }
+            get
+            {
+                return 3 * sizeof(int) + RealFieldsCount * sizeof(float) + DiscreteFieldsCount * sizeof(int);
+            }
         }
 
         public BinaryInFile(string filename)
         {
             _infile = new BinaryReader(File.OpenRead(filename));
-            _weights = new Dictionary<string, float>();
             ReadHeader();
         }
 
@@ -42,13 +47,47 @@ namespace Thesis.DPrep
             RealFieldsCount = _infile.ReadInt32();
             DiscreteFieldsCount = _infile.ReadInt32();
 
-            int fieldsCount = RealFieldsCount + DiscreteFieldsCount;
-            for (int i = 0; i < fieldsCount; i++)
-            {
-                
-            }
+            RealWeights = _infile.ReadFloatArray(RealFieldsCount);
+            DiscreteWeights = _infile.ReadIntArray(DiscreteFieldsCount);
 
             _infile.BaseStream.Position = oldPos;
+        }
+
+        public void SeekPosition(int pos)
+        {
+            Contract.Requires<ArgumentOutOfRangeException>(pos >= 0);
+            Contract.Requires<ArgumentOutOfRangeException>(pos < Records);
+
+            long filepos = HeaderSize + pos * RealFieldsCount * sizeof(float) + pos * DiscreteFieldsCount * sizeof(int);
+            _infile.BaseStream.Position = filepos;
+            Index = pos;
+        }
+
+        public void GetNext(out int id, out float[] real, out int[] discrete)
+        {
+            // WARNING does not check to make sure read command succeeded.
+            id = _infile.ReadInt32();
+            real = _infile.ReadFloatArray(RealFieldsCount);
+            discrete = _infile.ReadIntArray(DiscreteFieldsCount);
+
+            Index++;
+        }
+
+        /// <summary>
+        /// Executes action for each record in file.
+        /// </summary>
+        /// <param name="action"></param>
+        public void ForEach(Action<int, float[], int[]> action)
+        {
+            SeekPosition(0);
+            while (Index < Records)
+            {
+                int id;
+                float[] real;
+                int[] discrete;
+                GetNext(out id, out real, out discrete);
+                action(id, real, discrete);
+            }
         }
 
         #region IDisposable

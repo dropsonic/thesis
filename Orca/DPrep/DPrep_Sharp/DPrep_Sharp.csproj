@@ -114,7 +114,7 @@
     <Compile Include="BFile.cs" />
     <Compile Include="BinaryInFile.cs" />
     <Compile Include="BinaryOutFile.cs" />
-    <Compile Include="BinaryWriterExtensions.cs" />
+    <Compile Include="BinaryExtensions.cs" />
     <Compile Include="DataTable.cs" />
     <Compile Include="DPrep.cs" />
     <Compile Include="Field.cs" />

@@ -26,7 +26,6 @@ namespace Thesis.DPrep
             _missingD = missingD;
 
             SetFileReader(filename);
-            ReadHeader();
         }
 
         private void SetFileReader(string filename)
@@ -46,30 +45,6 @@ namespace Thesis.DPrep
                 _infile.Dispose();
         }
 
-        private void SeekPosition(int pos)
-        {
-            Contract.Requires<ArgumentOutOfRangeException>(pos >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(pos < _records);
-
-            long filepos = 3 * sizeof(int) + pos * sizeof(float) + pos * sizeof(int);
-            _infile.BaseStream.Seek(filepos, SeekOrigin.Begin);
-            _index = pos;
-        }
-
-        private void GetNext(out int id, out float[] real, out int[] discrete)
-        {
-            // WARNING does not check to make sure read command succeeded.
-            id = _infile.ReadInt32();
-            real = new float[_realFieldsCount];
-            discrete = new int[_discreteFieldsCount];
-            byte[] temp = _infile.ReadBytes(sizeof(float) * _realFieldsCount);
-            Buffer.BlockCopy(temp, 0, real, 0, temp.Length);
-            temp = _infile.ReadBytes(sizeof(int) * _discreteFieldsCount);
-            Buffer.BlockCopy(temp, 0, discrete, 0, temp.Length);
-            
-            _index++;
-        }
-
         /// <summary>
         /// Makes a pass through the data and calculates the max and min values
         /// for real variables.
@@ -77,46 +52,34 @@ namespace Thesis.DPrep
         //public void GetMaxMin(ref IList<float> max, ref IList<float> min)
         public void GetMaxMin(float[] max, float[] min)
         {
-            SeekPosition(0);
-
-            //if (max == null)
-            //    max = new List<float>(_realFieldsCount);
-            //if (min == null)
-            //    min = new List<float>(_realFieldsCount);
-
-            //var R = new List<float>(RealFieldsCount);
-            //var D = new List<int>(DiscreteFieldsCount);
+            Contract.Requires(max.Length == _infile.RealFieldsCount);
+            Contract.Requires(min.Length == _infile.RealFieldsCount);
 
             // initialize max and min vectors 
-            for (int i = 0; i < _realFieldsCount; i++)
+            for (int i = 0; i < _infile.RealFieldsCount; i++)
             {
                 min[i] = float.MaxValue;
                 max[i] = float.MinValue;
             }
 
             // process rest of examples
-            while (_index < _records)
-            {
-                int id;
-                float[] R;
-                int[] D;
-                GetNext(out id, out R, out D);
-
-                for (int i = 0; i < _realFieldsCount; i++)
+            _infile.ForEach((id, R, D) =>
                 {
-                    if (R[i] != _missingR)
+                    for (int i = 0; i < _infile.RealFieldsCount; i++)
                     {
-                        if (R[i] < min[i])
+                        if (R[i] != _missingR)
                         {
-                            min[i] = R[i];
-                        }
-                        else if (R[i] > max[i])
-                        {
-                            max[i] = R[i];
+                            if (R[i] < min[i])
+                            {
+                                min[i] = R[i];
+                            }
+                            else if (R[i] > max[i])
+                            {
+                                max[i] = R[i];
+                            }
                         }
                     }
-                };
-            }
+                });
         }
 
         /// <summary>
@@ -125,48 +88,45 @@ namespace Thesis.DPrep
         /// </summary>
         public void GetMeanStd(float[] mean, float[] std)
         {
-            SeekPosition(0);
-            var sumv = new double[_realFieldsCount];
-            var sumsqv = new double[_realFieldsCount];
-            var num = new int[_realFieldsCount];
+            Contract.Requires(mean.Length == _infile.RealFieldsCount);
+            Contract.Requires(std.Length == _infile.RealFieldsCount);
 
-            while (_index < _records)
-            {
-                int id;
-                float[] R;
-                int[] D;
-                GetNext(out id, out R, out D);
+            var sumv = new double[_infile.RealFieldsCount];
+            var sumsqv = new double[_infile.RealFieldsCount];
+            var num = new int[_infile.RealFieldsCount];
 
-                for (int i = 0; i < _realFieldsCount; i++)
+            _infile.ForEach((id, R, D) =>
                 {
-                    if (R[i] != _missingR)
+                    for (int i = 0; i < _infile.RealFieldsCount; i++)
                     {
-                        double r = ((double)R[i]);
-                        sumv[i] += r;
-                        sumsqv[i] += r * r;
-                        num[i]++;
+                        if (R[i] != _missingR)
+                        {
+                            double r = ((double)R[i]);
+                            sumv[i] += r;
+                            sumsqv[i] += r * r;
+                            num[i]++;
+                        }
                     }
-                }
 
-                for (int i = 0; i < _realFieldsCount; i++)
-                {
-                    if (num[i] > 1)
+                    for (int i = 0; i < _infile.RealFieldsCount; i++)
                     {
-                        double meanValue = sumv[i] / num[i];
-                        mean[i] = ((float)meanValue);
+                        if (num[i] > 1)
+                        {
+                            double meanValue = sumv[i] / num[i];
+                            mean[i] = ((float)meanValue);
 
-                        double stdValue = Math.Sqrt((sumsqv[i] - sumv[i] * sumv[i] / num[i]) / (num[i] - 1));
-                        std[i] = ((float)stdValue);
+                            double stdValue = Math.Sqrt((sumsqv[i] - sumv[i] * sumv[i] / num[i]) / (num[i] - 1));
+                            std[i] = ((float)stdValue);
+                        }
+                        else
+                        {
+                            mean[i] = 0;
+                            std[i] = 0;
+                        }
+                        // error checkin
+                        // check mean /std are not NaN
                     }
-                    else
-                    {
-                        mean[i] = 0;
-                        std[i] = 0;
-                    }
-                    // error checkin
-                    // check mean /std are not NaN
-                }
-            }
+                });
         }
 
         /// <summary>
@@ -181,8 +141,7 @@ namespace Thesis.DPrep
             //-------------------------------
 	        // open file for writing
 	        //
-            using (var outstream = File.Create(filename))
-            using (BinaryWriter outfile = new BinaryWriter(outstream))
+            using (var outfile = new BinaryOutFile(filename, _fields))
             {
 	            // write header information
                 outfile.Write(_records);
@@ -443,7 +402,7 @@ namespace Thesis.DPrep
                 if (disposing)
                 {
                 // Managed resources are released here.
-                    _infile.Close();
+                    _infile.Dispose();
                 }
  
                 // Unmanaged resources are released here.

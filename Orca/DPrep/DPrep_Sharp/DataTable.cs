@@ -21,7 +21,12 @@ namespace Thesis.DPrep
         private readonly char[] _recordDelimiters = { ',', ':', ';', ' ' };
         private const string _noValueReplacement = "?";
 
-        private IList<Field> _fields = new List<Field>();
+        private List<Field> _fields = new List<Field>();
+
+        public IReadOnlyCollection<Field> Fields
+        {
+            get { return _fields.AsReadOnly(); }
+        }
 
         private StreamReader _infile;
 

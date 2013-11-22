@@ -27,7 +27,7 @@ namespace Thesis.DPrep
             _fields = fields;
             RealFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Continuous);
             DiscreteFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Discrete ||
-                                                      f.Type == Field.FieldType.DiscreteDataDriven);
+                                                     f.Type == Field.FieldType.DiscreteDataDriven);
             WriteHeader();
         }
 
@@ -59,7 +59,7 @@ namespace Thesis.DPrep
         {
             foreach (var field in fields)
             {
-                _outfile.Write(field.Name);
+                //_outfile.Write(field.Name);
                 _outfile.Write(field.Weight);
             }
         }
