@@ -11,25 +11,35 @@ namespace Thesis.Orca
     {
         int _startBatchSize;
         int _batchSize;
+        int _nr;
+        int _offset;
+        int _lastOffset;
 
         public BatchInFile(string filename, int startBatchSize, int batchSize)
             : base(filename)
         {
             _startBatchSize = startBatchSize;
             _batchSize = batchSize;
+            _offset = 0;
+            _lastOffset = _startBatchSize;
+
+            _nr = Math.Min(RecordsCount, _startBatchSize);
+
+
         }
 
         public bool GetNextBatch(out Record[] records)
         {
-            int nr = Math.Min(RecordsCount - Index, _batchSize);
-            records = new Record[nr];
+            _nr = Math.Min(RecordsCount - Index, _batchSize);
+            records = new Record[_nr];
 
-            for (int i = 0; i < nr; i++)
-            {
+            for (int i = 0; i < _nr; i++)
+                records[i] = GetNextRecord();
 
-            }
+            _offset += _lastOffset;
+            _lastOffset = _nr;
 
-            throw new NotImplementedException();
+            return _nr > 0;
         }
     }
 }
