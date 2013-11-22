@@ -9,6 +9,21 @@ namespace Thesis.Orca
 {
     public class Parameters
     {
+        /// <summary>
+        /// Distance score type.
+        /// </summary>
+        public enum DistanceType
+        {
+            /// <summary>
+            /// Average distance to k neighbors.
+            /// </summary>
+            Average,
+            /// <summary>
+            /// Distance to kth neighbor.
+            /// </summary>
+            KthNeighbor
+        }
+
         public string DataFile { get; set; }
         public string ReferenceFiles { get; set; }
         public string WeightFile { get; set; }
@@ -22,14 +37,9 @@ namespace Thesis.Orca
         }
 
         /// <summary>
-        /// Average or kth nearest neighbor.
+        /// Distance score type.
         /// </summary>
-        public int ScoreF { get; set; }
-
-        /// <summary>
-        /// Default weighting or weight file.
-        /// </summary>
-        public int DistF { get; set; }
+        public DistanceType ScoreF { get; set; }
 
         private int _numOutliers;
         /// <summary>
