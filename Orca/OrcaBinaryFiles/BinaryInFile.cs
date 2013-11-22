@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Thesis.Orca.BinaryFiles
+namespace Thesis.Orca.Common
 {
     /// <summary>
     /// Represents Orca format binary file reader.
@@ -63,51 +63,34 @@ namespace Thesis.Orca.BinaryFiles
             Index = pos;
         }
 
-        public void GetNextRecord(out int id, out float[] real, out int[] discrete)
+        public Record GetNextRecord()
         {
             // WARNING does not check to make sure read command succeeded.
-            id = _infile.ReadInt32();
-            real = _infile.ReadFloatArray(RealFieldsCount);
-            discrete = _infile.ReadIntArray(DiscreteFieldsCount);
+            var id = _infile.ReadInt32();
+            var real = _infile.ReadFloatArray(RealFieldsCount);
+            var discrete = _infile.ReadIntArray(DiscreteFieldsCount);
 
             Index++;
+
+            return new Record(id, real, discrete);
         }
 
-        public void GetRecord(int pos, out int id)
+        public Record GetRecord(int pos)
         {
             SeekPosition(pos);
-            id = _infile.ReadInt32();
-            _infile.BaseStream.Position += RealFieldsCount * sizeof(float) + DiscreteFieldsCount * sizeof(int);
-            Index++;
-        }
-
-        public void GetRecord(int pos, out float[] real, out int[] discrete)
-        {
-            SeekPosition(pos);
-            int id;
-            GetNextRecord(out id, out real, out discrete); 
-        }
-
-        public void GetRecord(int pos, out int id, out float[] real, out int[] discrete)
-        {
-            SeekPosition(pos);
-            GetNextRecord(out id, out real, out discrete);
+            return GetNextRecord();
         }
 
         /// <summary>
         /// Executes action for each record in file.
         /// </summary>
         /// <param name="action"></param>
-        public void ForEach(Action<int, float[], int[]> action)
+        public void ForEach(Action<Record> action)
         {
             SeekPosition(0);
             while (Index < RecordsCount)
             {
-                int id;
-                float[] real;
-                int[] discrete;
-                GetNextRecord(out id, out real, out discrete);
-                action(id, real, discrete);
+                action(GetNextRecord());
             }
         }
 

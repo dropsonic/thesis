@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
-using Thesis.Orca.BinaryFiles;
+using Thesis.Orca.Common;
 
 namespace Thesis.DPrep
 {
@@ -196,7 +196,8 @@ namespace Thesis.DPrep
                     status = GetNextRecord(out real, out discrete, out valid);
                     if (status && valid)
                     {
-                        outfile.WriteRecord(numRecords, real, discrete);
+                        var record = new Record(numRecords, real, discrete);
+                        outfile.WriteRecord(record);
                         numRecords++;
                         recordNumber++;
                     }

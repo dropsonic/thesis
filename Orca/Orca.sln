@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DPrep", "DPrep\DPrep.vcxpro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPrep_Sharp", "DPrep_Sharp\DPrep_Sharp.csproj", "{94DB3AD0-AC10-4753-9B54-14685A0BF591}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrcaBinaryFiles", "OrcaBinaryFiles\OrcaBinaryFiles.csproj", "{64CE960C-437D-4094-B1D9-3CC337B9BA0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrcaCommon", "OrcaBinaryFiles\OrcaCommon.csproj", "{64CE960C-437D-4094-B1D9-3CC337B9BA0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

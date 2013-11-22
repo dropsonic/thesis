@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Thesis.Orca.BinaryFiles
+namespace Thesis.Orca.Common
 {
     internal static class BinaryExtensions
     {

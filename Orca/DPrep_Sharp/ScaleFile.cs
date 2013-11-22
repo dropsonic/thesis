@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Thesis.Orca.BinaryFiles;
+using Thesis.Orca.Common;
 
 namespace Thesis.DPrep
 {
@@ -47,19 +47,19 @@ namespace Thesis.DPrep
             }
 
             // process rest of examples
-            _infile.ForEach((id, R, D) =>
+            _infile.ForEach((rec) =>
             {
                 for (int i = 0; i < _infile.RealFieldsCount; i++)
                 {
-                    if (R[i] != _missingR)
+                    if (rec.Real[i] != _missingR)
                     {
-                        if (R[i] < min[i])
+                        if (rec.Real[i] < min[i])
                         {
-                            min[i] = R[i];
+                            min[i] = rec.Real[i];
                         }
-                        else if (R[i] > max[i])
+                        else if (rec.Real[i] > max[i])
                         {
-                            max[i] = R[i];
+                            max[i] = rec.Real[i];
                         }
                     }
                 }
@@ -76,13 +76,13 @@ namespace Thesis.DPrep
             var sumsqv = new double[_infile.RealFieldsCount];
             var num = new int[_infile.RealFieldsCount];
 
-            _infile.ForEach((id, R, D) =>
+            _infile.ForEach((rec) =>
             {
                 for (int i = 0; i < _infile.RealFieldsCount; i++)
                 {
-                    if (R[i] != _missingR)
+                    if (rec.Real[i] != _missingR)
                     {
-                        double r = ((double)R[i]);
+                        double r = ((double)rec.Real[i]);
                         sumv[i] += r;
                         sumsqv[i] += r * r;
                         num[i]++;
@@ -135,17 +135,17 @@ namespace Thesis.DPrep
                 // read in file and scale it
                 //
                 float[] Rscale = new float[_infile.RealFieldsCount];
-                _infile.ForEach((id, R, D) =>
+                _infile.ForEach((rec) =>
                     {
                         for (int i = 0; i < _infile.RealFieldsCount; i++)
                         {
-                            if (R[i] == _missingR)
+                            if (rec.Real[i] == _missingR)
                             {
                                 Rscale[i] = _missingR;
                             }
                             else if (range[i] != 0)
                             {
-                                Rscale[i] = (R[i] - min[i]) / range[i];
+                                Rscale[i] = (rec.Real[i] - min[i]) / range[i];
                             }
                             else
                             {
@@ -153,10 +153,10 @@ namespace Thesis.DPrep
                             }
                         }
 
-                        outfile.WriteRecord(id, Rscale, D);
+                        outfile.WriteRecord(rec);
                     });
 
-                outfile.WriteHeader(_infile.Records);
+                outfile.WriteHeader(_infile.RecordsCount);
             }
         }
 
@@ -178,17 +178,17 @@ namespace Thesis.DPrep
                 // read in file and scale it
                 //
                 float[] Rscale = new float[_infile.RealFieldsCount];
-                _infile.ForEach((id, R, D) =>
+                _infile.ForEach((rec) =>
                 {
                     for (int i = 0; i < _infile.RealFieldsCount; i++)
                     {
-                        if (R[i] == _missingR)
+                        if (rec.Real[i] == _missingR)
                         {
                             Rscale[i] = _missingR;
                         }
                         else if (std[i] != 0)
                         {
-                            Rscale[i] = (R[i] - mean[i]) / std[i];
+                            Rscale[i] = (rec.Real[i] - mean[i]) / std[i];
                         }
                         else
                         {
@@ -196,10 +196,10 @@ namespace Thesis.DPrep
                         }
                     }
 
-                    outfile.WriteRecord(id, Rscale, D);
+                    outfile.WriteRecord(rec);
                 });
 
-                outfile.WriteHeader(_infile.Records);
+                outfile.WriteHeader(_infile.RecordsCount);
             }
         }
 

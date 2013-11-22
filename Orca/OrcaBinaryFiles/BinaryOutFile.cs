@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics.Contracts;
 
-namespace Thesis.Orca.BinaryFiles
+namespace Thesis.Orca.Common
 {
     /// <summary>
     /// Represents Orca format binary file writer.
@@ -65,16 +65,16 @@ namespace Thesis.Orca.BinaryFiles
             _outfile.BaseStream.Position = oldPos;
         }
 
-        public void WriteRecord(int id, float[] real, int[] discrete)
+        public void WriteRecord(Record record)
         {
             if (!_headerWritten)
                 WriteHeader();
 
-            _outfile.Write(id);
+            _outfile.Write(record.Id);
             if (RealFieldsCount > 0)
-                _outfile.Write(real);
+                _outfile.Write(record.Real);
             if (DiscreteFieldsCount > 0)
-                _outfile.Write(discrete);
+                _outfile.Write(record.Discrete);
         }
 
         public void Write(byte[] data)

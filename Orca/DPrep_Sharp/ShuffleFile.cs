@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Thesis.Orca.BinaryFiles;
+using Thesis.Orca.Common;
 
 namespace Thesis.DPrep
 {
@@ -96,13 +96,13 @@ namespace Thesis.DPrep
                 // read in data file and randomly shuffle examples to
                 // temporary files
                 //
-                _infile.ForEach((id, R, D) =>
+                _infile.ForEach((rec) =>
                     {
                         int index = rand.Next(tmpFilesOut.Length);
 
-                        tmpFilesOut[index].Write(id);
-                        tmpFilesOut[index].Write(R);
-                        tmpFilesOut[index].Write(D);
+                        tmpFilesOut[index].Write(rec.Id);
+                        tmpFilesOut[index].Write(rec.Real);
+                        tmpFilesOut[index].Write(rec.Discrete);
                     });
             }
             finally
@@ -131,7 +131,7 @@ namespace Thesis.DPrep
 
                 using (var outfile = new BinaryOutFile(filename, _realWeights, _discreteWeights))
                 {
-                    outfile.WriteHeader(_infile.Records);
+                    outfile.WriteHeader(_infile.RecordsCount);
 
                     //--------------------------------------
                     // concatenate tmp files in random order

@@ -127,9 +127,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OrcaBinaryFiles\OrcaBinaryFiles.csproj">
+    <ProjectReference Include="..\OrcaBinaryFiles\OrcaCommon.csproj">
       <Project>{64ce960c-437d-4094-b1d9-3cc337b9ba0c}</Project>
-      <Name>OrcaBinaryFiles</Name>
+      <Name>OrcaCommon</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
