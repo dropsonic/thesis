@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DPrep", "DPrep\DPrep.vcxpro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPrep_Sharp", "DPrep_Sharp\DPrep_Sharp.csproj", "{94DB3AD0-AC10-4753-9B54-14685A0BF591}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrcaCommon", "OrcaBinaryFiles\OrcaCommon.csproj", "{64CE960C-437D-4094-B1D9-3CC337B9BA0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,16 @@ Global
 		{94DB3AD0-AC10-4753-9B54-14685A0BF591}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{94DB3AD0-AC10-4753-9B54-14685A0BF591}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{94DB3AD0-AC10-4753-9B54-14685A0BF591}.Release|Win32.ActiveCfg = Release|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{64CE960C-437D-4094-B1D9-3CC337B9BA0C}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

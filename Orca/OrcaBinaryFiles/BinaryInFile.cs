@@ -6,23 +6,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Thesis.DPrep
+namespace Thesis.Orca.Common
 {
     /// <summary>
     /// Represents Orca format binary file reader.
     /// </summary>
-    class BinaryInFile : IDisposable
+    public class BinaryInFile : IDisposable
     {
         BinaryReader _infile;
 
         public int Index { get; set; }
 
-        public int Records { get; private set; }
+        public int RecordsCount { get; private set; }
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
 
-        public float[] RealWeights { get; private set; }
-        public int[] DiscreteWeights { get; private set; }
+        public Weights Weights { get; private set; }
 
         private int HeaderSize
         {
@@ -35,6 +34,7 @@ namespace Thesis.DPrep
         public BinaryInFile(string filename)
         {
             _infile = new BinaryReader(File.OpenRead(filename));
+            Weights = new Weights();
             ReadHeader();
         }
 
@@ -43,12 +43,12 @@ namespace Thesis.DPrep
             long oldPos = _infile.BaseStream.Position;
 
             _infile.BaseStream.Position = 0;
-            Records = _infile.ReadInt32();
+            RecordsCount = _infile.ReadInt32();
             RealFieldsCount = _infile.ReadInt32();
             DiscreteFieldsCount = _infile.ReadInt32();
 
-            RealWeights = _infile.ReadFloatArray(RealFieldsCount);
-            DiscreteWeights = _infile.ReadIntArray(DiscreteFieldsCount);
+            Weights.Real = _infile.ReadFloatArray(RealFieldsCount);
+            Weights.Discrete = _infile.ReadFloatArray(DiscreteFieldsCount);
 
             _infile.BaseStream.Position = oldPos;
         }
@@ -56,37 +56,41 @@ namespace Thesis.DPrep
         public void SeekPosition(int pos)
         {
             Contract.Requires<ArgumentOutOfRangeException>(pos >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(pos < Records);
+            Contract.Requires<ArgumentOutOfRangeException>(pos < RecordsCount);
 
             long filepos = HeaderSize + pos * RealFieldsCount * sizeof(float) + pos * DiscreteFieldsCount * sizeof(int);
             _infile.BaseStream.Position = filepos;
             Index = pos;
         }
 
-        public void GetNext(out int id, out float[] real, out int[] discrete)
+        public Record GetNextRecord()
         {
             // WARNING does not check to make sure read command succeeded.
-            id = _infile.ReadInt32();
-            real = _infile.ReadFloatArray(RealFieldsCount);
-            discrete = _infile.ReadIntArray(DiscreteFieldsCount);
+            var id = _infile.ReadInt32();
+            var real = _infile.ReadFloatArray(RealFieldsCount);
+            var discrete = _infile.ReadIntArray(DiscreteFieldsCount);
 
             Index++;
+
+            return new Record(id, real, discrete);
+        }
+
+        public Record GetRecord(int pos)
+        {
+            SeekPosition(pos);
+            return GetNextRecord();
         }
 
         /// <summary>
         /// Executes action for each record in file.
         /// </summary>
         /// <param name="action"></param>
-        public void ForEach(Action<int, float[], int[]> action)
+        public void ForEach(Action<Record> action)
         {
             SeekPosition(0);
-            while (Index < Records)
+            while (Index < RecordsCount)
             {
-                int id;
-                float[] real;
-                int[] discrete;
-                GetNext(out id, out real, out discrete);
-                action(id, real, discrete);
+                action(GetNextRecord());
             }
         }
 

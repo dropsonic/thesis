@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
+using Thesis.Orca.Common;
 
 namespace Thesis.DPrep
 {
@@ -23,10 +24,7 @@ namespace Thesis.DPrep
 
         private List<Field> _fields = new List<Field>();
 
-        public IReadOnlyCollection<Field> Fields
-        {
-            get { return _fields.AsReadOnly(); }
-        }
+        public Weights Weights { get; private set; }
 
         private StreamReader _infile;
 
@@ -44,6 +42,8 @@ namespace Thesis.DPrep
             _missingD = missingD;
             _realWeight = realWeight;
             _discreteWeight = discreteWeight;
+
+            Weights = new Weights();
 
             LoadFields(fieldsFile);
 
@@ -71,6 +71,11 @@ namespace Thesis.DPrep
             RealFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Continuous);
             DiscreteFieldsCount = _fields.Count(f => f.Type == Field.FieldType.Discrete || 
                                                       f.Type == Field.FieldType.DiscreteDataDriven);
+
+            Weights.Real = _fields.Where(f => f.Type == Field.FieldType.Continuous).Select(f => f.Weight).ToArray();
+            Weights.Discrete = _fields.Where(f => f.Type == Field.FieldType.Discrete)
+                                     .Concat(_fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven))
+                                     .Select(f => f.Weight).ToArray();
         }
 
         /// <param name="valid">true, if the record was correctly loaded; false, if the record had errors and was ignored</param>
@@ -175,7 +180,7 @@ namespace Thesis.DPrep
 
             ResetFileCounter();
 
-            using (var outfile = new BinaryOutFile(filename, _fields))
+            using (var outfile = new BinaryOutFile(filename, Weights))
             {
                 bool status = true;
                 int numRecords = 0;
@@ -192,7 +197,8 @@ namespace Thesis.DPrep
                     status = GetNextRecord(out real, out discrete, out valid);
                     if (status && valid)
                     {
-                        outfile.WriteRecord(numRecords, real, discrete);
+                        var record = new Record(numRecords, real, discrete);
+                        outfile.WriteRecord(record);
                         numRecords++;
                         recordNumber++;
                     }

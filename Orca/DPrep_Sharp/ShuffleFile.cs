@@ -5,25 +5,27 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Thesis.Orca.Common;
 
 namespace Thesis.DPrep
 {
     class ShuffleFile : IDisposable
     {
         BinaryInFile _infile;
-        IEnumerable<Field> _fields;
+
+        Weights _weights;
 
         string _dataFile;
 
         float _missingR;
         int _missingD;
 
-        public ShuffleFile(string dataFile, IEnumerable<Field> fields, float missingR, int missingD)
+        public ShuffleFile(string dataFile, Weights weights, float missingR, int missingD)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
-            Contract.Requires<ArgumentNullException>(fields != null);
+            Contract.Requires<ArgumentNullException>(weights != null);
 
-            _fields = fields;
+            _weights = weights;
             _dataFile = dataFile;
             _missingR = missingR;
             _missingD = missingD;
@@ -91,13 +93,13 @@ namespace Thesis.DPrep
                 // read in data file and randomly shuffle examples to
                 // temporary files
                 //
-                _infile.ForEach((id, R, D) =>
+                _infile.ForEach((rec) =>
                     {
                         int index = rand.Next(tmpFilesOut.Length);
 
-                        tmpFilesOut[index].Write(id);
-                        tmpFilesOut[index].Write(R);
-                        tmpFilesOut[index].Write(D);
+                        tmpFilesOut[index].Write(rec.Id);
+                        tmpFilesOut[index].Write(rec.Real);
+                        tmpFilesOut[index].Write(rec.Discrete);
                     });
             }
             finally
@@ -124,9 +126,9 @@ namespace Thesis.DPrep
 
                 ResetFileReader(); // closes original file
 
-                using (var outfile = new BinaryOutFile(filename, _fields))
+                using (var outfile = new BinaryOutFile(filename, _weights))
                 {
-                    outfile.WriteHeader(_infile.Records);
+                    outfile.WriteHeader(_infile.RecordsCount);
 
                     //--------------------------------------
                     // concatenate tmp files in random order

@@ -10,6 +10,20 @@ namespace Thesis.Orca
     {
         static void Main(string[] args)
         {
+            if (args.Length < 1)
+            {
+                Console.WriteLine("Wrong args.");
+                Environment.Exit(0);
+            }
+
+            Parameters parameters = new Parameters(args[0]);
+            int numOutliers;
+            if (int.TryParse(args[1], out numOutliers))
+                parameters.NumOutliers = numOutliers;
+
+            Orca orca = new Orca(parameters);
+            orca.Run();
+            Console.WriteLine("Done!");
         }
     }
 }
