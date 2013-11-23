@@ -34,12 +34,9 @@ namespace Thesis.Orca
             //
             while (!done)
             {
-                Record[] records;
-                done = !batchInFile.GetNextBatch(out records);
+                done = !batchInFile.GetNextBatch();
 
-                int count = outliers.Count;
-
-                var o = FindOutliers(records, inFile, Parameters.K);
+                var o = FindOutliers(batchInFile, inFile, Parameters.K);
                 outliers.AddRange(o);
 
                 inFile.SeekPosition(0);
@@ -63,39 +60,75 @@ namespace Thesis.Orca
             return outliers;
         }
 
-        private IEnumerable<Outlier> FindOutliers(Record[] records, BinaryInFile inFile, int k)
+        private IEnumerable<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, int k)
         {
-            Contract.Requires<ArgumentNullException>(records != null);
+            Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);
             Contract.Requires<ArgumentOutOfRangeException>(k > 0);
 
-            int batchRecCount = records.Length;
+            int batchRecCount = batchFile.CurrentBatch.Length;
             int recCount = inFile.RecordsCount;
             //var kdist = new List<double[]>();
 
             // vectors to store distance of nearest neighbors
-            var kDist = new double[batchRecCount, k];
+            //var kDist = new double[batchRecCount, k];
+            //// initialize distance score with max distance
+            //for (int i = 0; i < kDist.GetLength(0); i++)
+            //    for (int j = 0; j < kDist.GetLength(1); j++)
+            //        kDist[i, j] = double.MaxValue;
+            var kDist = new List<double[]>(batchRecCount);
             // initialize distance score with max distance
-            for (int i = 0; i < kDist.GetLength(0); i++)
-                for (int j = 0; j < kDist.GetLength(1); j++)
-                    kDist[i, j] = double.MaxValue;
+            for (int i = 0; i < batchRecCount; i++)
+            {
+                var kDistDim = new double[k];
+                for (int j = 0; j < k; j++)
+                    kDistDim[j] = double.MaxValue;
+                kDist.Add(kDistDim);
+            }
 
             // vector to store furthest nearest neighbour
-            var minkDist = new double[batchRecCount];
+            //var minkDist = new double[batchRecCount];
+            var minkDist = new List<double>(batchRecCount);
+            for (int i = 0; i < kDist.Count; i++)
+                minkDist.Add(double.MaxValue);
 
             // candidates stores the integer index
-            var candidates = new int[batchRecCount];
-            for (int i = 0; i < candidates.Length; i++)
-                candidates[i] = i;
+            //var candidates = new int[batchRecCount];
+            //for (int i = 0; i < candidates.Length; i++)
+            //    candidates[i] = i;
+            var candidates = Enumerable.Range(0, batchRecCount - 1).ToList();
+
+            //IEnumerator<double> kDist_itr = ((IEnumerable<double>)kDist).GetEnumerator();
+
+            var kDist_itr = ((IEnumerable<double[]>)kDist).GetEnumerator();
+            var minkDist_itr = ((IEnumerable<double>)minkDist).GetEnumerator();
+            var candidates_itr = ((IEnumerable<int>)candidates).GetEnumerator();
+            
 
             // loop over objects in reference table
             for (int i = 0; i < recCount; i++)
             {
                 Record descRecord = inFile.GetNextRecord();
 
-                foreach (var record in records)
+                kDist_itr.Reset();
+                minkDist_itr.Reset();
+                candidates_itr.Reset();
+
+                foreach (var record in batchFile.CurrentBatch)
                 {
-                    //double dist = Distance();
+                    double dist = Distance(record, descRecord, inFile.Weights);
+
+                    if (dist < minkDist_itr.Current)
+                    {
+                        if (batchFile.Offset + candidates_itr.Current != i)
+                        {
+                            double[] kvec = kDist_itr.Current;
+                        }
+                    }
+
+                    kDist_itr.MoveNext();
+                    minkDist_itr.MoveNext();
+                    candidates_itr.MoveNext();
                 }
             }
 

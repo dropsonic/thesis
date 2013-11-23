@@ -10,29 +10,32 @@ namespace Thesis.Orca
     class BatchInFile : BinaryInFile
     {
         int _batchSize;
-        int _offset;
         int _lastOffset;
+
+        public int Offset { get; private set; }
+
+        public Record[] CurrentBatch { get; private set; }
 
         public BatchInFile(string filename, int batchSize)
             : base(filename)
         {
             _batchSize = batchSize;
-            _offset = 0;
+            Offset = 0;
             //_lastOffset = _batchSize;
         }
 
         /// <summary>
         /// Reads next batch of records.
         /// </summary>s
-        public bool GetNextBatch(out Record[] records)
+        public bool GetNextBatch()
         {
             int nr = Math.Min(RecordsCount - Index, _batchSize);
-            records = new Record[nr];
+            CurrentBatch = new Record[nr];
 
             for (int i = 0; i < nr; i++)
-                records[i] = GetNextRecord();
+                CurrentBatch[i] = GetNextRecord();
 
-            _offset += _lastOffset;
+            Offset += _lastOffset;
             _lastOffset = nr;
 
             return nr > 0;
