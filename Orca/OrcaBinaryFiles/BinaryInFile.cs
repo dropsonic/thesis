@@ -21,8 +21,7 @@ namespace Thesis.Orca.Common
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
 
-        public float[] RealWeights { get; private set; }
-        public int[] DiscreteWeights { get; private set; }
+        public Weights Weights { get; private set; }
 
         private int HeaderSize
         {
@@ -35,6 +34,7 @@ namespace Thesis.Orca.Common
         public BinaryInFile(string filename)
         {
             _infile = new BinaryReader(File.OpenRead(filename));
+            Weights = new Weights();
             ReadHeader();
         }
 
@@ -47,8 +47,8 @@ namespace Thesis.Orca.Common
             RealFieldsCount = _infile.ReadInt32();
             DiscreteFieldsCount = _infile.ReadInt32();
 
-            RealWeights = _infile.ReadFloatArray(RealFieldsCount);
-            DiscreteWeights = _infile.ReadIntArray(DiscreteFieldsCount);
+            Weights.Real = _infile.ReadFloatArray(RealFieldsCount);
+            Weights.Discrete = _infile.ReadFloatArray(DiscreteFieldsCount);
 
             _infile.BaseStream.Position = oldPos;
         }

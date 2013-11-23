@@ -13,22 +13,19 @@ namespace Thesis.DPrep
     {
         BinaryInFile _infile;
 
-        float[] _realWeights;
-        float[] _discreteWeights;
+        Weights _weights;
 
         string _dataFile;
 
         float _missingR;
         int _missingD;
 
-        public ShuffleFile(string dataFile, float[] realWeights, float[] discreteWeights, float missingR, int missingD)
+        public ShuffleFile(string dataFile, Weights weights, float missingR, int missingD)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
-            Contract.Requires<ArgumentNullException>(realWeights != null);
-            Contract.Requires<ArgumentNullException>(discreteWeights != null);
+            Contract.Requires<ArgumentNullException>(weights != null);
 
-            _realWeights = realWeights;
-            _discreteWeights = discreteWeights;
+            _weights = weights;
             _dataFile = dataFile;
             _missingR = missingR;
             _missingD = missingD;
@@ -129,7 +126,7 @@ namespace Thesis.DPrep
 
                 ResetFileReader(); // closes original file
 
-                using (var outfile = new BinaryOutFile(filename, _realWeights, _discreteWeights))
+                using (var outfile = new BinaryOutFile(filename, _weights))
                 {
                     outfile.WriteHeader(_infile.RecordsCount);
 

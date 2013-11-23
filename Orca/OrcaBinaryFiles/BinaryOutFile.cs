@@ -17,24 +17,22 @@ namespace Thesis.Orca.Common
 
         bool _headerWritten = false;
 
-        float[] _realWeights;
-        float[] _discreteWeights;
+        Weights _weights;
 
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
 
-        public BinaryOutFile(string filename, float[] realWeights, float[] discreteWeights)
+        public BinaryOutFile(string filename, Weights weights)
         {
             Contract.Requires(!String.IsNullOrEmpty(filename));
-            Contract.Requires<ArgumentNullException>(realWeights != null);
-            Contract.Requires<ArgumentNullException>(discreteWeights != null);
+            Contract.Requires<ArgumentNullException>(weights.Real != null);
+            Contract.Requires<ArgumentNullException>(weights.Discrete != null);
 
             _outfile = new BinaryWriter(File.Create(filename));
 
-            _realWeights = realWeights;
-            _discreteWeights = discreteWeights;
-            RealFieldsCount = realWeights.Length;
-            DiscreteFieldsCount = discreteWeights.Length;
+            _weights = weights;
+            RealFieldsCount = _weights.Real.Length;
+            DiscreteFieldsCount = _weights.Discrete.Length;
 
             WriteHeader();
         }
@@ -47,8 +45,8 @@ namespace Thesis.Orca.Common
             _outfile.Write((int)0); // number of records
             _outfile.Write(RealFieldsCount);
             _outfile.Write(DiscreteFieldsCount);
-            _outfile.Write(_realWeights);
-            _outfile.Write(_discreteWeights);
+            _outfile.Write(_weights.Real);
+            _outfile.Write(_weights.Discrete);
 
             //_outfile.BaseStream.Position = oldPos;
             _headerWritten = true;
