@@ -10,7 +10,7 @@ namespace Thesis.Orca
     {
         public int Index { get; set; }
         public double Score { get; set; }
-        public IEnumerable<int> Neighbors { get; set; }
+        //public IEnumerable<int> Neighbors { get; set; }
 
         public int CompareTo(Outlier other)
         {

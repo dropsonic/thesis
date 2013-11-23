@@ -110,5 +110,11 @@ namespace Thesis.Orca
             MissingR = float.NaN;
             DistMR = 0.4f;
         }
+
+        public Parameters(string dataFile)
+            : this()
+        {
+            DataFile = dataFile;
+        }
     }
 }
