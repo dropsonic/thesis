@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Thesis.Orca.Common;
 using System.Diagnostics.Contracts;
+using Thesis.Collections;
 
 namespace Thesis.Orca
 {
@@ -67,13 +68,14 @@ namespace Thesis.Orca
             int batchRecCount = batchFile.CurrentBatch.Length;
             int recCount = inFile.RecordsCount;
 
-            var kDist = new List<double[]>(batchRecCount);
+            // distance to neighbors — Neighbors(b) in original description
+            var kDist = new List<BinaryHeap<double>>(batchRecCount);
             // initialize distance score with max distance
             for (int i = 0; i < batchRecCount; i++)
             {
-                var kDistDim = new double[k];
+                var kDistDim = new BinaryHeap<double>(k);
                 for (int j = 0; j < k; j++)
-                    kDistDim[j] = double.MaxValue;
+                    kDistDim.Push(double.MaxValue);
                 kDist.Add(kDistDim);
             }
 
@@ -83,39 +85,56 @@ namespace Thesis.Orca
                 minkDist.Add(double.MaxValue);
 
             // candidates stores the integer index
-            var candidates = Enumerable.Range(0, batchRecCount - 1).ToList();
-
-            //IEnumerator<double> kDist_itr = ((IEnumerable<double>)kDist).GetEnumerator();
-
-            var kDist_itr = ((IEnumerable<double[]>)kDist).GetEnumerator();
-            var minkDist_itr = ((IEnumerable<double>)minkDist).GetEnumerator();
-            var candidates_itr = ((IEnumerable<int>)candidates).GetEnumerator();
-            
+            var candidates = Enumerable.Range(0, batchRecCount - 1).ToList();            
 
             // loop over objects in reference table
             for (int i = 0; i < recCount; i++)
             {
                 Record descRecord = inFile.GetNextRecord();
 
-                kDist_itr.Reset();
-                minkDist_itr.Reset();
-                candidates_itr.Reset();
+                int kDist_i = 0;
+                int minkDist_i = 0;
+                int candidates_i = 0;
 
                 foreach (var record in batchFile.CurrentBatch)
                 {
                     double dist = Distance(record, descRecord, inFile.Weights);
 
-                    if (dist < minkDist_itr.Current)
+                    if (dist < minkDist[minkDist_i])
                     {
-                        if (batchFile.Offset + candidates_itr.Current != i)
+                        if (batchFile.Offset + candidates[candidates_i] != i)
                         {
-                            double[] kvec = kDist_itr.Current;
+                            BinaryHeap<double> kvec = kDist[kDist_i];
+                            kvec.Push(dist);
+                            kvec.Pop();
+                            minkDist[minkDist_i] = kvec.Peek();
+
+                            double score = 0;
+                            switch (Parameters.ScoreF)
+                            {
+                                case Parameters.DistanceType.Average:
+                                    for (int it = 0; it < k; it++)
+                                        score += kvec[it];
+                                    break;
+                                case Parameters.DistanceType.KthNeighbor:
+                                    score = kvec.Peek();
+                                    break;
+                            }
+
+                            if (score <= Parameters.Cutoff)
+                            {
+                                candidates.RemoveAt(candidates_i--);
+
+                                kDist.RemoveAt(kDist_i--);
+                                minkDist.RemoveAt(minkDist_i--);
+                                
+                            }
                         }
                     }
 
-                    kDist_itr.MoveNext();
-                    minkDist_itr.MoveNext();
-                    candidates_itr.MoveNext();
+                    kDist_i++;
+                    minkDist_i++;
+                    candidates_i++;
                 }
             }
 
