@@ -17,6 +17,9 @@ namespace Thesis.DPrep
             }
 
             Parameters parameters = new Parameters(args[0], args[1], args[2]);
+            if (args.Length > 3 && args[3] == "--norandom")
+                parameters.Randomize = false;
+
             DPrep dprep = new DPrep(parameters);
             dprep.Run();
             Console.WriteLine("Done!");

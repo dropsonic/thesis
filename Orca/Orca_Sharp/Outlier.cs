@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Thesis.Orca
 {
+    [DebuggerDisplay("Id = {Index}; Score = {Score}")]
     public struct Outlier : IComparable<Outlier>
     {
         public int Index { get; set; }

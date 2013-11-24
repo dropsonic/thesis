@@ -27,9 +27,10 @@ namespace Thesis.Orca
             Console.WriteLine();
 
             Console.WriteLine("Results:");
+            int i = 1;
             foreach (var result in results)
             {
-                Console.WriteLine("  Record #{0}: score = {1}", result.Index, result.Score);
+                Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Index, result.Score);
             }
 
             Console.ReadKey();

@@ -312,6 +312,8 @@ int main(int argc, char **argv)
 		cout << endl;
 	}
 
+	getchar();
+
 	return 0;
 };
 
