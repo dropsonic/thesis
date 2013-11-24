@@ -37,7 +37,7 @@ namespace Thesis.Orca
             {
                 done = !batchInFile.GetNextBatch();
 
-                var o = FindOutliers(batchInFile, inFile, Parameters.K);
+                var o = FindOutliers(batchInFile, inFile, Parameters.K, cutoff);
                 outliers.AddRange(o);
 
                 inFile.SeekPosition(0);
@@ -59,14 +59,17 @@ namespace Thesis.Orca
             return outliers;
         }
 
-        private IList<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, int k)
+        private IEnumerable<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile,
+                                                  int k, double cutoff)
         {
             Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);
             Contract.Requires<ArgumentOutOfRangeException>(k > 0);
-
-            int batchRecCount = batchFile.CurrentBatch.Length;
+            
+            var records = new List<Record>(batchFile.CurrentBatch);
+            int batchRecCount = records.Count;
             int recCount = inFile.RecordsCount;
+
 
             // distance to neighbors — Neighbors(b) in original description
             var kDist = new List<BinaryHeap<double>>(batchRecCount);
@@ -85,20 +88,24 @@ namespace Thesis.Orca
                 minkDist.Add(double.MaxValue);
 
             // candidates stores the integer index
-            var candidates = Enumerable.Range(0, batchRecCount - 1).ToList();            
+            var candidates = Enumerable.Range(0, batchRecCount - 1).ToList();
+
+            int kDist_i;
+            int minkDist_i;
+            int candidates_i;
 
             // loop over objects in reference table
             for (int i = 0; i < recCount; i++)
             {
                 Record descRecord = inFile.GetNextRecord();
 
-                int kDist_i = 0;
-                int minkDist_i = 0;
-                int candidates_i = 0;
+                kDist_i = 0;
+                minkDist_i = 0;
+                candidates_i = 0;
 
-                foreach (var record in batchFile.CurrentBatch)
+                for (int j = 0; j < batchRecCount; j++)
                 {
-                    double dist = Distance(record, descRecord, inFile.Weights);
+                    double dist = Distance(records[j], descRecord, inFile.Weights);
 
                     if (dist < minkDist[minkDist_i])
                     {
@@ -121,13 +128,15 @@ namespace Thesis.Orca
                                     break;
                             }
 
-                            if (score <= Parameters.Cutoff)
+                            if (score <= cutoff)
                             {
                                 candidates.RemoveAt(candidates_i--);
-
+                                records.RemoveAt(j--);
                                 kDist.RemoveAt(kDist_i--);
                                 minkDist.RemoveAt(minkDist_i--);
-                                
+
+                                if (candidates.Count == 0)
+                                    i = recCount; // exit top loop and return
                             }
                         }
                     }
@@ -138,7 +147,29 @@ namespace Thesis.Orca
                 }
             }
 
-            throw new NotImplementedException();
+            //--------------------------------
+            // update the list of top outliers 
+            // 
+            candidates_i = 0;
+            foreach (var kvec in kDist)
+            {
+                double sum = 0;
+                switch (Parameters.ScoreF)
+                {
+                    case Parameters.DistanceType.Average:
+                        for (int j = 0; j < kvec.Count; j++)
+                            sum += kvec[j];
+                        break;
+                    case Parameters.DistanceType.KthNeighbor:
+                        sum = kvec[kvec.Count - 1];
+                        break;
+                }
+
+                Outlier outlier = new Outlier();
+                outlier.Index = batchFile.Offset + candidates_i++;
+                outlier.Score = sum;
+                yield return outlier;
+            }
         }
 
         /// <summary>
