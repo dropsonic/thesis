@@ -165,6 +165,7 @@ void find_outliers(MTable &M, DTable &D, int k, real cutoff, int scoref, int dis
 				case 0: dist = distance(*R_itr,*D_itr,r,d); break;
 				case 1: dist = distance(*R_itr,*D_itr,r,d,Rw,Dw); break;
 			}
+
 			if (dist < *minkdist_itr) {
 				if ((M.offset_ + *candidates_itr != i) || (not_same)) {
 					vector<double> &kvec = *kdist_itr;
@@ -188,6 +189,7 @@ void find_outliers(MTable &M, DTable &D, int k, real cutoff, int scoref, int dis
 							score = kvec[0];
 							break;
 					}
+
 					if (score <= cutoff) {
 						candidates.erase(candidates_itr--);
 						Real.erase(R_itr--);
