@@ -47,20 +47,18 @@ namespace Thesis.Orca
                 //
                 outliers.Sort();
                 int numOutliers = Parameters.NumOutliers;
-                if (outliers.Count > numOutliers)
+                if (outliers.Count > numOutliers &&
+                    outliers[numOutliers - 1].Score > cutoff)
                 {
-                    if (outliers[numOutliers - 1].Score > cutoff)
-                    {
-                        // New cutoff
-                        cutoff = outliers[numOutliers - 1].Score;
-                    }
+                    // New cutoff
+                    cutoff = outliers[numOutliers - 1].Score;
                 }
             }
 
             return outliers;
         }
 
-        private IEnumerable<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, int k)
+        private IList<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, int k)
         {
             Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);
@@ -68,14 +66,7 @@ namespace Thesis.Orca
 
             int batchRecCount = batchFile.CurrentBatch.Length;
             int recCount = inFile.RecordsCount;
-            //var kdist = new List<double[]>();
 
-            // vectors to store distance of nearest neighbors
-            //var kDist = new double[batchRecCount, k];
-            //// initialize distance score with max distance
-            //for (int i = 0; i < kDist.GetLength(0); i++)
-            //    for (int j = 0; j < kDist.GetLength(1); j++)
-            //        kDist[i, j] = double.MaxValue;
             var kDist = new List<double[]>(batchRecCount);
             // initialize distance score with max distance
             for (int i = 0; i < batchRecCount; i++)
@@ -87,15 +78,11 @@ namespace Thesis.Orca
             }
 
             // vector to store furthest nearest neighbour
-            //var minkDist = new double[batchRecCount];
             var minkDist = new List<double>(batchRecCount);
             for (int i = 0; i < kDist.Count; i++)
                 minkDist.Add(double.MaxValue);
 
             // candidates stores the integer index
-            //var candidates = new int[batchRecCount];
-            //for (int i = 0; i < candidates.Length; i++)
-            //    candidates[i] = i;
             var candidates = Enumerable.Range(0, batchRecCount - 1).ToList();
 
             //IEnumerator<double> kDist_itr = ((IEnumerable<double>)kDist).GetEnumerator();
