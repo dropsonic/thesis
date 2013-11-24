@@ -150,7 +150,7 @@ namespace Thesis.DPrep
                             }
                         }
 
-                        outfile.WriteRecord(rec);
+                        outfile.WriteRecord(new Record(rec.Id, Rscale, rec.Discrete));
                     });
 
                 outfile.WriteHeader(_infile.RecordsCount);
@@ -193,7 +193,7 @@ namespace Thesis.DPrep
                         }
                     }
 
-                    outfile.WriteRecord(rec);
+                    outfile.WriteRecord(new Record(rec.Id, Rscale, rec.Discrete));
                 });
 
                 outfile.WriteHeader(_infile.RecordsCount);

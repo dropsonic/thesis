@@ -46,6 +46,7 @@ namespace Thesis.Orca
                 // and keep the best
                 //
                 outliers.Sort();
+                outliers.Reverse(); // sorting in descending order
                 int numOutliers = Parameters.NumOutliers;
                 if (outliers.Count > numOutliers &&
                     outliers[numOutliers - 1].Score > cutoff)
