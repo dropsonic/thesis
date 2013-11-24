@@ -33,10 +33,9 @@ namespace Thesis.Orca
             //-----------------------
             // run the outlier search 
             //
+            done = !batchInFile.GetNextBatch(); //start batch
             while (!done)
             {
-                done = !batchInFile.GetNextBatch();
-
                 var o = FindOutliers(batchInFile, inFile, Parameters.K, cutoff);
                 outliers.AddRange(o);
 
@@ -54,6 +53,7 @@ namespace Thesis.Orca
                     // New cutoff
                     cutoff = outliers[numOutliers - 1].Score;
                 }
+                done = !batchInFile.GetNextBatch();
             }
 
             return outliers;
@@ -88,7 +88,7 @@ namespace Thesis.Orca
                 minkDist.Add(double.MaxValue);
 
             // candidates stores the integer index
-            var candidates = Enumerable.Range(0, batchRecCount - 1).ToList();
+            var candidates = Enumerable.Range(0, batchRecCount).ToList();
 
             int kDist_i;
             int minkDist_i;

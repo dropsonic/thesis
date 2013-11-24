@@ -36,6 +36,7 @@ namespace Thesis.Orca.Common
             _infile = new BinaryReader(File.OpenRead(filename));
             Weights = new Weights();
             ReadHeader();
+            SeekPosition(0);
         }
 
         private void ReadHeader()

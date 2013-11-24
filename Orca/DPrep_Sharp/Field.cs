@@ -33,7 +33,7 @@ namespace Thesis.DPrep
 
         private bool HasWeight 
         { 
-            get { return float.IsNaN(Weight); } 
+            get { return !float.IsNaN(Weight); } 
         }
 
         public Field(IList<string> s, float realWeight, float discreteWeight)
