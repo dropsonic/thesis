@@ -62,14 +62,13 @@ namespace Thesis.Collections
 
         private static void HeapIncreaseKey(IList<T> a, int i, T key)
         {
-            //if (key.CompareTo(a[i]) < 0)
-            //    throw new ArgumentException("New element is smaller then previous.");
-            a[i] = key;
-            while (i > 0 && a[i / 2].CompareTo(a[i]) < 0)
-            {
-                SwapElements(a, i, i / 2);
-                i = i / 2;
-            }
+            a[i - 1] = key;
+
+            for (int j = i; j > 1 && a[j / 2 - 1].CompareTo(a[j - 1]) < 0; j = j / 2)
+                SwapElements(a, j - 1, j / 2 - 1);
+
+            //for (int j = i; j > 0 && a[j].CompareTo(a[j - 1]) > 0; j--)
+            //    SwapElements(a, j, j - 1);
         }
 
         public int IndexOf(T item)
@@ -85,14 +84,14 @@ namespace Thesis.Collections
             }
             set
             {
-                HeapIncreaseKey(_items, index, value);
+                HeapIncreaseKey(_items, index + 1, value);
             }
         }
 
         public void Push(T item)
         {
             _items.Add(item);
-            HeapIncreaseKey(_items, _items.Count - 1, item);
+            HeapIncreaseKey(_items, _items.Count, item);
         }
 
         public void Clear()
@@ -108,12 +107,6 @@ namespace Thesis.Collections
         public void CopyTo(T[] array, int arrayIndex)
         {
             _items.CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(T item)
-        {
-            return _items.Remove(item);
-            //Heapify();
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -134,8 +127,18 @@ namespace Thesis.Collections
         {
             if (Count == 0)
                 throw new InvalidOperationException("Heap is empty.");
+            
             T max = this[0];
-            Remove(max);
+            if (Count == 1)
+            {
+                _items.Remove(max);
+                return max;
+            }
+
+            T last = _items[_items.Count - 1];
+            _items.Remove(last);
+            _items[0] = last;
+            Heapify(_items, 1);
             return max;
         }
 

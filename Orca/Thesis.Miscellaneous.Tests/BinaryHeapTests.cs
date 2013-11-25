@@ -17,8 +17,8 @@ namespace Thesis.Collections.Tests
             {
                 int left = 2 * i;
                 int right = 2 * i + 1;
-                Assert.IsTrue(heap[i - 1].CompareTo(heap[left - 1]) > 0);
-                Assert.IsTrue(heap[i - 1].CompareTo(heap[right - 1]) > 0);
+                Assert.IsTrue(heap[i - 1].CompareTo(heap[left - 1]) >= 0);
+                Assert.IsTrue(heap[i - 1].CompareTo(heap[right - 1]) >= 0);
             }
         }
 
@@ -69,8 +69,6 @@ namespace Thesis.Collections.Tests
             heap.Push(4);
 
             IsHeap(heap);
-            List<int> correctHeap = new List<int>() { 9, 8, 6, 4, 1, 5, 3 };
-            Assert.IsTrue(correctHeap.SequenceEqual(heap));
         }
 
         [TestMethod]
@@ -82,19 +80,6 @@ namespace Thesis.Collections.Tests
 
             IsHeap(heap);
             List<int> correctHeap = new List<int>() { 9, 8, 7, 5, 3, 1, 4 };
-            Assert.IsTrue(correctHeap.SequenceEqual(heap));
-        }
-
-        [TestMethod]
-        public void RemoveItemTest()
-        {
-            List<int> data = new List<int>() { 5, 3, 1, 8, 9, 6, 4 };
-            BinaryHeap<int> heap = new BinaryHeap<int>(data);
-            heap.Remove(1);
-
-            Assert.AreEqual(6, heap.Count);
-            IsHeap(heap);
-            List<int> correctHeap = new List<int>() { 9, 8, 6, 5, 3, 4 };
             Assert.IsTrue(correctHeap.SequenceEqual(heap));
         }
 
@@ -136,6 +121,61 @@ namespace Thesis.Collections.Tests
         {
             BinaryHeap<int> heap = new BinaryHeap<int>();
             int max = heap.Peek();
+        }
+
+        [TestMethod]
+        public void CompletePeekPopTest()
+        {
+            double init = double.MaxValue;
+            BinaryHeap<double> heap = new BinaryHeap<double>();
+            for (int i = 0; i < 5; i++)
+                heap.Push(init);
+
+            heap.Push(4);
+            heap.Pop();
+            Assert.AreEqual(5, heap.Count);
+            Assert.AreEqual(init, heap.Peek());
+            IsHeap(heap);
+
+            heap.Push(3);
+            heap.Pop();
+            Assert.AreEqual(5, heap.Count);
+            Assert.AreEqual(init, heap.Peek());
+            IsHeap(heap);
+
+            heap.Push(5);
+            heap.Pop();
+            Assert.AreEqual(5, heap.Count);
+            Assert.AreEqual(init, heap.Peek());
+            IsHeap(heap);
+
+            heap.Push(2);
+            heap.Pop();
+            Assert.AreEqual(5, heap.Count);
+            Assert.AreEqual(init, heap.Peek());
+            IsHeap(heap);
+
+            heap.Push(1);
+            heap.Pop();
+            Assert.AreEqual(5, heap.Count);
+            Assert.AreEqual(5, heap.Peek());
+            IsHeap(heap);
+
+            heap.Pop();
+            Assert.AreEqual(4, heap.Count);
+            Assert.AreEqual(4, heap.Peek());
+
+            heap.Pop();
+            Assert.AreEqual(3, heap.Count);
+            Assert.AreEqual(3, heap.Peek());
+
+            heap.Pop();
+            Assert.AreEqual(2, heap.Count);
+            Assert.AreEqual(2, heap.Peek());
+
+            heap.Pop();
+            Assert.AreEqual(1, heap.Count);
+            Assert.AreEqual(1, heap.Peek());
         }
     }
 }
