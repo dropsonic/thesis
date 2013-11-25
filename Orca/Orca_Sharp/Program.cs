@@ -21,6 +21,9 @@ namespace Thesis.Orca
             if (args.Length > 1 && int.TryParse(args[1], out numOutliers))
                 parameters.NumOutliers = numOutliers;
 
+            if (args.Contains("-kth"))
+                parameters.ScoreF = Parameters.DistanceType.KthNeighbor;
+
             Orca orca = new Orca(parameters);
             var results = orca.Run();
             Console.WriteLine("Done!");
@@ -33,7 +36,7 @@ namespace Thesis.Orca
                 Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Index, result.Score);
             }
 
-            Console.ReadKey();
+            //Console.ReadKey();
         }
     }
 }

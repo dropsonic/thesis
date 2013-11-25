@@ -6,9 +6,33 @@ using System.Threading.Tasks;
 using Thesis.Orca.Common;
 using System.Diagnostics.Contracts;
 using Thesis.Collections;
+using System.Diagnostics;
 
 namespace Thesis.Orca
 {
+    static class Trace
+    {
+        [Conditional("DEBUG")]
+        public static void PrintRecords(IEnumerable<Record> records)
+        {
+            Console.WriteLine("-----------TRACE-----------");
+            IEnumerable<Record> pRecords = records.Count() <= 10 ? records :
+                records.Take(10);
+            foreach (var record in pRecords)
+            {
+                Console.Write("#{0}: ", record.Id);
+                foreach (var real in record.Real)
+                    Console.Write("{0} ", real);
+                Console.Write("| ");
+                foreach (var discrete in record.Discrete)
+                    Console.Write("{0} ", discrete);
+                Console.WriteLine();
+            }
+            Console.WriteLine("-----------END TRACE-----------");
+            Console.WriteLine();
+        }
+    }
+
     public class Orca
     {
         public Parameters Parameters { get; set; }
@@ -36,6 +60,8 @@ namespace Thesis.Orca
             done = !batchInFile.GetNextBatch(); //start batch
             while (!done)
             {
+                Trace.PrintRecords(batchInFile.CurrentBatch);
+
                 var o = FindOutliers(batchInFile, inFile, Parameters.K, cutoff);
                 outliers.AddRange(o);
 
@@ -80,6 +106,7 @@ namespace Thesis.Orca
                 var kDistDim = new BinaryHeap<double>(k);
                 for (int j = 0; j < k; j++)
                     kDistDim.Push(double.MaxValue);
+                    //kDistDim.Push(10000000000.0);
                 kDist.Add(kDistDim);
             }
 
@@ -87,6 +114,7 @@ namespace Thesis.Orca
             var minkDist = new List<double>(batchRecCount);
             for (int i = 0; i < kDist.Count; i++)
                 minkDist.Add(double.MaxValue);
+                //minkDist.Add(10000000000.0);
 
             // candidates stores the integer index
             var candidates = Enumerable.Range(0, batchRecCount).ToList();
