@@ -10,35 +10,6 @@ using System.Diagnostics;
 
 namespace Thesis.Orca
 {
-    static class Trace
-    {
-        [Conditional("DEBUG")]
-        public static void PrintRecords(IEnumerable<Record> records)
-        {
-            Console.WriteLine("-----------TRACE-----------");
-            IEnumerable<Record> pRecords = records.Count() <= 10 ? records :
-                records.Take(10);
-            foreach (var record in pRecords)
-            {
-                Console.Write("#{0}: ", record.Id);
-                foreach (var real in record.Real)
-                    Console.Write("{0} ", real);
-                Console.Write("| ");
-                foreach (var discrete in record.Discrete)
-                    Console.Write("{0} ", discrete);
-                Console.WriteLine();
-            }
-            Console.WriteLine("-----------END TRACE-----------");
-            Console.WriteLine();
-        }
-
-        [Conditional("DEBUG")]
-        public static void Message(string message)
-        {
-            Console.WriteLine("TRACE: " + message);
-        }
-    }
-
     public class Orca
     {
         public Parameters Parameters { get; set; }
@@ -183,7 +154,7 @@ namespace Thesis.Orca
                     candidates_i++;
                 }
 
-                Trace.Message(String.Format("Record #{0} processed.", i));
+                Trace.Message(String.Format("Ref #{0} processed.", i));
             }
 
             //--------------------------------

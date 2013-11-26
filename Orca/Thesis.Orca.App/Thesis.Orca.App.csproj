@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Thesis.Orca</RootNamespace>
-    <AssemblyName>Orca_Sharp</AssemblyName>
+    <AssemblyName>Thesis.Orca.App</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
@@ -110,11 +110,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatchInFile.cs" />
-    <Compile Include="NeighborsDistance.cs" />
-    <Compile Include="Orca.cs" />
-    <Compile Include="Outlier.cs" />
-    <Compile Include="Parameters.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -122,13 +117,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OrcaBinaryFiles\OrcaCommon.csproj">
+    <ProjectReference Include="..\Thesis.Orca.Common\Thesis.Orca.Common.csproj">
       <Project>{64ce960c-437d-4094-b1d9-3cc337b9ba0c}</Project>
-      <Name>OrcaCommon</Name>
+      <Name>Thesis.Orca.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Thesis.Miscellaneous\Thesis.Miscellaneous.csproj">
-      <Project>{ef5599f1-e728-41d6-86ee-321069fc3cd4}</Project>
-      <Name>Thesis.Miscellaneous</Name>
+    <ProjectReference Include="..\Thesis.Orca\Thesis.Orca.csproj">
+      <Project>{a0860067-5ad2-4255-a86c-000cbad04eb8}</Project>
+      <Name>Thesis.Orca</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

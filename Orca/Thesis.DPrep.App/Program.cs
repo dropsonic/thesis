@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Thesis.DPrep
+namespace Thesis.DPrep.App
 {
     class Program
     {
@@ -22,13 +22,20 @@ namespace Thesis.DPrep
                 Environment.Exit(0);
             }
 
-            Parameters parameters = new Parameters(args[0], args[1], args[2]);
-            if (args.Contains("-norand"))
-                parameters.Randomize = false;
+            try
+            {
+                Parameters parameters = new Parameters(args[0], args[1], args[2]);
+                if (args.Contains("-norand"))
+                    parameters.Randomize = false;
 
-            DPrep dprep = new DPrep(parameters);
-            dprep.Run();
-            Console.WriteLine("Done!");
+                DPrep dprep = new DPrep(parameters);
+                dprep.Run();
+                Console.WriteLine("Done!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: {0}. Please contact the developer.", ex.Message);
+            }
         }
     }
 }
