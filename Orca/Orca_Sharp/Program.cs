@@ -30,6 +30,15 @@ namespace Thesis.Orca
             if (args.Contains("-kth"))
                 parameters.ScoreF = Parameters.DistanceType.KthNeighbor;
 
+            int batchIndex = Array.IndexOf(args, "-b", 1);
+            if (batchIndex > 0 && args.Length > batchIndex + 1)
+            {
+                int batchSize; 
+                if (int.TryParse(args[batchIndex + 1], out batchSize))
+                    parameters.BatchSize = batchSize;
+            }
+
+
             Orca orca = new Orca(parameters);
             Console.WriteLine("Processing data...");
             var results = orca.Run();
@@ -40,7 +49,7 @@ namespace Thesis.Orca
             int i = 1;
             foreach (var result in results)
             {
-                Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Index, result.Score);
+                Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Record.Id, result.Score);
             }
 
             //Console.ReadKey();
