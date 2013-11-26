@@ -197,7 +197,7 @@ namespace Thesis.DPrep
                     status = GetNextRecord(out real, out discrete, out valid);
                     if (status && valid)
                     {
-                        var record = new Record(numRecords, real, discrete);
+                        var record = new Record(recordNumber, real, discrete);
                         outfile.WriteRecord(record);
                         numRecords++;
                         recordNumber++;
