@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,11 @@ namespace Thesis.DPrep
     {
         static void Main(string[] args)
         {
+            Contract.ContractFailed += (s, e) =>
+                {
+                    Console.WriteLine("Something went wrong. Please contact the developer.");
+                };
+
             if (args.Length < 3)
             {
                 Console.WriteLine("Wrong args.");

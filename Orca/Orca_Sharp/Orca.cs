@@ -31,6 +31,12 @@ namespace Thesis.Orca
             Console.WriteLine("-----------END TRACE-----------");
             Console.WriteLine();
         }
+
+        [Conditional("DEBUG")]
+        public static void Message(string message)
+        {
+            Console.WriteLine("TRACE: " + message);
+        }
     }
 
     public class Orca
@@ -160,7 +166,7 @@ namespace Thesis.Orca
                             if (score <= cutoff)
                             {
                                 candidates.RemoveAt(candidates_i--);
-                                records.RemoveAt(j--);
+                                records.RemoveAt(j--); batchRecCount--;
                                 kDist.RemoveAt(kDist_i--);
                                 minkDist.RemoveAt(minkDist_i--);
 
@@ -174,6 +180,8 @@ namespace Thesis.Orca
                     minkDist_i++;
                     candidates_i++;
                 }
+
+                Trace.Message(String.Format("Record #{0} processed.", i));
             }
 
             //--------------------------------
