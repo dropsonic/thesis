@@ -92,7 +92,7 @@ namespace Thesis.Orca
             return outliers;
         }
 
-        private IEnumerable<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, double cutoff)
+        private IList<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, double cutoff)
         {
             Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);
@@ -188,7 +188,8 @@ namespace Thesis.Orca
             // update the list of top outliers 
             // 
             candidates_i = 0;
-            
+            List<Outlier> outliers = new List<Outlier>();
+
             foreach (var kvec in kDist)
             {
                 double sum = 0;
@@ -206,8 +207,10 @@ namespace Thesis.Orca
                 Outlier outlier = new Outlier();
                 outlier.Index = batchFile.Offset + candidates_i++;
                 outlier.Score = sum;
-                yield return outlier;
+                outliers.Add(outlier);
             }
+
+            return outliers;
         }
 
         /// <summary>
