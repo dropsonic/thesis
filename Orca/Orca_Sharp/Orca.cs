@@ -105,14 +105,17 @@ namespace Thesis.Orca
 
 
             // distance to neighbors — Neighbors(b) in original description
-            var kDist = new List<BinaryHeap<double>>(batchRecCount);
+            var kDist = new List<NeighborsDistance>(batchRecCount);
             // initialize distance score with max distance
             for (int i = 0; i < batchRecCount; i++)
             {
-                var kDistDim = new BinaryHeap<double>(k);
+                var kDistDim = new NeighborsDistance() 
+                { 
+                    Record = records[i],
+                    Distances = new BinaryHeap<double>(k) 
+                };
                 for (int j = 0; j < k; j++)
-                    kDistDim.Push(double.MaxValue);
-                    //kDistDim.Push(10000000000.0);
+                    kDistDim.Distances.Push(double.MaxValue);
                 kDist.Add(kDistDim);
             }
 
@@ -120,7 +123,6 @@ namespace Thesis.Orca
             var minkDist = new List<double>(batchRecCount);
             for (int i = 0; i < kDist.Count; i++)
                 minkDist.Add(double.MaxValue);
-                //minkDist.Add(10000000000.0);
 
             // candidates stores the integer index
             var candidates = Enumerable.Range(0, batchRecCount).ToList();
@@ -146,7 +148,7 @@ namespace Thesis.Orca
                     {
                         if (batchFile.Offset + candidates[candidates_i] != i)
                         {
-                            BinaryHeap<double> kvec = kDist[kDist_i];
+                            BinaryHeap<double> kvec = kDist[kDist_i].Distances;
                             kvec.Push(dist);
                             kvec.Pop();
                             minkDist[minkDist_i] = kvec.Peek();
@@ -196,16 +198,16 @@ namespace Thesis.Orca
                 switch (Parameters.ScoreF)
                 {
                     case Parameters.DistanceType.Average:
-                        for (int j = 0; j < kvec.Count; j++)
-                            sum += kvec[j];
+                        for (int j = 0; j < kvec.Distances.Count; j++)
+                            sum += kvec.Distances[j];
                         break;
                     case Parameters.DistanceType.KthNeighbor:
-                        sum = kvec[kvec.Count - 1];
+                        sum = kvec.Distances[kvec.Distances.Count - 1];
                         break;
                 }
 
                 Outlier outlier = new Outlier();
-                outlier.Index = batchFile.Offset + candidates_i++;
+                outlier.Record = kvec.Record;
                 outlier.Score = sum;
                 outliers.Add(outlier);
             }
