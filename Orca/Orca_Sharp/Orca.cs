@@ -188,6 +188,7 @@ namespace Thesis.Orca
             // update the list of top outliers 
             // 
             candidates_i = 0;
+            
             foreach (var kvec in kDist)
             {
                 double sum = 0;
