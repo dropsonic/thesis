@@ -67,17 +67,6 @@ namespace Thesis.Orca
             }
         }
 
-        private int _startBatchSize;
-        public int StartBatchSize
-        {
-            get { return _startBatchSize; }
-            set
-            {
-                Contract.Requires<ArgumentOutOfRangeException>(value > 0);
-                _startBatchSize = value;
-            }
-        }
-
         private int _batchSize;
         public int BatchSize
         {
@@ -102,7 +91,6 @@ namespace Thesis.Orca
             Cutoff = 0;
 
             // computation parameters
-            StartBatchSize = 1000;
             BatchSize = 1000;
 
             // misc parameters

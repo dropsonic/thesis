@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 namespace Thesis.Orca.Common
 {
     [DebuggerDisplay("Id = {Id}")]
-    public struct Record
+    public class Record
     {
         public int Id { get; set; }
         public float[] Real { get; set; }
         public int[] Discrete { get; set; }
 
+        public Record() { }
+
         public Record(int id, float[] real, int[] discrete)
-            : this()
         {
             Id = id;
             Real = real;

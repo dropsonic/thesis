@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{06E56C32-884B-4A06-A734-C8D1DE2F0A06}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{A0860067-5AD2-4255-A86C-000CBAD04EB8}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Thesis.Orca</RootNamespace>
-    <AssemblyName>Orca_Sharp</AssemblyName>
+    <AssemblyName>Thesis.Orca</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -58,14 +57,13 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
@@ -111,19 +109,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatchInFile.cs" />
+    <Compile Include="NeighborsDistance.cs" />
     <Compile Include="Orca.cs" />
     <Compile Include="Outlier.cs" />
     <Compile Include="Parameters.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Trace.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OrcaBinaryFiles\OrcaCommon.csproj">
+    <ProjectReference Include="..\Thesis.Orca.Common\Thesis.Orca.Common.csproj">
       <Project>{64ce960c-437d-4094-b1d9-3cc337b9ba0c}</Project>
-      <Name>OrcaCommon</Name>
+      <Name>Thesis.Orca.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Thesis.Miscellaneous\Thesis.Miscellaneous.csproj">
       <Project>{ef5599f1-e728-41d6-86ee-321069fc3cd4}</Project>

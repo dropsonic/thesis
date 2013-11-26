@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -11,7 +12,7 @@ namespace Thesis.Orca.Common
     /// <summary>
     /// Represents Orca format binary file reader.
     /// </summary>
-    public class BinaryInFile : IDisposable
+    public class BinaryInFile : IEnumerable<Record>, IDisposable
     {
         BinaryReader _infile;
 
@@ -78,6 +79,7 @@ namespace Thesis.Orca.Common
 
         public Record GetRecord(int pos)
         {
+            Contract.Requires<ArgumentOutOfRangeException>(pos >= 0);
             SeekPosition(pos);
             return GetNextRecord();
         }
@@ -122,6 +124,20 @@ namespace Thesis.Orca.Common
         ~BinaryInFile()    
         {        
             Dispose(false);
+        }
+        #endregion
+
+        #region IEnumerable<Record>
+        public IEnumerator<Record> GetEnumerator()
+        {
+            SeekPosition(0);
+            for (int i = 0; i < RecordsCount; i++)
+                yield return GetNextRecord();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
         #endregion
     }
