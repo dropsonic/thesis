@@ -31,6 +31,7 @@ namespace Thesis.Orca
                 parameters.ScoreF = Parameters.DistanceType.KthNeighbor;
 
             Orca orca = new Orca(parameters);
+            Console.WriteLine("Processing data...");
             var results = orca.Run();
             Console.WriteLine("Done!");
             Console.WriteLine();

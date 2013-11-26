@@ -68,7 +68,7 @@ namespace Thesis.Orca
             {
                 Trace.PrintRecords(batchInFile.CurrentBatch);
 
-                var o = FindOutliers(batchInFile, inFile, Parameters.K, cutoff);
+                var o = FindOutliers(batchInFile, inFile, cutoff);
                 outliers.AddRange(o);
 
                 inFile.SeekPosition(0);
@@ -92,12 +92,12 @@ namespace Thesis.Orca
             return outliers;
         }
 
-        private IEnumerable<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile,
-                                                  int k, double cutoff)
+        private IEnumerable<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, double cutoff)
         {
             Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);
-            Contract.Requires<ArgumentOutOfRangeException>(k > 0);
+
+            int k = Parameters.K;
             
             var records = new List<Record>(batchFile.CurrentBatch);
             int batchRecCount = records.Count;
