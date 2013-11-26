@@ -89,7 +89,7 @@ namespace Thesis.Orca
                 done = !batchInFile.GetNextBatch();
             }
 
-            return outliers;
+            return outliers.Take(Parameters.NumOutliers);
         }
 
         private IList<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, double cutoff)
