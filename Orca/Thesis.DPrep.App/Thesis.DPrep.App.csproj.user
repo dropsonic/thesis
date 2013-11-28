@@ -3,4 +3,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartArguments>"..\..\..\Data\data.txt" "..\..\..\Data\data.names" "..\..\..\Data\data.sharp.bin"</StartArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartArguments>"..\..\..\Data\data.txt" "..\..\..\Data\data.names" "..\..\..\Data\data.sharp.bin"</StartArguments>
+  </PropertyGroup>
 </Project>

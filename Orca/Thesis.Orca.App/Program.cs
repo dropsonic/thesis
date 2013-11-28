@@ -40,6 +40,14 @@ namespace Thesis.Orca.App
                         parameters.BatchSize = batchSize;
                 }
 
+                int nIndex = Array.IndexOf(args, "-n", 1);
+                if (nIndex > 0 && args.Length > nIndex + 1)
+                {
+                    int nCount;
+                    if (int.TryParse(args[nIndex + 1], out nCount))
+                        parameters.NumOutliers = nCount;
+                }
+
 
                 Orca orca = new Orca(parameters);
                 Console.WriteLine("Processing data...");
