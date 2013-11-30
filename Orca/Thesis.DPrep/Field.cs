@@ -42,8 +42,6 @@ namespace Thesis.DPrep
             Contract.Requires<ArgumentNullException>(s != null);
             Contract.Requires<ArgumentException>(s.Count > 0);
 
-            Values = new List<string>();
-
             Weight = float.NaN; // no weight
             int i = 0; // start token
             float weight;

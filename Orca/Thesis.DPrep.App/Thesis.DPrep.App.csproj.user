@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>"..\..\..\Data\adult\results.data" "..\..\..\Data\adult\results.features" "..\..\..\Data\adult\results.sharp.bin"</StartArguments>
+    <StartArguments>"..\..\..\Data\pioneer.data" "..\..\..\Data\pioneer.fields" "..\..\..\Data\pioneer.bin"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartArguments>"..\..\..\Data\data.txt" "..\..\..\Data\data.names" "..\..\..\Data\data.sharp.bin"</StartArguments>
