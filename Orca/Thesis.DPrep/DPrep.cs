@@ -17,7 +17,8 @@ namespace Thesis.DPrep
             Parameters = parameters;
         }
 
-        public void Run()
+        /// <returns>Number of converted records.</returns>
+        public int Run()
         {
             Contract.Requires<ArgumentNullException>(Parameters != null);
 
@@ -114,6 +115,8 @@ namespace Thesis.DPrep
                 catch
                 { }
             }
+
+            return convertedRecords;
         }
     }
 }

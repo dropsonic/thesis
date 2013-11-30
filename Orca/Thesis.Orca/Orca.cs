@@ -154,7 +154,7 @@ namespace Thesis.Orca
                     candidates_i++;
                 }
 
-                Trace.Message(String.Format("Ref #{0} processed.", i));
+                Trace.Message(String.Format("Offset: {0} | Ref #{1} processed.", batchFile.Offset, i));
             }
 
             //--------------------------------
