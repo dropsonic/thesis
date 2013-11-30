@@ -69,6 +69,7 @@ namespace Thesis.DPrep
                         break;
                     case "discrete":
                         Type = FieldType.DiscreteDataDriven;
+                        Values = new List<string>();
                         if (!HasWeight)
                             Weight = discreteWeight;
                         break;
