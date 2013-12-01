@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Firefox;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,11 +33,15 @@ namespace TelemetryGenerator
             _browser.Navigate().GoToUrl(_url);
             _browser.FindElementById("EduTableScrollButton").Click();
 
+            bool writeHeader = File.Exists(fileName);
 
-            using (StreamWriter writer = new StreamWriter(fileName, false))
+            using (StreamWriter writer = new StreamWriter(fileName, true))
             {
                 //Write header
-                WriteLine(writer, GetFieldNames(), separator);
+                if (writeHeader)
+                    WriteLine(writer, GetFieldNames(), separator);
+                else
+                    writer.WriteLine("% {0}", DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
                 string previousKey = String.Empty;
                 //Write data
@@ -78,13 +83,14 @@ namespace TelemetryGenerator
         void WriteLine(TextWriter writer, string[] values, string separator)
         {
             int lastIndex = values.Length - 1;
+            StringBuilder s = new StringBuilder();
             for (int i = 0; i < values.Length; i++)
             {
-                writer.Write(values[i]);
+                s.Append(values[i]);
                 if (i != lastIndex)
-                    writer.Write(separator);
+                    s.Append(separator);
             }
-            writer.WriteLine();
+            writer.WriteLine(s.ToString());
         }
 
         string[] GetRecord()
