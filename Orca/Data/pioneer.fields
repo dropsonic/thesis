@@ -1,0 +1,41 @@
+TRIAL-ID		: ignore		% categorical, the trial id of the experience that the observation belongs to
+DESCRIPTION		: ignore		% a symbolic description of the experience design
+TIME-SECS		: ignore		% a reading of the Pioneer's internal clock, in seconds
+BATTERY-LEVEL 	: continuous	% a reading of battery level, in volts
+SONAR-0			: continuous	% sonar depth reading, in mm, of the left (90) pointing sonar
+SONAR-1			: continuous	% sonar depth reading, in mm, of a (15) pointing sonar
+SONAR-2 		: continuous	% sonar depth reading, in mm, of a (7.5) pointing sonar
+SONAR-3 		: continuous	% sonar depth reading, in mm, of a forward (0) pointing sonar
+SONAR-4 		: continuous	% sonar depth reading, in mm, of a (-7.5) pointing sonar
+SONAR-5 		: continuous	% sonar depth reading, in mm, of a (-15) pointing sonar
+SONAR-6 		: continuous	% sonar depth reading, in mm, of a right (-90) pointing sonar
+HEADING			: continuous	% heading reading, in degrees, from the robot's "true north"
+R-WHEEL-VEL		: continuous	% right wheel velocity, in mm/sec
+L-WHEEL-VEL		: continuous	% left wheel velocity, in mm/sec
+TRANS-VEL		: continuous	% translational velocity, mm/sec
+ROT-VEL			: continuous	% rotational velocity, mm/sec
+R-STALL			: discrete		% right wheel stall sensor, binary (0/1)
+L-STALL			: discrete		% left wheel stall sensor, binary (0/1)
+ROBOT-STATUS	: discrete		% robot status, 2.0 = stationary, 3.0 = moving
+GRIP-STATE		: discrete		% gripper state
+GRIP-FRONT-BEAM : discrete		% gripper break beam, binary, 1.0 = broken
+GRIP-REAR-BEAM	: discrete		% gripper break beam, binary, 1.0 = broken
+GRIP-BUMPER		: discrete		% gripper bumper, binary, 1.0 = in contact
+VIS-A-AREA		: continuous	% area of dominant visible object for channel A, in pixels
+VIS-A-X			: continuous	% X location of object in channel A on image plane, -140 ... 140
+VIS-A-Y			: continuous	% Y location of channel A on image plane
+VIS-A-H			: continuous	% height of object in channel A on plane, in pixels
+VIS-A-W			: continuous	% width of object in A on image plane, in pixels
+VIS-A-DIST		: continuous	% distance to object in channel A, in mm
+VIS-B-AREA		: continuous	% area of dominant visible object for channel B, in pixels
+VIS-B-X			: continuous	% X location of object in channel B on image plane, -140 ... 140
+VIS-B-Y			: continuous	% Y location of channel B on image plane
+VIS-B-H			: continuous	% height of object in channel B on plane, in pixels
+VIS-B-W			: continuous	% width of object in B on image plane, in pixels
+VIS-B-DIST		: continuous	% distance to object in channel B, in mm
+VIS-C-AREA		: continuous	% area of dominant visible object for channel C, in pixels
+VIS-C-X			: continuous	% X location of object in channel C on image plane, -140 ... 140
+VIS-C-Y			: continuous	% Y location of channel C on image plane
+%VIS-C-H			: continuous	% height of object in C on image plane, in pixels
+%VIS-C-W			: continuous	% width of object in C on image plane, in pixels
+%VIS-C-DIST		: continuous	% distance to object in channel C, in mm
