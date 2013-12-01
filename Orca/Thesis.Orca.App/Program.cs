@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Thesis.Orca.App
 {
@@ -40,6 +41,23 @@ namespace Thesis.Orca.App
                         parameters.BatchSize = batchSize;
                 }
 
+                int nIndex = Array.IndexOf(args, "-n", 1);
+                if (nIndex > 0 && args.Length > nIndex + 1)
+                {
+                    int nCount;
+                    if (int.TryParse(args[nIndex + 1], out nCount))
+                        parameters.NumOutliers = nCount;
+                }
+
+                int outIndex = Array.IndexOf(args, "-o", 1);
+                bool writeToFile = false;
+                string outFilename = String.Empty;
+                if (outIndex > 0 && args.Length > outIndex + 1)
+                {
+                    writeToFile = true;
+                    outFilename = args[outIndex + 1];
+                }
+
 
                 Orca orca = new Orca(parameters);
                 Console.WriteLine("Processing data...");
@@ -47,11 +65,24 @@ namespace Thesis.Orca.App
                 Console.WriteLine("Done!");
                 Console.WriteLine();
 
-                Console.WriteLine("Results:");
-                int i = 1;
-                foreach (var result in results)
+                if (writeToFile)
                 {
-                    Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Record.Id, result.Score);
+                    using (var writer = new StreamWriter(outFilename, false))
+                    {
+                        foreach (var result in results)
+                        {
+                            writer.WriteLine("{0}, {1}", result.Record.Id, result.Score);
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Results:");
+                    int i = 1;
+                    foreach (var result in results)
+                    {
+                        Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Record.Id, result.Score);
+                    }
                 }
             }
             catch (Exception ex)

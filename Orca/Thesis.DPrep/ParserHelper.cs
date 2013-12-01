@@ -19,6 +19,8 @@ namespace Thesis.DPrep
             int index = line.IndexOf('%');
             if (index >= 0)
                 line = line.Remove(index);
+            // Replace tab characters
+            line = line.Replace('\t', ' ');
             // Split string into tokens
             var tokens = line.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             return tokens;

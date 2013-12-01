@@ -30,7 +30,10 @@ namespace Thesis.Orca.Common
 
         public static float[] ReadFloatArray(this BinaryReader reader, int count)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(count > 0);
+            Contract.Requires<ArgumentOutOfRangeException>(count >= 0);
+
+            if (count == 0)
+                return new float[0];
 
             float[] result = new float[count];
             byte[] binaryData = reader.ReadBytes(sizeof(float) * count);
@@ -41,7 +44,10 @@ namespace Thesis.Orca.Common
 
         public static int[] ReadIntArray(this BinaryReader reader, int count)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(count > 0);
+            Contract.Requires<ArgumentOutOfRangeException>(count >= 0);
+
+            if (count == 0)
+                return new int[0];
 
             int[] result = new int[count];
             byte[] binaryData = reader.ReadBytes(sizeof(int) * count);

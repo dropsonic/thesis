@@ -8,7 +8,7 @@ using Thesis.Orca.Common;
 
 namespace Thesis.Orca
 {
-    [DebuggerDisplay("Id = {Index}; Score = {Score}")]
+    [DebuggerDisplay("Id = {Record.Id}; Score = {Score}")]
     public struct Outlier : IComparable<Outlier>
     {
         public Record Record { get; set; }

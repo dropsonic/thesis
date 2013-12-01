@@ -29,8 +29,9 @@ namespace Thesis.DPrep.App
                     parameters.Randomize = false;
 
                 DPrep dprep = new DPrep(parameters);
-                dprep.Run();
-                Console.WriteLine("Done!");
+                Console.WriteLine("Converting data...");
+                int convertedRecords = dprep.Run();
+                Console.WriteLine("Done! {0} record(s) converted.", convertedRecords);
             }
             catch (Exception ex)
             {
