@@ -230,8 +230,13 @@ namespace Thesis
             {
                 string line = _infile.ReadLine();
                 string[] tokens = Tokenize(line, _recordDelimiters);
-                Index++;
-                return CreateRecord(tokens);
+                if (tokens.Length > 0)
+                {
+                    Index++;
+                    return CreateRecord(tokens);
+                }
+                else // comment
+                    return null;
             }
             else
             {

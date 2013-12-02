@@ -42,7 +42,8 @@ namespace Thesis.DPrep
                 // write the example to the file
                 //
                 foreach (var record in _reader)
-                    outfile.WriteRecord(record);
+                    if (record != null)
+                        outfile.WriteRecord(record);
 
                 //-----------------------------
 	            // write header information

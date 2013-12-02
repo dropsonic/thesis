@@ -40,7 +40,7 @@ namespace Thesis.DataCleansing
 
             var orca = new Orca.Orca(orcaParams);
             var outliers = orca.Run();
-
+            
             File.Delete(orcaFile);
 
             return outliers;

@@ -22,45 +22,46 @@ namespace Thesis.Orca
         public IEnumerable<Outlier> Run()
         {
             // Test cases
-            BatchInFile batchInFile = new BatchInFile(Parameters.DataFile, 
-                                                      Parameters.BatchSize);
+            using (BatchInFile batchInFile = new BatchInFile(Parameters.DataFile, 
+                                                      Parameters.BatchSize))
             // Reference database (in this case - whole input data)
-            BinaryInFile inFile = new BinaryInFile(Parameters.DataFile);
-
-            List<Outlier> outliers = new List<Outlier>();
-            bool done = false;
-            double cutoff = Parameters.Cutoff;
-
-            //-----------------------
-            // run the outlier search 
-            //
-            done = !batchInFile.GetNextBatch(); //start batch
-            while (!done)
+            using (BinaryInFile inFile = new BinaryInFile(Parameters.DataFile))
             {
-                Trace.PrintRecords(batchInFile.CurrentBatch);
+                List<Outlier> outliers = new List<Outlier>();
+                bool done = false;
+                double cutoff = Parameters.Cutoff;
 
-                var o = FindOutliers(batchInFile, inFile, cutoff);
-                outliers.AddRange(o);
-
-                inFile.SeekPosition(0);
-
-                //-------------------------------
-                // sort the current best outliers 
-                // and keep the best
+                //-----------------------
+                // run the outlier search 
                 //
-                outliers.Sort();
-                outliers.Reverse(); // sorting in descending order
-                int numOutliers = Parameters.NumOutliers;
-                if (outliers.Count > numOutliers &&
-                    outliers[numOutliers - 1].Score > cutoff)
+                done = !batchInFile.GetNextBatch(); //start batch
+                while (!done)
                 {
-                    // New cutoff
-                    cutoff = outliers[numOutliers - 1].Score;
-                }
-                done = !batchInFile.GetNextBatch();
-            }
+                    Trace.PrintRecords(batchInFile.CurrentBatch);
 
-            return outliers.Take(Parameters.NumOutliers);
+                    var o = FindOutliers(batchInFile, inFile, cutoff);
+                    outliers.AddRange(o);
+
+                    inFile.SeekPosition(0);
+
+                    //-------------------------------
+                    // sort the current best outliers 
+                    // and keep the best
+                    //
+                    outliers.Sort();
+                    outliers.Reverse(); // sorting in descending order
+                    int numOutliers = Parameters.NumOutliers;
+                    if (outliers.Count > numOutliers &&
+                        outliers[numOutliers - 1].Score > cutoff)
+                    {
+                        // New cutoff
+                        cutoff = outliers[numOutliers - 1].Score;
+                    }
+                    done = !batchInFile.GetNextBatch();
+                }
+
+                return outliers.Take(Parameters.NumOutliers);
+            }
         }
 
         private IList<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, double cutoff)
