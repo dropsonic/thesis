@@ -18,8 +18,8 @@ namespace Thesis.DPrep
         private float _realWeight;
         private float _discreteWeight;
 
-        private readonly char[] _fieldsDelimiters = { '.', ',', ':', ';', ' ' };
-        private readonly char[] _recordDelimiters = { ',', ':', ';', ' ' };
+        private char[] _fieldsDelimiters;
+        private char[] _recordDelimiters;
         private const string _noValueReplacement = "?";
 
         private List<Field> _fields = new List<Field>();
@@ -31,10 +31,14 @@ namespace Thesis.DPrep
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
 
-        public DataTable(string dataFile, string fieldsFile, float missingR, int missingD, float realWeight, float discreteWeight)
+        public DataTable(string dataFile, string fieldsFile, float missingR, int missingD, float realWeight, float discreteWeight, char[] fieldsDelimiters, char[] recordDelimiters)
         {
-            Contract.Requires(!String.IsNullOrEmpty(dataFile));
-            Contract.Requires(!String.IsNullOrEmpty(fieldsFile));
+            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(dataFile));
+            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(fieldsFile));
+            Contract.Requires<ArgumentNullException>(fieldsDelimiters != null);
+            Contract.Requires<ArgumentNullException>(recordDelimiters != null);
+            Contract.Requires<ArgumentException>(fieldsDelimiters.Length > 0);
+            Contract.Requires<ArgumentException>(recordDelimiters.Length > 0);            
 
             _dataFile = dataFile;
             _fieldsFile = fieldsFile;
@@ -42,6 +46,8 @@ namespace Thesis.DPrep
             _missingD = missingD;
             _realWeight = realWeight;
             _discreteWeight = discreteWeight;
+            _fieldsDelimiters = fieldsDelimiters;
+            _recordDelimiters = recordDelimiters;
 
             Weights = new Weights();
 

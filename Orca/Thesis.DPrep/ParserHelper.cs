@@ -23,6 +23,9 @@ namespace Thesis.DPrep
             line = line.Replace('\t', ' ');
             // Split string into tokens
             var tokens = line.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            // Trim whitespaces in tokens
+            tokens = tokens.Select(s => s.Trim()).ToArray();
+
             return tokens;
         }
     }

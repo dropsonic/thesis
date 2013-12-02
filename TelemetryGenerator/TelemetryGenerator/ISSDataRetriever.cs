@@ -33,7 +33,7 @@ namespace TelemetryGenerator
             _browser.Navigate().GoToUrl(_url);
             _browser.FindElementById("EduTableScrollButton").Click();
 
-            bool writeHeader = File.Exists(fileName);
+            bool writeHeader = !File.Exists(fileName);
 
             using (StreamWriter writer = new StreamWriter(fileName, true))
             {

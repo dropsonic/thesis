@@ -34,7 +34,9 @@ namespace Thesis.DPrep
                                                 Parameters.MissingR, 
                                                 Parameters.MissingD,
                                                 Parameters.RealWeight,
-                                                Parameters.DiscreteWeight);
+                                                Parameters.DiscreteWeight,
+                                                Parameters.FieldsDelimiters,
+                                                Parameters.RecordsDelimiters);
             
             //-------------------------------------------------------------
             // Load the Scale File 
