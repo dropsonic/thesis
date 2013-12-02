@@ -21,8 +21,8 @@ namespace Thesis
 
     public interface IDataWriter
     {
-        void WriteHeader(IEnumerable<Field> fields);
-        void WriteRecord(Record record);
+        //void WriteHeader(IEnumerable<Field> fields);
+        //void WriteRecord(Record record);
         void DeleteRecord(int number);
     }
 

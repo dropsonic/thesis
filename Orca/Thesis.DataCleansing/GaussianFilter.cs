@@ -13,7 +13,7 @@ namespace Thesis.DataCleansing
     /// </summary>
     public class GaussianFilter : IAnomaliesFilter
     {
-        public IList<Outlier> Filter(IList<Outlier> outliers)
+        public IEnumerable<Outlier> Filter(IEnumerable<Outlier> outliers)
         {
             Contract.Requires<ArgumentNullException>(outliers != null);
 
@@ -27,9 +27,16 @@ namespace Thesis.DataCleansing
             return anomalies;
         }
 
-        private double GetCutoff(IList<Outlier> outliers)
+        private IDictionary<double, double> GetFrequencies(IList<Outlier> outliers)
         {
-            var freq = GetFrequencies(outliers);
+            return outliers.GroupBy(o => o.Score)
+                           .ToDictionary(gr => gr.Key,
+                                         gr => (double)gr.Count() / (double)outliers.Count);
+        }
+
+        private double GetCutoff(IEnumerable<Outlier> outliers)
+        {
+            var freq = GetFrequencies(outliers.ToList());
             double mean, disp;
             GetStatValues(freq, out mean, out disp);
             double cutoff = mean + 3 * disp;
@@ -64,12 +71,5 @@ namespace Thesis.DataCleansing
         //    return freq.Select(v => v.Key * v.Key * v.Value).Sum()
         //           - Math.Pow(Mean(freq), 2);
         //}
-
-        private IDictionary<double, double> GetFrequencies(IList<Outlier> outliers)
-        {
-            return outliers.GroupBy(o => o.Score)
-                           .ToDictionary(gr => gr.Key,
-                                         gr => (double)gr.Count() / (double)outliers.Count);
-        }
     }
 }

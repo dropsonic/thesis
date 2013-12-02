@@ -12,6 +12,6 @@ namespace Thesis.DataCleansing
         /// <summary>
         /// Return anomalies in all outliers.
         /// </summary>
-        IList<Outlier> Filter(IList<Outlier> outliers);
+        IEnumerable<Outlier> Filter(IEnumerable<Outlier> outliers);
     }
 }

@@ -14,10 +14,9 @@ namespace Thesis.DataCleansing
         IAnomaliesFilter _filter;
         IDataReader _input;
         IDataWriter _output;
-        float _outliersPart;
 
         /// <param name="analizedPart">Part of input data to be loaded in memory and analized.</param>
-        public AnomalyCleaner(IDataReader input, IDataWriter output, IAnomaliesFilter filter, float analizedPart = 0.05f)
+        public AnomalyCleaner(IDataReader input, IDataWriter output, IAnomaliesFilter filter)
         {
             Contract.Requires<ArgumentNullException>(input != null);
             Contract.Requires<ArgumentNullException>(output != null);
@@ -26,10 +25,9 @@ namespace Thesis.DataCleansing
             _filter = filter;
             _input = input;
             _output = output;
-            _outliersPart = outliersPart;
         }
 
-        private IList<Outlier> FindOutliers()
+        private IEnumerable<Outlier> FindOutliers()
         {
             string orcaFile = "input.bin";
             var dprepParams = new DPrep.Parameters();
@@ -39,14 +37,20 @@ namespace Thesis.DataCleansing
             var orcaParams = new Orca.Parameters(orcaFile) 
             { 
                 BatchSize = 10000, 
-                NumOutliers = (int)Math.Round(count * _outliersPart), 
+                NumOutliers = count,
                 ScoreFunction = Orca.ScoreFunctions.Average
             };
+
+            var orca = new Orca.Orca(orcaParams);
+            return orca.Run();
         }
 
         public void Clean()
         {
-            //var anomalies = _filter.Filter(
+            var outliers = FindOutliers();
+            var anomaliesId = _filter.Filter(outliers).Select(o => o.Record.Id);
+            foreach (var anomaly in anomaliesId)
+                _output.DeleteRecord(anomaly);
         }
     }
 }

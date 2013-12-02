@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,8 @@ namespace Thesis.DataCleansing.App
 
             try
             {
-                //var cleaner = new AnomalyCleaner(reader)
+                File.Copy(args[0], args[2]);
+                var cleaner = new AnomalyCleaner(new PlainTextReader(args[0], args[1]), new PlainTextWriter(args[2]), new GaussianFilter())
             }
             catch (DataFormatException)
             {
