@@ -114,6 +114,12 @@
     <Compile Include="Weights.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Thesis.Miscellaneous\Thesis.Miscellaneous.csproj">
+      <Project>{ef5599f1-e728-41d6-86ee-321069fc3cd4}</Project>
+      <Name>Thesis.Miscellaneous</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

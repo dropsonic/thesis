@@ -10,7 +10,7 @@ using Thesis.Orca.Common;
 
 namespace Thesis.DPrep
 {
-    class PlainTextReader : IDataReader, IDisposable
+    public class PlainTextReader : IDataReader, IDisposable
     {
         private StreamReader _infile;
         private List<Field> _fields = new List<Field>();
@@ -26,6 +26,15 @@ namespace Thesis.DPrep
 
         public int _realFieldsCount;
         public int _discreteFieldsCount;
+
+        public PlainTextReader(string dataFile, string fieldsFile,
+                               float realWeight = 1.0f, float discreteWeight = 0.4f,
+                               string noValueReplacement = "?",
+                               float missingR = float.MinValue, int missingD = -1)
+            : this(dataFile, fieldsFile, new char[] { '.', ',', ':', ';' },
+                   new char[] { ',', ';' }, realWeight, discreteWeight,
+                   noValueReplacement, missingR, missingD)
+        { }
 
         public PlainTextReader(string dataFile, string fieldsFile, 
                                char[] fieldsDelimiters, char[] recordDelimiters,
@@ -244,7 +253,7 @@ namespace Thesis.DPrep
 
         public int Index { get; private set; }
 
-        public IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }

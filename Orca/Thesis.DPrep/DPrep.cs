@@ -14,15 +14,16 @@ namespace Thesis.DPrep
         public Parameters Parameters { get; set; }
 
         private IDataReader _reader;
-        private IDataWriter _writer;
+        string _destFile;
 
-        public DPrep(IDataReader reader, IDataWriter writer, Parameters parameters)
+        public DPrep(IDataReader reader, string destFile, Parameters parameters)
         {
             Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentNullException>(writer != null);
+            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(destFile));
 
             _reader = reader;
-            _writer = writer;
+            _destFile = destFile;
+
             Parameters = parameters;
         }
 
@@ -37,8 +38,7 @@ namespace Thesis.DPrep
             //-------------------------------------------------------------
             // Create the DataTable (load the Names File)
             //
-            DataTable dataTable = new DataTable(_reader,
-                                                _writer);
+            DataTable dataTable = new DataTable(_reader);
             
             //-------------------------------------------------------------
             // Convert Data set to binary format
@@ -59,13 +59,15 @@ namespace Thesis.DPrep
 
                 if (Parameters.Scaling == Parameters.Scale.ZeroToOne)
                 {
-                    scaleFile.GetMaxMin(rStats.Max, rStats.Min);
-                    scaleFile.ScaleZeroToOne(scaleOutputName, rStats.Max, rStats.Min);
+                    float[] max, min;
+                    scaleFile.GetMaxMin(out max, out min);
+                    scaleFile.ScaleZeroToOne(scaleOutputName, max, min);
                 }
                 else if (Parameters.Scaling == Parameters.Scale.Std)
                 {
-                    scaleFile.GetMeanStd(rStats.Mean, rStats.Std);
-                    scaleFile.ScaleStd(scaleOutputName, rStats.Mean, rStats.Std);
+                    float[] mean, std;
+                    scaleFile.GetMeanStd(out mean, out std);
+                    scaleFile.ScaleStd(scaleOutputName, mean, std);
                 }
 
                 scaleFile.Dispose();
@@ -85,9 +87,11 @@ namespace Thesis.DPrep
             }
 
             //-------------------------------------------------------------
-            // copy data from last temp file to writer
+            // rename last temporary file to destination file
             //
-            CopyData(files.Last());
+            if (File.Exists(_destFile))
+                File.Delete(_destFile);
+            File.Move(files.Last(), _destFile);
 
             //-------------------------------------------------------------
             // clean temporary files 
@@ -100,16 +104,6 @@ namespace Thesis.DPrep
                 }
                 catch
                 { }
-            }
-        }
-
-        private void CopyData(string outFile)
-        {
-            _writer.WriteHeader(_reader.Fields);
-            using (var infile = new BinaryInFile(outFile))
-            {
-                foreach (var record in infile)
-                    _writer.WriteRecord(record);
             }
         }
     }

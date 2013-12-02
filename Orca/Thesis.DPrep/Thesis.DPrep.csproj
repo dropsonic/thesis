@@ -111,7 +111,6 @@
     <Compile Include="BinaryExtensions.cs" />
     <Compile Include="DataTable.cs" />
     <Compile Include="DPrep.cs" />
-    <Compile Include="Field.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="PlainTextReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

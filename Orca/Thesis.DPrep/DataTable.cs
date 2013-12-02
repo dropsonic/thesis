@@ -9,26 +9,22 @@ using Thesis.Orca.Common;
 
 namespace Thesis.DPrep
 {
-    class DataTable : IDisposable
+    class DataTable
     {
         private IDataReader _reader;
-        private IDataWriter _writer;
 
         public Weights Weights { get; private set; }
 
-        public DataTable(IDataReader reader, IDataWriter writer )
+        public DataTable(IDataReader reader)
         {
             Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentNullException>(writer != null);
 
             _reader = reader;
-            _writer = writer;
-
 
             Weights = new Weights();
             Weights.Real = _reader.Fields.Where(f => f.Type == Field.FieldType.Continuous).Select(f => f.Weight).ToArray();
             Weights.Discrete = _reader.Fields.Where(f => f.Type == Field.FieldType.Discrete)
-                                     .Concat(_fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven))
+                                     .Concat(_reader.Fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven))
                                      .Select(f => f.Weight).ToArray();
         }
 
@@ -53,7 +49,5 @@ namespace Thesis.DPrep
                 outfile.WriteHeader(_reader.Index);
             }
         }
-
-        
     }
 }

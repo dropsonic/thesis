@@ -34,8 +34,11 @@ namespace Thesis.DPrep
         /// for real variables.
         /// </summary>
         //public void GetMaxMin(ref IList<float> max, ref IList<float> min)
-        public void GetMaxMin(float[] max, float[] min)
+        public void GetMaxMin(out float[] maxr, out float[] minr)
         {
+            var max = new float[_infile.RealFieldsCount];
+            var min = new float[_infile.RealFieldsCount];
+
             // initialize max and min vectors 
             for (int i = 0; i < _infile.RealFieldsCount; i++)
             {
@@ -61,14 +64,20 @@ namespace Thesis.DPrep
                     }
                 }
             });
+
+            maxr = max;
+            minr = min;
         }
 
         /// <summary>
         /// Makes a pass through the data and calculates the mean and standard
         /// deviation for real variables.
         /// </summary>
-        public void GetMeanStd(float[] mean, float[] std)
+        public void GetMeanStd(out float[] meanr, out float[] stdr)
         {
+            var mean = new float[_infile.RealFieldsCount];
+            var std = new float[_infile.RealFieldsCount];
+
             var sumv = new double[_infile.RealFieldsCount];
             var sumsqv = new double[_infile.RealFieldsCount];
             var num = new int[_infile.RealFieldsCount];
@@ -105,6 +114,9 @@ namespace Thesis.DPrep
                     // check mean /std are not NaN
                 }
             });
+
+            meanr = mean;
+            stdr = std;
         }
 
         /// <summary>

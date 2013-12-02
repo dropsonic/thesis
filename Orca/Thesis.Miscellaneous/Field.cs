@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 
 namespace Thesis
 {
-    class Field
+    public class Field
     {
         public enum FieldType
         {
