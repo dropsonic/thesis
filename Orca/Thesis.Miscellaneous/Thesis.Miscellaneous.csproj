@@ -42,6 +42,7 @@
     <Compile Include="Collections\BinaryHeap.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="IDataSource.cs" />
+    <Compile Include="Outlier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Record.cs" />
   </ItemGroup>

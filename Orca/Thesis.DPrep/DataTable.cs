@@ -31,7 +31,8 @@ namespace Thesis.DPrep
         /// <summary>
         /// Converts the data set to a binary file.
         /// </summary>
-        public void ConvertToBinary(string filename)
+        /// <returns>Records count.</returns>
+        public int ConvertToBinary(string filename)
         {
             Contract.Requires(!String.IsNullOrEmpty(filename));
 
@@ -48,6 +49,8 @@ namespace Thesis.DPrep
 	            //
                 outfile.WriteHeader(_reader.Index);
             }
+
+            return _reader.Index;
         }
     }
 }

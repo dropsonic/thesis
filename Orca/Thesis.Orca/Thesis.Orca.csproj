@@ -111,7 +111,6 @@
     <Compile Include="BatchInFile.cs" />
     <Compile Include="NeighborsDistance.cs" />
     <Compile Include="Orca.cs" />
-    <Compile Include="Outlier.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScoreFunctions.cs" />

@@ -28,7 +28,7 @@ namespace Thesis.DPrep
         }
 
         /// <returns>Number of converted records.</returns>
-        public void Run()
+        public int Run()
         {
             Contract.Requires<ArgumentNullException>(Parameters != null);
 
@@ -45,7 +45,7 @@ namespace Thesis.DPrep
             //
             string outputName = Parameters.TempFileStem + ".out";
             files.Add(outputName);
-            dataTable.ConvertToBinary(outputName);
+            int convertedRecords = dataTable.ConvertToBinary(outputName);
 
             //-------------------------------------------------------------
             // Scale data set 
@@ -105,6 +105,8 @@ namespace Thesis.DPrep
                 catch
                 { }
             }
+
+            return convertedRecords;
         }
     }
 }
