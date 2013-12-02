@@ -114,6 +114,7 @@
     <Compile Include="Outlier.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScoreFunctions.cs" />
     <Compile Include="Trace.cs" />
   </ItemGroup>
   <ItemGroup>

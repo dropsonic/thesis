@@ -30,8 +30,7 @@ namespace Thesis.Orca.App
                 if (args.Length > 1 && int.TryParse(args[1], out numOutliers))
                     parameters.NumOutliers = numOutliers;
 
-                if (args.Contains("-kth"))
-                    parameters.ScoreF = Parameters.DistanceType.KthNeighbor;
+                parameters.ScoreFunction = args.Contains("-kth") ? ScoreFunctions.KthNeighbor : ScoreFunctions.Average;
 
                 int batchIndex = Array.IndexOf(args, "-b", 1);
                 if (batchIndex > 0 && args.Length > batchIndex + 1)
