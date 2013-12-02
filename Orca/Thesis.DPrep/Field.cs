@@ -52,12 +52,13 @@ namespace Thesis.DPrep
             }
 
             Name = s[i++];
+            string sType = s[i];
 
             if (s.Count == i)
                 Type = FieldType.IgnoreFeature;
             else
             {
-                switch (s[i++])
+                switch (sType)
                 {
                     case "ignore":
                         Type = FieldType.IgnoreFeature;

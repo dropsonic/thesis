@@ -31,11 +31,6 @@ namespace Thesis.DPrep
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
 
-        public DataTable(string dataFile, string fieldsFile, float missingR, int missingD, float realWeight, float discreteWeight)
-            : this(dataFile, fieldsFile, missingR, missingD, realWeight, discreteWeight, 
-                new char[] { '.', ',', ':', ';' }, new char[] { ',', ':', ';', ' ' })
-        { }
-
         public DataTable(string dataFile, string fieldsFile, float missingR, int missingD, float realWeight, float discreteWeight, char[] fieldsDelimiters, char[] recordDelimiters)
         {
             Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(dataFile));

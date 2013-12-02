@@ -94,5 +94,29 @@ namespace Thesis.DPrep
         /// Weight value for all continuous variables.
         /// </summary>
         public float RealWeight { get; set; }
+
+
+        private char[] _fieldsDelimiters = new char[] { '.', ',', ':', ';' };
+
+        /// <summary>
+        /// Delimiters for the fields description file.
+        /// </summary>
+        public char[] FieldsDelimiters
+        {
+            get { return _fieldsDelimiters; }
+            set { _fieldsDelimiters = value; }
+        }
+
+        private char[] _recordsDelimiters = new char[] { ',', ';' };
+
+        /// <summary>
+        /// Delimiters for values in the data file.
+        /// </summary>
+        public char[] RecordsDelimiters
+        {
+            get { return _recordsDelimiters; }
+            set { _recordsDelimiters = value; }
+        }
+        
     }
 }
