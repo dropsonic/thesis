@@ -39,20 +39,8 @@ namespace Thesis.DPrep
             RealWeight = 1.0f;
         }
 
-        public Parameters(string dataFile, string namesFile, string destFile)
-            : this()
-        {
-            DataFile = dataFile;
-            NamesFiles = namesFile;
-            DestinationFile = destFile;
-        }
-
         private int _iterations;
         private int _randFiles;
-
-        public string DataFile { get; set; }
-        public string NamesFiles { get; set; }
-        public string DestinationFile { get; set; }
 
         public Scale Scaling { get; set; }
         public string ScaleFile { get; set; }

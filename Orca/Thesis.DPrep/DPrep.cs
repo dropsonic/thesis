@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
+using Thesis.Orca.Common;
 
 namespace Thesis.DPrep
 {
@@ -12,8 +13,16 @@ namespace Thesis.DPrep
     {
         public Parameters Parameters { get; set; }
 
-        public DPrep(Parameters parameters)
+        private IDataReader<Record> _reader;
+        private IDataWriter<Record> _writer;
+
+        public DPrep(IDataReader<Record> reader, IDataWriter<Record> writer, Parameters parameters)
         {
+            Contract.Requires<ArgumentNullException>(reader != null);
+            Contract.Requires<ArgumentNullException>(writer != null);
+
+            _reader = reader;
+            _writer = writer;
             Parameters = parameters;
         }
 
@@ -29,8 +38,8 @@ namespace Thesis.DPrep
             //-------------------------------------------------------------
             // Create the DataTable (load the Names File)
             //
-            DataTable dataTable = new DataTable(Parameters.DataFile, 
-                                                Parameters.NamesFiles, 
+            DataTable dataTable = new DataTable(_reader,
+                                                _writer,
                                                 Parameters.MissingR, 
                                                 Parameters.MissingD,
                                                 Parameters.RealWeight,
@@ -38,15 +47,6 @@ namespace Thesis.DPrep
                                                 Parameters.FieldsDelimiters,
                                                 Parameters.RecordsDelimiters);
             
-            //-------------------------------------------------------------
-            // Load the Scale File 
-            //
-            RStats rStats = new RStats(dataTable.RealFieldsCount);
-            if (!String.IsNullOrEmpty(Parameters.ScaleFile))
-            {
-                rStats.Load(Parameters.ScaleFile);
-            }
-
             //-------------------------------------------------------------
             // Convert Data set to binary format
             //
@@ -71,14 +71,12 @@ namespace Thesis.DPrep
 
                 if (Parameters.Scaling == Parameters.Scale.ZeroToOne)
                 {
-                    if (String.IsNullOrEmpty(Parameters.ScaleFile))
-                        scaleFile.GetMaxMin(rStats.Max, rStats.Min);
+                    scaleFile.GetMaxMin(rStats.Max, rStats.Min);
                     scaleFile.ScaleZeroToOne(scaleOutputName, rStats.Max, rStats.Min);
                 }
                 else if (Parameters.Scaling == Parameters.Scale.Std)
                 {
-                    if (String.IsNullOrEmpty(Parameters.ScaleFile))
-                        scaleFile.GetMeanStd(rStats.Mean, rStats.Std);
+                    scaleFile.GetMeanStd(rStats.Mean, rStats.Std);
                     scaleFile.ScaleStd(scaleOutputName, rStats.Mean, rStats.Std);
                 }
 

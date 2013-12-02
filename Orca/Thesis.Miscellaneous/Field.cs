@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
 
-namespace Thesis.DPrep
+namespace Thesis
 {
     class Field
     {

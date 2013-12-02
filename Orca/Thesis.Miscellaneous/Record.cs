@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Thesis.Orca.Common
+namespace Thesis
 {
     [DebuggerDisplay("Id = {Id}")]
     public class Record
