@@ -68,7 +68,7 @@ namespace Thesis.Orca
             Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);
 
-            int k = Parameters.K; // number of neighbors
+            int k = Parameters.NeighborsCount; // number of neighbors
             
             var records = new List<Record>(batchFile.CurrentBatch);
             int batchRecCount = records.Count;

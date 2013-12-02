@@ -30,14 +30,14 @@ namespace Thesis.Orca
             }
         }
 
-        private int _k;
-        public int K
+        private int _neighborsCount;
+        public int NeighborsCount
         {
-            get { return _k; }
+            get { return _neighborsCount; }
             set
             {
                 Contract.Requires<ArgumentOutOfRangeException>(value > 0);
-                _k = value;
+                _neighborsCount = value;
             }
         }
 
@@ -76,7 +76,7 @@ namespace Thesis.Orca
         {
             // outlier options
             NumOutliers = 30;
-            K = 5;
+            NeighborsCount = 5;
             Cutoff = 0;
 
             // computation parameters
