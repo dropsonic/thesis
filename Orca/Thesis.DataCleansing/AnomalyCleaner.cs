@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,22 +10,18 @@ using Orca = Thesis.Orca;
 
 namespace Thesis.DataCleansing
 {
-    public class AnomalyCleaner
+    public class AnomaliesDetector
     {
         IAnomaliesFilter _filter;
         IDataReader _input;
-        IDataWriter _output;
 
-        /// <param name="analizedPart">Part of input data to be loaded in memory and analized.</param>
-        public AnomalyCleaner(IDataReader input, IDataWriter output, IAnomaliesFilter filter)
+        public AnomaliesDetector(IDataReader input, IAnomaliesFilter filter)
         {
             Contract.Requires<ArgumentNullException>(input != null);
-            Contract.Requires<ArgumentNullException>(output != null);
             Contract.Requires<ArgumentNullException>(filter != null);
 
             _filter = filter;
             _input = input;
-            _output = output;
         }
 
         private IEnumerable<Outlier> FindOutliers()
@@ -42,15 +39,17 @@ namespace Thesis.DataCleansing
             };
 
             var orca = new Orca.Orca(orcaParams);
-            return orca.Run();
+            var outliers = orca.Run();
+
+            File.Delete(orcaFile);
+
+            return outliers;
         }
 
-        public void Clean()
+        public IEnumerable<int> FindAnomalies()
         {
             var outliers = FindOutliers();
-            var anomaliesId = _filter.Filter(outliers).Select(o => o.Record.Id);
-            foreach (var anomaly in anomaliesId)
-                _output.DeleteRecord(anomaly);
+            return _filter.Filter(outliers).Select(o => o.Id);
         }
     }
 }

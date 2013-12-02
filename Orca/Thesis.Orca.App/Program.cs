@@ -79,7 +79,7 @@ namespace Thesis.Orca.App
                     {
                         foreach (var result in results)
                         {
-                            writer.WriteLine("{0}, {1}", result.Record.Id, result.Score);
+                            writer.WriteLine("{0}, {1}", result.Id, result.Score);
                         }
                     }
                 }
@@ -89,7 +89,7 @@ namespace Thesis.Orca.App
                     int i = 1;
                     foreach (var result in results)
                     {
-                        Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Record.Id, result.Score);
+                        Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Id, result.Score);
                     }
                 }
             }

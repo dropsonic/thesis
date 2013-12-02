@@ -156,7 +156,8 @@ namespace Thesis.Orca
             foreach (var point in neighborsDist)
             {
                 Outlier outlier = new Outlier();
-                outlier.Record = point.Record;
+                //outlier.Record = point.Record;
+                outlier.Id = point.Record.Id;
                 outlier.Score = Parameters.ScoreFunction(point.Distances);
                 outliers.Add(outlier);
             }

@@ -10,7 +10,8 @@ namespace Thesis
     [DebuggerDisplay("Id = {Record.Id}; Score = {Score}")]
     public struct Outlier : IComparable<Outlier>
     {
-        public Record Record { get; set; }
+        //public Record Record { get; set; }
+        public int Id { get; set; }
         public double Score { get; set; }
         //public IEnumerable<int> Neighbors { get; set; }
 

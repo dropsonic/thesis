@@ -26,7 +26,7 @@ namespace Thesis.DataCleansing.App
             try
             {
                 File.Copy(args[0], args[2]);
-                var cleaner = new AnomalyCleaner(new PlainTextReader(args[0], args[1]), new PlainTextWriter(args[2]), new GaussianFilter())
+                //var cleaner = new AnomalyCleaner(new PlainTextReader(args[0], args[1]), new PlainTextWriter(args[2]), new GaussianFilter())
             }
             catch (DataFormatException)
             {
