@@ -211,9 +211,9 @@ namespace Thesis.DPrep
             return new Record(Index, real, discrete);
         }
 
-        public IEnumerable<Field> ReadHeader()
+        public IEnumerable<Field> Fields
         {
-            return _fields;
+            get { return _fields; }
         }
 
         public Record ReadRecord()

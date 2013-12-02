@@ -13,10 +13,10 @@ namespace Thesis.DPrep
     {
         public Parameters Parameters { get; set; }
 
-        private IDataReader<Record> _reader;
-        private IDataWriter<Record> _writer;
+        private IDataReader _reader;
+        private IDataWriter _writer;
 
-        public DPrep(IDataReader<Record> reader, IDataWriter<Record> writer, Parameters parameters)
+        public DPrep(IDataReader reader, IDataWriter writer, Parameters parameters)
         {
             Contract.Requires<ArgumentNullException>(reader != null);
             Contract.Requires<ArgumentNullException>(writer != null);
@@ -27,37 +27,25 @@ namespace Thesis.DPrep
         }
 
         /// <returns>Number of converted records.</returns>
-        public int Run()
+        public void Run()
         {
             Contract.Requires<ArgumentNullException>(Parameters != null);
 
             Random random = new Random(Parameters.Seed);
             List<string> files = new List<string>();
-            files.Add(Parameters.DataFile);
 
             //-------------------------------------------------------------
             // Create the DataTable (load the Names File)
             //
             DataTable dataTable = new DataTable(_reader,
-                                                _writer,
-                                                Parameters.MissingR, 
-                                                Parameters.MissingD,
-                                                Parameters.RealWeight,
-                                                Parameters.DiscreteWeight,
-                                                Parameters.FieldsDelimiters,
-                                                Parameters.RecordsDelimiters);
+                                                _writer);
             
             //-------------------------------------------------------------
             // Convert Data set to binary format
             //
             string outputName = Parameters.TempFileStem + ".out";
             files.Add(outputName);
-            int convertedRecords = dataTable.ConvertToBinary(outputName);
-
-            if (convertedRecords == 0)
-                throw new Exception("No records converted.");
-
-            dataTable.Dispose();
+            dataTable.ConvertToBinary(outputName);
 
             //-------------------------------------------------------------
             // Scale data set 
@@ -97,11 +85,9 @@ namespace Thesis.DPrep
             }
 
             //-------------------------------------------------------------
-            // rename last temporary file to destination file
+            // copy data from last temp file to writer
             //
-            if (File.Exists(Parameters.DestinationFile))
-                File.Delete(Parameters.DestinationFile);
-            File.Move(files.Last(), Parameters.DestinationFile);
+            CopyData(files.Last());
 
             //-------------------------------------------------------------
             // clean temporary files 
@@ -115,8 +101,16 @@ namespace Thesis.DPrep
                 catch
                 { }
             }
+        }
 
-            return convertedRecords;
+        private void CopyData(string outFile)
+        {
+            _writer.WriteHeader(_reader.Fields);
+            using (var infile = new BinaryInFile(outFile))
+            {
+                foreach (var record in infile)
+                    _writer.WriteRecord(record);
+            }
         }
     }
 }

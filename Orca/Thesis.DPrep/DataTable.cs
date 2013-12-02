@@ -14,10 +14,9 @@ namespace Thesis.DPrep
         private IDataReader _reader;
         private IDataWriter _writer;
 
-
         public Weights Weights { get; private set; }
 
-        public DataTable(IDataReader reader, IDataWriter writer)
+        public DataTable(IDataReader reader, IDataWriter writer )
         {
             Contract.Requires<ArgumentNullException>(reader != null);
             Contract.Requires<ArgumentNullException>(writer != null);
@@ -27,12 +26,11 @@ namespace Thesis.DPrep
 
 
             Weights = new Weights();
-            Weights.Real = _fields.Where(f => f.Type == Field.FieldType.Continuous).Select(f => f.Weight).ToArray();
-            Weights.Discrete = _fields.Where(f => f.Type == Field.FieldType.Discrete)
+            Weights.Real = _reader.Fields.Where(f => f.Type == Field.FieldType.Continuous).Select(f => f.Weight).ToArray();
+            Weights.Discrete = _reader.Fields.Where(f => f.Type == Field.FieldType.Discrete)
                                      .Concat(_fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven))
                                      .Select(f => f.Weight).ToArray();
         }
-
 
         /// <summary>
         /// Converts the data set to a binary file.
@@ -43,9 +41,6 @@ namespace Thesis.DPrep
 
             using (var outfile = new BinaryOutFile(filename, Weights))
             {
-                bool status = true;
-                int numRecords = 0;
-
                 //----------------------
                 // write the example to the file
                 //
@@ -55,9 +50,7 @@ namespace Thesis.DPrep
                 //-----------------------------
 	            // write header information
 	            //
-                outfile.WriteHeader(numRecords);
-
-                return numRecords;
+                outfile.WriteHeader(_reader.Index);
             }
         }
 

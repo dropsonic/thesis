@@ -43,7 +43,6 @@ namespace Thesis.DPrep
         private int _randFiles;
 
         public Scale Scaling { get; set; }
-        public string ScaleFile { get; set; }
 
         public bool Randomize { get; set; }
 

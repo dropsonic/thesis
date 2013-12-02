@@ -9,6 +9,7 @@ namespace Thesis
     public interface IDataReader: IEnumerable<Record>
     {
         IEnumerable<Field> Fields { get; }
+
         Record ReadRecord();
 
         void Reset();
