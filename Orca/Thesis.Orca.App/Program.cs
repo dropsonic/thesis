@@ -30,8 +30,8 @@ namespace Thesis.Orca.App
                 if (args.Length > 1 && int.TryParse(args[1], out numOutliers))
                     parameters.NumOutliers = numOutliers;
 
-                if (args.Contains("-kth"))
-                    parameters.ScoreF = Parameters.DistanceType.KthNeighbor;
+                parameters.ScoreFunction = args.Contains("-kth") ? ScoreFunctions.KthNeighbor 
+                    : (args.Contains("-sum") ? ScoreFunctions.Sum : ScoreFunctions.Average);
 
                 int batchIndex = Array.IndexOf(args, "-b", 1);
                 if (batchIndex > 0 && args.Length > batchIndex + 1)
@@ -47,6 +47,14 @@ namespace Thesis.Orca.App
                     int nCount;
                     if (int.TryParse(args[nIndex + 1], out nCount))
                         parameters.NumOutliers = nCount;
+                }
+
+                int kIndex = Array.IndexOf(args, "-k", 1);
+                if (kIndex > 0 && args.Length > kIndex + 1)
+                {
+                    int kCount;
+                    if (int.TryParse(args[kIndex + 1], out kCount))
+                        parameters.NeighborsCount = kCount;
                 }
 
                 int outIndex = Array.IndexOf(args, "-o", 1);

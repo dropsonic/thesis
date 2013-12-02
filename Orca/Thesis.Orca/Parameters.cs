@@ -9,27 +9,12 @@ namespace Thesis.Orca
 {
     public class Parameters
     {
-        /// <summary>
-        /// Distance score type.
-        /// </summary>
-        public enum DistanceType
-        {
-            /// <summary>
-            /// Average distance to k neighbors.
-            /// </summary>
-            Average,
-            /// <summary>
-            /// Distance to kth neighbor.
-            /// </summary>
-            KthNeighbor
-        }
-
         public string DataFile { get; set; }
 
         /// <summary>
-        /// Distance score type.
+        /// Distance score function.
         /// </summary>
-        public DistanceType ScoreF { get; set; }
+        public Func<IEnumerable<double>, double> ScoreFunction { get; set; }        
 
         private int _numOutliers;
         /// <summary>
@@ -45,14 +30,14 @@ namespace Thesis.Orca
             }
         }
 
-        private int _k;
-        public int K
+        private int _neighborsCount;
+        public int NeighborsCount
         {
-            get { return _k; }
+            get { return _neighborsCount; }
             set
             {
                 Contract.Requires<ArgumentOutOfRangeException>(value > 0);
-                _k = value;
+                _neighborsCount = value;
             }
         }
 
@@ -78,23 +63,26 @@ namespace Thesis.Orca
             }
         }
 
-        public bool RecordNeighbors { get; set; }
+        /// <summary>
+        /// Replacement for missing real value.
+        /// </summary>
         public float MissingR { get; set; }
+        /// <summary>
+        /// Distance for missing real value.
+        /// </summary>
         public float DistMR { get; set; }
 
         public Parameters()
         {
             // outlier options
-            ScoreF = DistanceType.Average;
             NumOutliers = 30;
-            K = 5;
+            NeighborsCount = 5;
             Cutoff = 0;
 
             // computation parameters
             BatchSize = 1000;
 
             // misc parameters
-            RecordNeighbors = false;
             MissingR = float.NaN;
             DistMR = 0.4f;
         }

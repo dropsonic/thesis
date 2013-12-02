@@ -68,7 +68,7 @@ namespace Thesis.Orca
             Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);
 
-            int k = Parameters.K; // number of neighbors
+            int k = Parameters.NeighborsCount; // number of neighbors
             
             var records = new List<Record>(batchFile.CurrentBatch);
             int batchRecCount = records.Count;
@@ -124,17 +124,7 @@ namespace Thesis.Orca
                             kvec.Pop();
                             minkDist[minkDist_i] = kvec.Peek();
 
-                            double score = 0;
-                            switch (Parameters.ScoreF)
-                            {
-                                case Parameters.DistanceType.Average:
-                                    for (int it = 0; it < k; it++)
-                                        score += kvec[it];
-                                    break;
-                                case Parameters.DistanceType.KthNeighbor:
-                                    score = kvec.Peek();
-                                    break;
-                            }
+                            double score = Parameters.ScoreFunction(kvec);
 
                             if (score <= cutoff)
                             {
@@ -165,21 +155,9 @@ namespace Thesis.Orca
 
             foreach (var point in neighborsDist)
             {
-                double sum = 0;
-                switch (Parameters.ScoreF)
-                {
-                    case Parameters.DistanceType.Average:
-                        for (int j = 0; j < point.Distances.Count; j++)
-                            sum += point.Distances[j];
-                        break;
-                    case Parameters.DistanceType.KthNeighbor:
-                        sum = point.Distances[point.Distances.Count - 1];
-                        break;
-                }
-
                 Outlier outlier = new Outlier();
                 outlier.Record = point.Record;
-                outlier.Score = sum;
+                outlier.Score = Parameters.ScoreFunction(point.Distances);
                 outliers.Add(outlier);
             }
 
