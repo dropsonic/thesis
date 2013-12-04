@@ -38,8 +38,8 @@ namespace Thesis.DataCleansing.App
                 var orca = new Orca.Orca();
                 var outliers = orca.Run(outputFile, true);
 
-                //IAnomaliesFilter filter = new GaussianFilter();
-                IAnomaliesFilter filter = new DifferenceFilter(0.05);
+                IAnomaliesFilter filter = new GaussianFilter();
+                //IAnomaliesFilter filter = new DifferenceFilter(0.05);
                 var anomalies = filter.Filter(outliers);
 
                 Console.WriteLine("Anomalies:");
@@ -60,7 +60,7 @@ namespace Thesis.DataCleansing.App
                      .Append(String.Join(" ", record.Real))
                      .Append(" | ")
                      .Append(String.Join(" ", record.Discrete));
-
+                    
                     Console.WriteLine(s.ToString());
                 }
             }

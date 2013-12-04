@@ -50,7 +50,7 @@ namespace Thesis
                     d += weights.Discrete[i];
             }
 
-            return d;
+            return Math.Sqrt(d);
         }
     }
 }
