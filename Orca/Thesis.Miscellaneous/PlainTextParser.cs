@@ -9,19 +9,11 @@ namespace Thesis
 {
     public class PlainTextParser : IRecordParser<string>
     {
-        private const string _defaultNoValueReplacement = "?";
-        private const float _defaultMissingR = float.NaN;
-        private const int _defaultMissingD = -1;
-
         private char[] _recordDelimiters;
         private string _noValueReplacement;
-        private float _missingR;
-        private int _missingD;
 
         public PlainTextParser(char[] recordDelimiters,
-                               string noValueReplacement = _defaultNoValueReplacement,
-                               float missingR = _defaultMissingR, 
-                               int missingD = _defaultMissingD)
+                               string noValueReplacement = "?")
         {
             Contract.Requires<ArgumentNullException>(recordDelimiters != null);
             Contract.Requires<ArgumentException>(recordDelimiters.Length > 0);
@@ -29,15 +21,10 @@ namespace Thesis
 
             _recordDelimiters = recordDelimiters;
             _noValueReplacement = noValueReplacement;
-            _missingR = missingR;
-            _missingD = missingD;
         }
 
-        public PlainTextParser(string noValueReplacement = _defaultNoValueReplacement,
-                               float missingR = _defaultMissingR,
-                               int missingD = _defaultMissingD)
-            : this(new char[] { ',', ';' }, 
-                   noValueReplacement, missingR, missingD)
+        public PlainTextParser(string noValueReplacement = "?")
+            : this(new char[] { ',', ';' }, noValueReplacement)
         { }
 
         public Record Parse(string input, IList<Field> fields)
@@ -69,10 +56,10 @@ namespace Thesis
                     switch (fields[i].Type)
                     {
                         case Field.FieldType.Continuous:
-                            real[iReal++] = _missingR; break;
+                            real[iReal++] = float.NaN; break;
                         case Field.FieldType.Discrete:
                         case Field.FieldType.DiscreteDataDriven:
-                            discrete[iDiscrete++] = _missingD; break;
+                            discrete[iDiscrete++] = -1; break;
                     }
                 }
                 else

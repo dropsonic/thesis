@@ -18,9 +18,4 @@ namespace Thesis
 
         int Index { get; }
     }
-
-    public class DataFormatException : Exception
-    {
-
-    }
 }
