@@ -61,8 +61,12 @@ namespace Thesis.DataCleansing
         public IEnumerator<Record> GetEnumerator()
         {
             Reset();
-            while (!EndOfData)
-                yield return ReadRecord();
+            var record = ReadRecord();
+            while (record != null)
+            {
+                yield return record;
+                record = ReadRecord();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()

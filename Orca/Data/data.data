@@ -1,3 +1,4 @@
+% Test data
 38, f
 40, f
 18, f
@@ -8,7 +9,7 @@
 26, f
 39, f
 31, f
-20, m
+20, m % anomaly
 42, f
 35, f
 42, f
@@ -24,7 +25,7 @@
 24, f
 34, f
 42, f
-80, f
+80, f % anomaly
 21, f
 34, f
 37, f
@@ -33,7 +34,7 @@
 19, f
 43, f
 22, f
-90, m
+90, m % anomaly
 44, f
 30, f
 20, f
@@ -42,15 +43,19 @@
 32, f
 19, f
 18, f
+% comment
+% another comment
 36, f
 29, f
 41, f
 35, f
 31, f
 41, f
+% comment
 41, f
 32, f
 19, f
 41, f
 19, f
 29, f
+% comment
