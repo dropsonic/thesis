@@ -21,11 +21,7 @@ namespace Thesis.DPrep
 
             _reader = reader;
 
-            Weights = new Weights();
-            Weights.Real = _reader.Fields.Where(f => f.Type == Field.FieldType.Continuous).Select(f => f.Weight).ToArray();
-            Weights.Discrete = _reader.Fields.Where(f => f.Type == Field.FieldType.Discrete)
-                                     .Concat(_reader.Fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven))
-                                     .Select(f => f.Weight).ToArray();
+            Weights = new Weights(reader.Fields);
         }
 
         /// <summary>

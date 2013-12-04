@@ -33,8 +33,6 @@ namespace Thesis.DPrep
             RandFiles = 10;
             TempFileStem = "tmp";
             Seed = (int)DateTime.Now.Ticks;
-            MissingR = float.NaN;
-            MissingD = -1;
         }
 
         private int _iterations;
@@ -67,8 +65,5 @@ namespace Thesis.DPrep
         public int Seed { get; set; }
 
         public string TempFileStem { get; set; }
-
-        public int MissingD { get; set; }
-        public float MissingR { get; set; }
     }
 }

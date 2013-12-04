@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thesis.DataCleansing.App", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thesis.DataCleansing", "Thesis.DataCleansing\Thesis.DataCleansing.csproj", "{BE9252DD-F3A3-4B6A-A400-0078A45A9626}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thesis.DDMS", "Thesis.DDMS\Thesis.DDMS.csproj", "{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,16 @@ Global
 		{BE9252DD-F3A3-4B6A-A400-0078A45A9626}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BE9252DD-F3A3-4B6A-A400-0078A45A9626}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BE9252DD-F3A3-4B6A-A400-0078A45A9626}.Release|Win32.ActiveCfg = Release|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DA49F71E-E9D5-4922-A4B2-CB35B5179D72}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

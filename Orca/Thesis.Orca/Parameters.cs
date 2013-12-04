@@ -14,6 +14,11 @@ namespace Thesis.Orca
         /// </summary>
         public Func<IEnumerable<double>, double> ScoreFunction { get; set; }
 
+        /// <summary>
+        /// Distance function for calculating the distance between two examples with weights.
+        /// </summary>
+        public Func<Record, Record, Weights, double> DistanceFunction { get; set; }
+
         private int _numOutliers;
         /// <summary>
         /// Number of outliers.
@@ -62,10 +67,6 @@ namespace Thesis.Orca
         }
 
         /// <summary>
-        /// Replacement for missing real value.
-        /// </summary>
-        public float MissingR { get; set; }
-        /// <summary>
         /// Distance for missing real value.
         /// </summary>
         public float DistMR { get; set; }
@@ -80,11 +81,8 @@ namespace Thesis.Orca
             // computation parameters
             BatchSize = 1000;
 
-            // misc parameters
-            MissingR = float.NaN;
-            DistMR = 0.4f;
-
             ScoreFunction = ScoreFunctions.Average;
+            DistanceFunction = DistanceFunctions.Euсlid;
         }
     }
 }

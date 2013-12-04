@@ -14,10 +14,7 @@ namespace Thesis.DPrep
 
         Weights _weights;
 
-        float _missingR;
-        int _missingD;
-
-        public ScaleFile(string dataFile, Weights weights, float missingR, int missingD)
+        public ScaleFile(string dataFile, Weights weights)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
             Contract.Requires<ArgumentNullException>(weights != null);
@@ -25,8 +22,6 @@ namespace Thesis.DPrep
             _infile = new BinaryInFile(dataFile);
 
             _weights = weights;
-            _missingR = missingR;
-            _missingD = missingD;
         }
 
         /// <summary>
@@ -51,7 +46,7 @@ namespace Thesis.DPrep
             {
                 for (int i = 0; i < _infile.RealFieldsCount; i++)
                 {
-                    if (rec.Real[i] != _missingR)
+                    if (!float.IsNaN(rec.Real[i]))
                     {
                         if (rec.Real[i] < min[i])
                         {
@@ -86,7 +81,7 @@ namespace Thesis.DPrep
             {
                 for (int i = 0; i < _infile.RealFieldsCount; i++)
                 {
-                    if (rec.Real[i] != _missingR)
+                    if (!float.IsNaN(rec.Real[i]))
                     {
                         double r = ((double)rec.Real[i]);
                         sumv[i] += r;
@@ -148,9 +143,9 @@ namespace Thesis.DPrep
                     {
                         for (int i = 0; i < _infile.RealFieldsCount; i++)
                         {
-                            if (rec.Real[i] == _missingR)
+                            if (float.IsNaN(rec.Real[i]))
                             {
-                                Rscale[i] = _missingR;
+                                Rscale[i] = float.NaN;
                             }
                             else if (range[i] != 0)
                             {
@@ -191,9 +186,9 @@ namespace Thesis.DPrep
                 {
                     for (int i = 0; i < _infile.RealFieldsCount; i++)
                     {
-                        if (rec.Real[i] == _missingR)
+                        if (float.IsNaN(rec.Real[i]))
                         {
-                            Rscale[i] = _missingR;
+                            Rscale[i] = float.NaN;
                         }
                         else if (std[i] != 0)
                         {

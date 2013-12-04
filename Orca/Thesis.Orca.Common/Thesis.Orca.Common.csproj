@@ -111,7 +111,6 @@
     <Compile Include="BinaryExtensions.cs" />
     <Compile Include="BinaryInFile.cs" />
     <Compile Include="BinaryOutFile.cs" />
-    <Compile Include="Weights.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

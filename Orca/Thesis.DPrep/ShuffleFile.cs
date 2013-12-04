@@ -17,18 +17,13 @@ namespace Thesis.DPrep
 
         string _dataFile;
 
-        float _missingR;
-        int _missingD;
-
-        public ShuffleFile(string dataFile, Weights weights, float missingR, int missingD)
+        public ShuffleFile(string dataFile, Weights weights)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
             Contract.Requires<ArgumentNullException>(weights != null);
 
             _weights = weights;
             _dataFile = dataFile;
-            _missingR = missingR;
-            _missingD = missingD;
 
             SetFileReader(dataFile);
         }
