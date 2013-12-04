@@ -235,8 +235,8 @@ namespace Thesis
                     Index++;
                     return CreateRecord(tokens);
                 }
-                else // comment
-                    return null;
+                else // if comment
+                    return ReadRecord(); // go to next line
             }
             else
             {
