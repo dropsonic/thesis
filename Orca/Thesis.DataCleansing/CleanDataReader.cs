@@ -22,7 +22,7 @@ namespace Thesis.DataCleansing
             _anomalies = new HashSet<int>(anomalies.Select(a => a.Id));
         }
 
-        public IEnumerable<Field> Fields
+        public IList<Field> Fields
         {
             get { return _baseReader.Fields; }
         }

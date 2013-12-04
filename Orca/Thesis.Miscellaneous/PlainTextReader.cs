@@ -11,75 +11,48 @@ namespace Thesis
 {
     public class PlainTextReader : IDataReader, IDisposable
     {
+        private IRecordParser<string> _parser;
+
         private StreamReader _infile;
         private List<Field> _fields = new List<Field>();
 
         private char[] _fieldsDelimiters;
-        private char[] _recordDelimiters;
-        private string _noValueReplacement;
 
-        private float _missingR;
-        private int _missingD;
         private float _realWeight;
         private float _discreteWeight;
 
         public int _realFieldsCount;
         public int _discreteFieldsCount;
 
-        public PlainTextReader(string dataFile, string fieldsFile,
+        public PlainTextReader(string dataFile, string fieldsFile, IRecordParser<string> parser,
                                float realWeight = 1.0f, float discreteWeight = 0.4f,
                                string noValueReplacement = "?",
                                float missingR = float.MinValue, int missingD = -1)
-            : this(dataFile, fieldsFile, new char[] { '.', ',', ':', ';' },
-                   new char[] { ',', ';' }, realWeight, discreteWeight,
-                   noValueReplacement, missingR, missingD)
+            : this(dataFile, fieldsFile, parser,
+                   new char[] { '.', ',', ':', ';' }, realWeight, discreteWeight)
         { }
 
-        public PlainTextReader(string dataFile, string fieldsFile, 
-                               char[] fieldsDelimiters, char[] recordDelimiters,
-                               float realWeight = 1.0f, float discreteWeight = 0.4f,
-                               string noValueReplacement = "?",
-                               float missingR = float.MinValue, int missingD = -1)
+        public PlainTextReader(string dataFile, string fieldsFile, IRecordParser<string> parser, 
+                               char[] fieldsDelimiters,
+                               float realWeight = 1.0f, float discreteWeight = 0.4f)
         {
             Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(dataFile));
             Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(fieldsFile));
+            Contract.Requires<ArgumentNullException>(parser != null);
             Contract.Requires<ArgumentNullException>(fieldsDelimiters != null);
-            Contract.Requires<ArgumentNullException>(recordDelimiters != null);
             Contract.Requires<ArgumentException>(fieldsDelimiters.Length > 0);
-            Contract.Requires<ArgumentException>(recordDelimiters.Length > 0);
 
-            _missingR = missingR;
-            _missingD = missingD;
+            _parser = parser;
+
             _realWeight = realWeight;
             _discreteWeight = discreteWeight;
             _fieldsDelimiters = fieldsDelimiters;
-            _recordDelimiters = recordDelimiters;
 
             LoadFields(fieldsFile);
             _infile = new StreamReader(dataFile);
             Index = 0;
         }
 
-
-        private string[] Tokenize(string line, char[] delimiters)
-        {
-            Contract.Requires<ArgumentNullException>(line != null);
-            Contract.Requires<ArgumentNullException>(delimiters != null);
-            Contract.Requires<ArgumentException>(delimiters.Length > 0, "No delimiters specified.");
-
-            // Strip comments (original; remove comments in this version)
-            int index = line.IndexOf('%');
-            if (index >= 0)
-                line = line.Remove(index);
-            // Replace tab characters
-            line = line.Replace('\t', ' ');
-            // Split string into tokens
-            var tokens = line.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-            // Trim whitespaces in tokens
-            tokens = tokens.Select(s => s.Trim()).ToArray();
-
-            return tokens;
-        }
 
         private void LoadFields(string filename)
         {
@@ -90,7 +63,7 @@ namespace Thesis
                 while (!infile.EndOfStream)
                 {
                     string line = infile.ReadLine();
-                    var tokens = Tokenize(line, _fieldsDelimiters);
+                    var tokens = StringHelper.Tokenize(line, _fieldsDelimiters);
                     if (tokens.Length > 0)
                     {
                         Field newField = CreateField(tokens);
@@ -159,69 +132,10 @@ namespace Thesis
             return field;
         }
 
-        private Record CreateRecord(string[] tokens)
+        #region IDataReader
+        public IList<Field> Fields
         {
-            Contract.Requires<ArgumentNullException>(tokens != null);
-
-            // check to make sure there are the correct number of tokens
-            if (tokens.Length != _fields.Count)
-                throw new DataFormatException();
-
-            var real = new float[_realFieldsCount];
-            var discrete = new int[_discreteFieldsCount];
-            int iReal = 0;
-            int iDiscrete = 0;
-
-
-            for (int i = 0; i < _fields.Count; i++)
-            {
-                if (_fields[i].Type == Field.FieldType.IgnoreFeature)
-                    continue;
-                if (tokens[i] == _noValueReplacement)
-                {
-                    switch (_fields[i].Type)
-                    {
-                        case Field.FieldType.Continuous:
-                            real[iReal++] = _missingR; break;
-                        case Field.FieldType.Discrete:
-                        case Field.FieldType.DiscreteDataDriven:
-                            discrete[iDiscrete++] = _missingD; break;
-                    }
-                }
-                else
-                {
-                    switch (_fields[i].Type)
-                    {
-                        case Field.FieldType.Continuous:
-                            real[iReal++] = float.Parse(tokens[i]); break;
-                        case Field.FieldType.Discrete:
-                            int value = _fields[i].Values.IndexOf(tokens[i]);
-                            if (value != -1)
-                                discrete[iDiscrete++] = value;
-                            else
-                                throw new DataFormatException();
-                            break;
-                        case Field.FieldType.DiscreteDataDriven:
-                            int valuec = _fields[i].Values.IndexOf(tokens[i]);
-                            if (valuec != -1)
-                                discrete[iDiscrete++] = valuec;
-                            else
-                            {
-                                // Add new value to the field description.
-                                _fields[i].Values.Add(tokens[i]);
-                                discrete[iDiscrete++] = _fields[i].Values.Count - 1;
-                            }
-                            break;
-                    }
-                }
-            }
-
-            return new Record(Index, real, discrete);
-        }
-
-        public IEnumerable<Field> Fields
-        {
-            get { return _fields; }
+            get { return _fields.AsReadOnly(); }
         }
 
         public Record ReadRecord()
@@ -229,14 +143,15 @@ namespace Thesis
             if (!EndOfData)
             {
                 string line = _infile.ReadLine();
-                string[] tokens = Tokenize(line, _recordDelimiters);
-                if (tokens.Length > 0)
+                var record = _parser.Parse(line, _fields);
+                if (record == null) // if comment
+                    return ReadRecord(); // go to next line
+                else
                 {
                     Index++;
-                    return CreateRecord(tokens);
+                    record.Id = Index;
+                    return record;
                 }
-                else // if comment
-                    return ReadRecord(); // go to next line
             }
             else
             {
@@ -272,6 +187,7 @@ namespace Thesis
                 record = ReadRecord();
             }
         }
+        #endregion
 
         #region IDisposable
         public void Dispose()

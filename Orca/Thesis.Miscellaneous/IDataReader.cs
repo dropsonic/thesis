@@ -8,7 +8,7 @@ namespace Thesis
 {
     public interface IDataReader: IEnumerable<Record>
     {
-        IEnumerable<Field> Fields { get; }
+        IList<Field> Fields { get; }
 
         Record ReadRecord();
 

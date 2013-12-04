@@ -28,7 +28,8 @@ namespace Thesis.DPrep.App
                 if (args.Contains("-norand"))
                     parameters.Randomize = false;
 
-                IDataReader textReader = new PlainTextReader(args[0], args[1]);
+                IRecordParser<string> parser = new PlainTextParser();
+                IDataReader textReader = new PlainTextReader(args[0], args[1], parser);
                 DPrep dprep = new DPrep(textReader, args[2], parameters);
                 Console.WriteLine("Converting data...");
                 dprep.Run();
@@ -40,7 +41,7 @@ namespace Thesis.DPrep.App
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: {0}. Please contact the developer.", ex.Message);
+                Console.WriteLine("Error: {0} Please contact the developer.", ex.Message);
             }
         }
     }
