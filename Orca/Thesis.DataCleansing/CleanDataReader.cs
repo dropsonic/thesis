@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Thesis.DataCleansing
 {
+    /// <summary>
+    /// Decorator for IDataReader: filters all specified anomalies.
+    /// </summary>
     public class CleanDataReader : IDataReader
     {
         private IDataReader _baseReader;
@@ -29,18 +32,14 @@ namespace Thesis.DataCleansing
 
         public Record ReadRecord()
         {
-            if (!EndOfData)
-            {
-                var record = _baseReader.ReadRecord();
-                if (_anomalies.Contains(record.Id)) // if this record is anomaly
-                    return ReadRecord();            // go to next record
-                else
-                    return record;
-            }
-            else
-            {
+            var record = _baseReader.ReadRecord();
+            if (EndOfData)
                 return null;
-            }
+
+            if (_anomalies.Contains(record.Id)) // if this record is anomaly
+                return ReadRecord();            // go to next record
+            else
+                return record;
         }
 
         public void Reset()

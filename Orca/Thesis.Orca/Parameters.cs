@@ -9,12 +9,10 @@ namespace Thesis.Orca
 {
     public class Parameters
     {
-        public string DataFile { get; set; }
-
         /// <summary>
         /// Distance score function.
         /// </summary>
-        public Func<IEnumerable<double>, double> ScoreFunction { get; set; }        
+        public Func<IEnumerable<double>, double> ScoreFunction { get; set; }
 
         private int _numOutliers;
         /// <summary>
@@ -85,12 +83,8 @@ namespace Thesis.Orca
             // misc parameters
             MissingR = float.NaN;
             DistMR = 0.4f;
-        }
 
-        public Parameters(string dataFile)
-            : this()
-        {
-            DataFile = dataFile;
+            ScoreFunction = ScoreFunctions.Average;
         }
     }
 }

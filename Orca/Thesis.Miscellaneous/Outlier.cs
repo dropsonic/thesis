@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Thesis
 {
-    [DebuggerDisplay("Id = {Record.Id}; Score = {Score}")]
+    [DebuggerDisplay("Id = {Id}; Score = {Score}")]
     public struct Outlier : IComparable<Outlier>
     {
         //public Record Record { get; set; }

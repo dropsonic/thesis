@@ -25,7 +25,7 @@ namespace Thesis.Orca.App
 
             try
             {
-                Parameters parameters = new Parameters(args[0]);
+                Parameters parameters = new Parameters();
                 int numOutliers;
                 if (args.Length > 1 && int.TryParse(args[1], out numOutliers))
                     parameters.NumOutliers = numOutliers;
@@ -69,7 +69,7 @@ namespace Thesis.Orca.App
 
                 Orca orca = new Orca(parameters);
                 Console.WriteLine("Processing data...");
-                var results = orca.Run();
+                var results = orca.Run(args[0]);
                 Console.WriteLine("Done!");
                 Console.WriteLine();
 

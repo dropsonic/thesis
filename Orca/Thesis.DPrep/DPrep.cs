@@ -13,24 +13,23 @@ namespace Thesis.DPrep
     {
         public Parameters Parameters { get; set; }
 
-        private IDataReader _reader;
-        string _destFile;
-
-        public DPrep(IDataReader reader, string destFile, Parameters parameters)
+        public DPrep()
         {
-            Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(destFile));
+            Parameters = new Parameters();
+        }
 
-            _reader = reader;
-            _destFile = destFile;
+        public DPrep(Parameters parameters)
+        {
+            Contract.Requires<ArgumentNullException>(parameters != null);
 
             Parameters = parameters;
         }
 
         /// <returns>Number of converted records.</returns>
-        public int Run()
+        public int Run(IDataReader reader, string destFile)
         {
-            Contract.Requires<ArgumentNullException>(Parameters != null);
+            Contract.Requires<ArgumentNullException>(reader != null);
+            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(destFile));
 
             Random random = new Random(Parameters.Seed);
             List<string> files = new List<string>();
@@ -38,7 +37,7 @@ namespace Thesis.DPrep
             //-------------------------------------------------------------
             // Create the DataTable (load the Names File)
             //
-            DataTable dataTable = new DataTable(_reader);
+            DataTable dataTable = new DataTable(reader);
             
             //-------------------------------------------------------------
             // Convert Data set to binary format
@@ -89,9 +88,9 @@ namespace Thesis.DPrep
             //-------------------------------------------------------------
             // rename last temporary file to destination file
             //
-            if (File.Exists(_destFile))
-                File.Delete(_destFile);
-            File.Move(files.Last(), _destFile);
+            if (File.Exists(destFile))
+                File.Delete(destFile);
+            File.Move(files.Last(), destFile);
 
             //-------------------------------------------------------------
             // clean temporary files 

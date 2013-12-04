@@ -30,9 +30,9 @@ namespace Thesis.DPrep.App
 
                 IRecordParser<string> parser = new PlainTextParser();
                 IDataReader textReader = new PlainTextReader(args[0], args[1], parser);
-                DPrep dprep = new DPrep(textReader, args[2], parameters);
+                DPrep dprep = new DPrep(parameters);
                 Console.WriteLine("Converting data...");
-                dprep.Run();
+                dprep.Run(textReader, args[2]);
                 Console.WriteLine("Done!");
             }
             catch (DataFormatException)

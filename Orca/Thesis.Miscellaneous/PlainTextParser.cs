@@ -10,7 +10,7 @@ namespace Thesis
     public class PlainTextParser : IRecordParser<string>
     {
         private const string _defaultNoValueReplacement = "?";
-        private const float _defaultMissingR = float.MinValue;
+        private const float _defaultMissingR = float.NaN;
         private const int _defaultMissingD = -1;
 
         private char[] _recordDelimiters;

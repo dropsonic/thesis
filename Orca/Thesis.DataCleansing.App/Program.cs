@@ -26,11 +26,36 @@ namespace Thesis.DataCleansing.App
             try
             {
                 string dataFile = args[0];
+                string fieldsFile = args[1];
                 string outputFile = args[2];
 
+                IRecordParser<string> parser = new PlainTextParser();
                 
+                IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser);
+                var dprep = new DPrep.DPrep();
+                dprep.Run(reader, outputFile);
 
-                Console.WriteLine("Done!");
+                var orca = new Orca.Orca();
+                var outliers = orca.Run(outputFile);
+
+                IAnomaliesFilter filter = new GaussianFilter();
+                var anomalies = filter.Filter(outliers);
+
+                IDataReader cleanReader = new CleanDataReader(reader, anomalies);
+
+                Console.WriteLine("Results:");
+                foreach (var record in cleanReader)
+                {
+                    StringBuilder s = new StringBuilder("  ");
+                    s.Append("Id = ").Append(record.Id).Append(" | ");
+                    foreach (var real in record.Real)
+                        s.Append(real).Append(" ");
+                    s.Append(" | ");
+                    foreach (var discrete in record.Discrete)
+                        s.Append(discrete).Append(" ");
+
+                    Console.WriteLine(s.ToString());
+                }
             }
             catch (DataFormatException)
             {

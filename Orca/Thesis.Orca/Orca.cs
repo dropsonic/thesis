@@ -14,18 +14,25 @@ namespace Thesis.Orca
     {
         public Parameters Parameters { get; set; }
 
+        public Orca()
+        {
+            Parameters = new Parameters();
+        }
+
         public Orca(Parameters parameters)
         {
+            Contract.Requires<ArgumentNullException>(parameters != null);
+
             Parameters = parameters;
         }
 
-        public IEnumerable<Outlier> Run()
+        public IEnumerable<Outlier> Run(string dataFile)
         {
             // Test cases
-            using (BatchInFile batchInFile = new BatchInFile(Parameters.DataFile, 
+            using (BatchInFile batchInFile = new BatchInFile(dataFile, 
                                                       Parameters.BatchSize))
             // Reference database (in this case - whole input data)
-            using (BinaryInFile inFile = new BinaryInFile(Parameters.DataFile))
+            using (BinaryInFile inFile = new BinaryInFile(dataFile))
             {
                 List<Outlier> outliers = new List<Outlier>();
                 bool done = false;

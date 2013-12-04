@@ -35,8 +35,6 @@ namespace Thesis.DPrep
             Seed = (int)DateTime.Now.Ticks;
             MissingR = float.NaN;
             MissingD = -1;
-            DiscreteWeight = 0.4f;
-            RealWeight = 1.0f;
         }
 
         private int _iterations;
@@ -72,14 +70,5 @@ namespace Thesis.DPrep
 
         public int MissingD { get; set; }
         public float MissingR { get; set; }
-
-        /// <summary>
-        /// Weight value for all discrete variables.
-        /// </summary>
-        public float DiscreteWeight { get; set; }
-        /// <summary>
-        /// Weight value for all continuous variables.
-        /// </summary>
-        public float RealWeight { get; set; } 
     }
 }
