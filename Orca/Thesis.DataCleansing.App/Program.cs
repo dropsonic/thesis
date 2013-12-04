@@ -54,12 +54,12 @@ namespace Thesis.DataCleansing.App
                 foreach (var record in cleanReader)
                 {
                     StringBuilder s = new StringBuilder("  ");
-                    s.Append("Id = ").Append(record.Id).Append(" | ");
-                    foreach (var real in record.Real)
-                        s.Append(real).Append(" ");
-                    s.Append(" | ");
-                    foreach (var discrete in record.Discrete)
-                        s.Append(discrete).Append(" ");
+                    s.Append("Id = ")
+                     .Append(record.Id)
+                     .Append(" | ")
+                     .Append(String.Join(" ", record.Real))
+                     .Append(" | ")
+                     .Append(String.Join(" ", record.Discrete));
 
                     Console.WriteLine(s.ToString());
                 }
