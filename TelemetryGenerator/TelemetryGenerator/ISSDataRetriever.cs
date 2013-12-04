@@ -82,15 +82,7 @@ namespace TelemetryGenerator
 
         void WriteLine(TextWriter writer, string[] values, string separator)
         {
-            int lastIndex = values.Length - 1;
-            StringBuilder s = new StringBuilder();
-            for (int i = 0; i < values.Length; i++)
-            {
-                s.Append(values[i]);
-                if (i != lastIndex)
-                    s.Append(separator);
-            }
-            writer.WriteLine(s.ToString());
+            writer.WriteLine(String.Join(separator, values));
         }
 
         string[] GetRecord()
