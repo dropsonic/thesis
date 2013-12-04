@@ -39,7 +39,7 @@ namespace Thesis.DataCleansing
             var freq = GetFrequencies(outliers.ToList());
             double mean, disp;
             GetStatValues(freq, out mean, out disp);
-            double cutoff = mean + 3 * disp;
+            double cutoff = mean + 3 * Math.Sqrt(disp);
             return cutoff;
         }
 
