@@ -26,7 +26,10 @@ namespace Thesis.Orca
             Parameters = parameters;
         }
 
-        public IEnumerable<Outlier> Run(string dataFile)
+        /// <param name="dataFile">Binary file with input data from DPrep.</param>
+        /// <param name="returnAll">If true, returns score info for all records in input data.</param>
+        /// <returns></returns>
+        public IEnumerable<Outlier> Run(string dataFile, bool returnAll)
         {
             // Test cases
             using (BatchInFile batchInFile = new BatchInFile(dataFile, 
@@ -67,7 +70,7 @@ namespace Thesis.Orca
                     done = !batchInFile.GetNextBatch();
                 }
 
-                return outliers.Take(Parameters.NumOutliers);
+                return returnAll ? outliers : outliers.Take(Parameters.NumOutliers);
             }
         }
 

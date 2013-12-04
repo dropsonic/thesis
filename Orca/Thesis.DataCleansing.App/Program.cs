@@ -36,10 +36,17 @@ namespace Thesis.DataCleansing.App
                 dprep.Run(reader, outputFile);
 
                 var orca = new Orca.Orca();
-                var outliers = orca.Run(outputFile);
+                var outliers = orca.Run(outputFile, true);
 
-                IAnomaliesFilter filter = new GaussianFilter();
+                //IAnomaliesFilter filter = new GaussianFilter();
+                IAnomaliesFilter filter = new DifferenceFilter(0.05);
                 var anomalies = filter.Filter(outliers);
+
+                Console.WriteLine("Anomalies:");
+                foreach (var anomaly in anomalies)
+                    Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
+
+                Console.WriteLine();
 
                 IDataReader cleanReader = new CleanDataReader(reader, anomalies);
 

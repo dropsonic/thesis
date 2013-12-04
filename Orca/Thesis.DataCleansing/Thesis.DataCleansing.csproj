@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CleanDataReader.cs" />
+    <Compile Include="DifferenceFilter.cs" />
     <Compile Include="GaussianFilter.cs" />
     <Compile Include="IAnomaliesFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
