@@ -29,7 +29,7 @@ namespace Thesis.Orca
         /// <param name="dataFile">Binary file with input data from DPrep.</param>
         /// <param name="returnAll">If true, returns score info for all records in input data.</param>
         /// <returns></returns>
-        public IEnumerable<Outlier> Run(string dataFile, bool returnAll)
+        public IEnumerable<Outlier> Run(string dataFile, bool returnAll = false)
         {
             // Test cases
             using (BatchInFile batchInFile = new BatchInFile(dataFile, 
