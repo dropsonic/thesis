@@ -9,7 +9,7 @@ using Thesis.Orca;
 namespace Thesis.DataCleansing
 {
     /// <summary>
-    /// Filters anomalies greater then M+3σ.
+    /// Filters anomalies which score is greater then M+3σ.
     /// </summary>
     public class GaussianFilter : IAnomaliesFilter
     {

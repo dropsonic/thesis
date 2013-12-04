@@ -108,10 +108,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnomalyCleaner.cs" />
+    <Compile Include="CleanDataReader.cs" />
     <Compile Include="GaussianFilter.cs" />
     <Compile Include="IAnomaliesFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThresholdFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Thesis.DPrep\Thesis.DPrep.csproj">
