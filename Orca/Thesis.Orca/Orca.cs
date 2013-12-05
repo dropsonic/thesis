@@ -35,7 +35,7 @@ namespace Thesis.Orca
             using (BatchInFile batchInFile = new BatchInFile(dataFile, 
                                                       Parameters.BatchSize))
             // Reference database (in this case - whole input data)
-            using (BinaryInFile inFile = new BinaryInFile(dataFile))
+            using (OrcaBinaryReader inFile = new OrcaBinaryReader(dataFile))
             {
                 List<Outlier> outliers = new List<Outlier>();
                 bool done = false;
@@ -74,7 +74,7 @@ namespace Thesis.Orca
             }
         }
 
-        private IList<Outlier> FindOutliers(BatchInFile batchFile, BinaryInFile inFile, double cutoff)
+        private IList<Outlier> FindOutliers(BatchInFile batchFile, OrcaBinaryReader inFile, double cutoff)
         {
             Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);

@@ -113,6 +113,7 @@
     <Compile Include="DistanceFunctions.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="IDataReader.cs" />
+    <Compile Include="IDataWriter.cs" />
     <Compile Include="IRecordParser.cs" />
     <Compile Include="MinmaxScaleDataReader.cs" />
     <Compile Include="Outlier.cs" />

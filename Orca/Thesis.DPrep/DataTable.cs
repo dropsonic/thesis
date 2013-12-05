@@ -32,18 +32,13 @@ namespace Thesis.DPrep
         {
             Contract.Requires(!String.IsNullOrEmpty(filename));
 
-            using (var outfile = new BinaryOutFile(filename, Weights))
+            using (var outfile = new OrcaBinaryWriter(filename, Weights))
             {
                 //----------------------
                 // write the example to the file
                 //
                 foreach (var record in _reader)
                     outfile.WriteRecord(record);
-
-                //-----------------------------
-	            // write header information
-	            //
-                outfile.WriteHeader(_reader.Index);
             }
 
             return _reader.Index;

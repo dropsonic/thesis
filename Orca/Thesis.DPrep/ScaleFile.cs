@@ -10,7 +10,7 @@ namespace Thesis.DPrep
 {
     class ScaleFile : IDisposable
     {
-        BinaryInFile _infile;
+        OrcaBinaryReader _infile;
 
         Weights _weights;
 
@@ -19,7 +19,7 @@ namespace Thesis.DPrep
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
             Contract.Requires<ArgumentNullException>(weights != null);
 
-            _infile = new BinaryInFile(dataFile);
+            _infile = new OrcaBinaryReader(dataFile);
 
             _weights = weights;
         }
@@ -126,7 +126,7 @@ namespace Thesis.DPrep
             //-------------------------------
             // open file for writing
             //
-            using (var outfile = new BinaryOutFile(filename, _weights))
+            using (var outfile = new OrcaBinaryWriter(filename, _weights))
             {
                 float[] range = new float[_infile.RealFieldsCount];
 
@@ -159,8 +159,6 @@ namespace Thesis.DPrep
 
                         outfile.WriteRecord(new Record(rec.Id, Rscale, rec.Discrete));
                     });
-
-                outfile.WriteHeader(_infile.RecordsCount);
             }
         }
 
@@ -176,7 +174,7 @@ namespace Thesis.DPrep
             //-------------------------------
             // open file for writing
             //
-            using (var outfile = new BinaryOutFile(filename, _weights))
+            using (var outfile = new OrcaBinaryWriter(filename, _weights))
             {
                 //--------------------------------
                 // read in file and scale it
@@ -202,8 +200,6 @@ namespace Thesis.DPrep
 
                     outfile.WriteRecord(new Record(rec.Id, Rscale, rec.Discrete));
                 });
-
-                outfile.WriteHeader(_infile.RecordsCount);
             }
         }
 

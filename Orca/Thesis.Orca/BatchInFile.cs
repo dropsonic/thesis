@@ -7,7 +7,7 @@ using Thesis.Orca.Common;
 
 namespace Thesis.Orca
 {
-    class BatchInFile : BinaryInFile
+    class BatchInFile : OrcaBinaryReader
     {
         int _batchSize;
         int _lastOffset;
