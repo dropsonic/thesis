@@ -109,8 +109,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryExtensions.cs" />
-    <Compile Include="OrcaBinaryReader.cs" />
-    <Compile Include="OrcaBinaryWriter.cs" />
+    <Compile Include="BinaryDataReader.cs" />
+    <Compile Include="BinaryDataWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

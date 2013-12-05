@@ -11,7 +11,7 @@ namespace Thesis.DPrep
 {
     class ShuffleFile : IDisposable
     {
-        OrcaBinaryReader _infile;
+        BinaryDataReader _infile;
 
         Weights _weights;
 
@@ -34,7 +34,7 @@ namespace Thesis.DPrep
             if (_infile != null)
                 _infile.Dispose();
 
-            _infile = new OrcaBinaryReader(filename);
+            _infile = new BinaryDataReader(filename);
         }
 
         private void ResetFileReader()
@@ -76,11 +76,11 @@ namespace Thesis.DPrep
             //-------------------------------
             // open files for writing
             //
-            OrcaBinaryWriter[] tmpFilesOut = new OrcaBinaryWriter[nTmpFiles];
+            BinaryDataWriter[] tmpFilesOut = new BinaryDataWriter[nTmpFiles];
             try
             {
                 for (int i = 0; i < tmpFileNames.Length; i++)
-                    tmpFilesOut[i] = new OrcaBinaryWriter(tmpFileNames[i], _infile.Fields);
+                    tmpFilesOut[i] = new BinaryDataWriter(tmpFileNames[i], _infile.Fields);
 
                 //--------------------------------
                 // read in data file and randomly shuffle examples to
@@ -104,11 +104,11 @@ namespace Thesis.DPrep
             // open tmpfiles for reading 
             //
 
-            OrcaBinaryReader[] tmpFilesIn = new OrcaBinaryReader[nTmpFiles];
+            BinaryDataReader[] tmpFilesIn = new BinaryDataReader[nTmpFiles];
             try
             {
                 for (int i = 0; i < tmpFilesIn.Length; i++)
-                    tmpFilesIn[i] = new OrcaBinaryReader(tmpFileNames[i]);
+                    tmpFilesIn[i] = new BinaryDataReader(tmpFileNames[i]);
 
                 //-----------------------------------
                 // open final destination file
@@ -116,7 +116,7 @@ namespace Thesis.DPrep
 
                 ResetFileReader(); // closes original file
 
-                using (var outfile = new OrcaBinaryWriter(filename, _infile.Fields))
+                using (var outfile = new BinaryDataWriter(filename, _infile.Fields))
                 {
                     //--------------------------------------
                     // concatenate tmp files in random order
@@ -137,7 +137,7 @@ namespace Thesis.DPrep
                     for (int i = 0; i < order.Length; i++)
                     {
                         int count = blockSize;
-                        OrcaBinaryReader infile = tmpFilesIn[order[i]];
+                        BinaryDataReader infile = tmpFilesIn[order[i]];
                         foreach (var rec in infile)
                             outfile.WriteRecord(rec);
                     }

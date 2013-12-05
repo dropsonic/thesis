@@ -34,7 +34,7 @@ namespace Thesis.DPrep
             Contract.Requires(!String.IsNullOrEmpty(filename));
             Contract.Requires<ArgumentNullException>(reader != null);
 
-            using (var outfile = new OrcaBinaryWriter(filename, reader.Fields))
+            using (var outfile = new BinaryDataWriter(filename, reader.Fields))
             {
                 //----------------------
                 // write the example to the file

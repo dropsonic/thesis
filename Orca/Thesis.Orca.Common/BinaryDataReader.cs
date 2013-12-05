@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace Thesis.Orca.Common
 {
     /// <summary>
-    /// Represents Orca format binary file reader.
+    /// Represents binary record format file reader.
     /// </summary>
-    public class OrcaBinaryReader : IDataReader
+    public class BinaryDataReader : IDataReader
     {
         BinaryReader _infile;
 
@@ -26,7 +26,7 @@ namespace Thesis.Orca.Common
 
         IList<Field> _fields;
 
-        public OrcaBinaryReader(string filename)
+        public BinaryDataReader(string filename)
         {
             _infile = new BinaryReader(File.OpenRead(filename));
             _fields = new List<Field>();
@@ -146,7 +146,7 @@ namespace Thesis.Orca.Common
             }
         }
 
-        ~OrcaBinaryReader()
+        ~BinaryDataReader()
         {
             Dispose(false);
         }

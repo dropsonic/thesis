@@ -119,10 +119,6 @@
       <Project>{ef5599f1-e728-41d6-86ee-321069fc3cd4}</Project>
       <Name>Thesis.Miscellaneous</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Thesis.Orca.Common\Thesis.Orca.Common.csproj">
-      <Project>{64ce960c-437d-4094-b1d9-3cc337b9ba0c}</Project>
-      <Name>Thesis.Orca.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

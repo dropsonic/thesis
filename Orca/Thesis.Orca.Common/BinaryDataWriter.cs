@@ -11,7 +11,7 @@ namespace Thesis.Orca.Common
     /// <summary>
     /// Represents Orca format binary file writer.
     /// </summary>
-    public class OrcaBinaryWriter : IDataWriter
+    public class BinaryDataWriter : IDataWriter
     {
         BinaryWriter _outfile;
 
@@ -25,7 +25,7 @@ namespace Thesis.Orca.Common
         private int _count = 0; // number of records
 
 
-        public OrcaBinaryWriter(string filename, IList<Field> fields)
+        public BinaryDataWriter(string filename, IList<Field> fields)
         {
             Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(filename));
             Contract.Requires<ArgumentNullException>(fields != null);
@@ -129,7 +129,7 @@ namespace Thesis.Orca.Common
             }
         }
  
-        ~OrcaBinaryWriter()    
+        ~BinaryDataWriter()    
         {        
             Dispose(false);
         }
