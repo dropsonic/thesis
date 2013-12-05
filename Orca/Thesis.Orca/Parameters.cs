@@ -66,11 +66,6 @@ namespace Thesis.Orca
             }
         }
 
-        /// <summary>
-        /// Distance for missing real value.
-        /// </summary>
-        public float DistMR { get; set; }
-
         public Parameters()
         {
             // outlier options
