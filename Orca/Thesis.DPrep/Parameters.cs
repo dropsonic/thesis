@@ -9,36 +9,16 @@ namespace Thesis.DPrep
 {
     public class Parameters
     {
-        public enum Scale
-        {
-            /// <summary>
-            /// Scale continuous fields to range [0,1].
-            /// </summary>
-            ZeroToOne = 0,
-            /// <summary>
-            /// scale continuous fields to zero mean and unit standard devation.
-            /// </summary>
-            Std = 1,
-            /// <summary>
-            /// No scaling of continuous fields.
-            /// </summary>
-            None = 2
-        }
-
         public Parameters()
         {
-            Scaling = Scale.ZeroToOne;
             Randomize = true;
             Iterations = 5;
             RandFiles = 10;
-            TempFileStem = "tmp";
             Seed = (int)DateTime.Now.Ticks;
         }
 
         private int _iterations;
         private int _randFiles;
-
-        public Scale Scaling { get; set; }
 
         public bool Randomize { get; set; }
 
@@ -63,7 +43,5 @@ namespace Thesis.DPrep
         }
 
         public int Seed { get; set; }
-
-        public string TempFileStem { get; set; }
     }
 }

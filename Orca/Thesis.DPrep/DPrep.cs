@@ -25,6 +25,27 @@ namespace Thesis.DPrep
             Parameters = parameters;
         }
 
+        /// <summary>
+        /// Converts the data set to a binary file.
+        /// </summary>
+        /// <returns>Records count.</returns>
+        private int ConvertToBinary(IDataReader reader, string filename)
+        {
+            Contract.Requires(!String.IsNullOrEmpty(filename));
+            Contract.Requires<ArgumentNullException>(reader != null);
+
+            using (var outfile = new OrcaBinaryWriter(filename, reader.Fields))
+            {
+                //----------------------
+                // write the example to the file
+                //
+                foreach (var record in reader)
+                    outfile.WriteRecord(record);
+            }
+
+            return reader.Index;
+        }
+
         /// <returns>Number of converted records.</returns>
         public int Run(IDataReader reader, string destFile)
         {
@@ -35,16 +56,11 @@ namespace Thesis.DPrep
             List<string> files = new List<string>();
 
             //-------------------------------------------------------------
-            // Create the DataTable (load the Names File)
-            //
-            DataTable dataTable = new DataTable(reader);
-            
-            //-------------------------------------------------------------
             // Convert Data set to binary format
             //
-            string outputName = Parameters.TempFileStem + ".out";
+            string outputName = "tmp.out";
             files.Add(outputName);
-            int convertedRecords = dataTable.ConvertToBinary(outputName);
+            int convertedRecords = ConvertToBinary(reader, outputName);
 
             //-------------------------------------------------------------
             // Randomize data set 
@@ -52,7 +68,7 @@ namespace Thesis.DPrep
             if (Parameters.Randomize)
             {
                 ShuffleFile bScale = new ShuffleFile(files.Last());
-                string randOutputFile = Parameters.TempFileStem + ".rand";
+                string randOutputFile = "out.rand";
                 files.Add(randOutputFile);
                 bScale.MultiShuffle(randOutputFile, Parameters.Iterations, Parameters.RandFiles, Parameters.Seed);
                 bScale.Dispose();
