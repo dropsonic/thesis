@@ -17,12 +17,10 @@ namespace Thesis.DPrep
 
         string _dataFile;
 
-        public ShuffleFile(string dataFile, Weights weights)
+        public ShuffleFile(string dataFile)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
-            Contract.Requires<ArgumentNullException>(weights != null);
 
-            _weights = weights;
             _dataFile = dataFile;
 
             SetFileReader(dataFile);
@@ -82,9 +80,7 @@ namespace Thesis.DPrep
             try
             {
                 for (int i = 0; i < tmpFileNames.Length; i++)
-                    tmpFilesOut[i] = new OrcaBinaryWriter(tmpFileNames[i], 
-                                                          _infile.RealFieldsCount, 
-                                                          _infile.DiscreteFieldsCount);
+                    tmpFilesOut[i] = new OrcaBinaryWriter(tmpFileNames[i], _infile.Fields);
 
                 //--------------------------------
                 // read in data file and randomly shuffle examples to
@@ -120,7 +116,7 @@ namespace Thesis.DPrep
 
                 ResetFileReader(); // closes original file
 
-                using (var outfile = new OrcaBinaryWriter(filename, _weights))
+                using (var outfile = new OrcaBinaryWriter(filename, _infile.Fields))
                 {
                     //--------------------------------------
                     // concatenate tmp files in random order

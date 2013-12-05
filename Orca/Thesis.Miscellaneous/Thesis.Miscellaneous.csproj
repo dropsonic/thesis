@@ -112,6 +112,7 @@
     <Compile Include="DataFormatException.cs" />
     <Compile Include="DistanceFunctions.cs" />
     <Compile Include="Field.cs" />
+    <Compile Include="FieldsHelper.cs" />
     <Compile Include="IDataReader.cs" />
     <Compile Include="IDataWriter.cs" />
     <Compile Include="IRecordParser.cs" />

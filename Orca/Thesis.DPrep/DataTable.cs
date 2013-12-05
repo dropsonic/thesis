@@ -13,15 +13,11 @@ namespace Thesis.DPrep
     {
         private IDataReader _reader;
 
-        public Weights Weights { get; private set; }
-
         public DataTable(IDataReader reader)
         {
             Contract.Requires<ArgumentNullException>(reader != null);
 
             _reader = reader;
-
-            Weights = new Weights(reader.Fields);
         }
 
         /// <summary>
@@ -32,7 +28,7 @@ namespace Thesis.DPrep
         {
             Contract.Requires(!String.IsNullOrEmpty(filename));
 
-            using (var outfile = new OrcaBinaryWriter(filename, Weights))
+            using (var outfile = new OrcaBinaryWriter(filename, _reader.Fields))
             {
                 //----------------------
                 // write the example to the file

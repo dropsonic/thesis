@@ -7,7 +7,7 @@ using Thesis.Orca.Common;
 
 namespace Thesis.Orca
 {
-    class BatchInFile : OrcaBinaryReader
+    class BatchOrcaBinaryReader : OrcaBinaryReader
     {
         int _batchSize;
         int _lastOffset;
@@ -16,12 +16,11 @@ namespace Thesis.Orca
 
         public Record[] CurrentBatch { get; private set; }
 
-        public BatchInFile(string filename, int batchSize)
+        public BatchOrcaBinaryReader(string filename, int batchSize)
             : base(filename)
         {
             _batchSize = batchSize;
             Offset = 0;
-            //_lastOffset = _batchSize;
         }
 
         /// <summary>
@@ -33,7 +32,7 @@ namespace Thesis.Orca
             CurrentBatch = new Record[nr];
 
             for (int i = 0; i < nr; i++)
-                CurrentBatch[i] = GetNextRecord();
+                CurrentBatch[i] = ReadRecord();
 
             Offset += _lastOffset;
             _lastOffset = nr;

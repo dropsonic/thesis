@@ -12,7 +12,7 @@ namespace Thesis.Orca.Common
     /// <summary>
     /// Represents Orca format binary file reader.
     /// </summary>
-    public class OrcaBinaryReader : IEnumerable<Record>, IDisposable
+    public class OrcaBinaryReader : IDataReader, IDisposable
     {
         BinaryReader _infile;
 
@@ -22,14 +22,14 @@ namespace Thesis.Orca.Common
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
 
-        public Weights Weights { get; private set; }
+        private long _dataOffset; // 0 + size of header
 
-        private int _headerSize;
+        IList<Field> _fields;
 
         public OrcaBinaryReader(string filename)
         {
             _infile = new BinaryReader(File.OpenRead(filename));
-            Weights = new Weights();
+            _fields = new List<Field>();
             ReadHeader();
             SeekPosition(0);
         }
@@ -38,39 +38,58 @@ namespace Thesis.Orca.Common
         {
             long oldPos = _infile.BaseStream.Position;
 
-            _headerSize = 3 * sizeof(int) + sizeof(bool);
-
             _infile.BaseStream.Position = 0;
             RecordsCount = _infile.ReadInt32();
             RealFieldsCount = _infile.ReadInt32();
             DiscreteFieldsCount = _infile.ReadInt32();
             
-            bool hasWeights = _infile.ReadBoolean();
-            if (hasWeights)
-            {
-                Weights.Real = _infile.ReadFloatArray(RealFieldsCount);
-                Weights.Discrete = _infile.ReadFloatArray(DiscreteFieldsCount);
-                _headerSize += RealFieldsCount * sizeof(float) + DiscreteFieldsCount * sizeof(int); // plus weights size
-            }
+            int fieldsCount = _infile.ReadInt32();
+            for (int i = 0; i < fieldsCount; i++)
+                _fields.Add(ReadField());
 
+            _dataOffset = _infile.BaseStream.Position;
             _infile.BaseStream.Position = oldPos;
         }
 
-        public void SeekPosition(int pos)
+        private Field ReadField()
+        {
+            string name = _infile.ReadString();
+            Field.FieldType type = (Field.FieldType)_infile.ReadInt32();
+            float weight = _infile.ReadSingle();
+
+            bool hasValues = _infile.ReadBoolean();
+            List<string> values = null;
+            if (hasValues)
+            {
+                int valuesCount = _infile.ReadInt32();
+                values = new List<string>();
+                for (int i = 0; i < valuesCount; i++)
+                    values.Add(_infile.ReadString());
+            }
+
+            return new Field() { Name = name, Type = type, Weight = weight, Values = values };
+        }
+
+        private void SeekPosition(int pos)
         {
             Contract.Requires<ArgumentOutOfRangeException>(pos >= 0);
             Contract.Requires<ArgumentOutOfRangeException>(pos <= RecordsCount);
 
-            long filepos = _headerSize + pos * 
+            long filepos = _dataOffset + pos * 
                 (sizeof(int) + RealFieldsCount * sizeof(float) + DiscreteFieldsCount * sizeof(int));
             
             _infile.BaseStream.Position = filepos;
             Index = pos;
         }
 
-        public Record GetNextRecord()
+        #region IDataReader
+        public IList<Field> Fields
         {
-            // WARNING does not check to make sure read command succeeded.
+            get { return _fields; }
+        }
+
+        public Record ReadRecord()
+        {
             var id = _infile.ReadInt32();
             var real = _infile.ReadFloatArray(RealFieldsCount);
             var discrete = _infile.ReadIntArray(DiscreteFieldsCount);
@@ -80,25 +99,28 @@ namespace Thesis.Orca.Common
             return new Record(id, real, discrete);
         }
 
-        public Record GetRecord(int pos)
-        {
-            Contract.Requires<ArgumentOutOfRangeException>(pos >= 0);
-            SeekPosition(pos);
-            return GetNextRecord();
-        }
-
-        /// <summary>
-        /// Executes action for each record in file.
-        /// </summary>
-        /// <param name="action"></param>
-        public void ForEach(Action<Record> action)
+        public void Reset()
         {
             SeekPosition(0);
-            while (Index < RecordsCount)
-            {
-                action(GetNextRecord());
-            }
         }
+
+        public bool EndOfData
+        {
+            get { return Index == RecordsCount; }
+        }
+
+        public IEnumerator<Record> GetEnumerator()
+        {
+            Reset();
+            while (!EndOfData)
+                yield return ReadRecord();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+        #endregion
 
         #region IDisposable
         public void Dispose()
@@ -106,41 +128,27 @@ namespace Thesis.Orca.Common
             Dispose(true);
             GC.SuppressFinalize(this);
         }
- 
+
         private bool m_Disposed = false;
- 
+
         protected virtual void Dispose(bool disposing)
         {
             if (!m_Disposed)
             {
                 if (disposing)
                 {
-                // Managed resources are released here.
+                    // Managed resources are released here.
                     _infile.Close();
                 }
- 
+
                 // Unmanaged resources are released here.
                 m_Disposed = true;
             }
         }
- 
-        ~OrcaBinaryReader()    
-        {        
+
+        ~OrcaBinaryReader()
+        {
             Dispose(false);
-        }
-        #endregion
-
-        #region IEnumerable<Record>
-        public IEnumerator<Record> GetEnumerator()
-        {
-            SeekPosition(0);
-            for (int i = 0; i < RecordsCount; i++)
-                yield return GetNextRecord();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
         #endregion
     }

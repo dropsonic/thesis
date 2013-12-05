@@ -32,7 +32,7 @@ namespace Thesis.Orca
         public IEnumerable<Outlier> Run(string dataFile, bool returnAll = false)
         {
             // Test cases
-            using (BatchInFile batchInFile = new BatchInFile(dataFile, 
+            using (BatchOrcaBinaryReader batchInFile = new BatchOrcaBinaryReader(dataFile, 
                                                       Parameters.BatchSize))
             // Reference database (in this case - whole input data)
             using (OrcaBinaryReader inFile = new OrcaBinaryReader(dataFile))
@@ -40,6 +40,7 @@ namespace Thesis.Orca
                 List<Outlier> outliers = new List<Outlier>();
                 bool done = false;
                 double cutoff = Parameters.Cutoff;
+                Weights weights = new Weights(inFile.Fields);
 
                 //-----------------------
                 // run the outlier search 
@@ -49,10 +50,10 @@ namespace Thesis.Orca
                 {
                     Trace.PrintRecords(batchInFile.CurrentBatch);
 
-                    var o = FindOutliers(batchInFile, inFile, cutoff);
+                    var o = FindOutliers(batchInFile, inFile, weights, cutoff);
                     outliers.AddRange(o);
 
-                    inFile.SeekPosition(0);
+                    inFile.Reset();
 
                     //-------------------------------
                     // sort the current best outliers 
@@ -74,7 +75,7 @@ namespace Thesis.Orca
             }
         }
 
-        private IList<Outlier> FindOutliers(BatchInFile batchFile, OrcaBinaryReader inFile, double cutoff)
+        private IList<Outlier> FindOutliers(BatchOrcaBinaryReader batchFile, OrcaBinaryReader inFile, Weights weights, double cutoff)
         {
             Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);
@@ -116,7 +117,7 @@ namespace Thesis.Orca
             // loop over objects in reference table
             for (int i = 0; i < recCount; i++)
             {
-                Record descRecord = inFile.GetNextRecord();
+                Record descRecord = inFile.ReadRecord();
 
                 neighborsDist_i = 0;
                 minkDist_i = 0;
@@ -124,7 +125,7 @@ namespace Thesis.Orca
 
                 for (int j = 0; j < batchRecCount; j++)
                 {
-                    double dist = Parameters.DistanceFunction(records[j], descRecord, inFile.Weights);
+                    double dist = Parameters.DistanceFunction(records[j], descRecord, weights);
 
                     if (dist < minkDist[minkDist_i])
                     {

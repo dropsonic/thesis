@@ -51,7 +51,7 @@ namespace Thesis.DPrep
             //
             if (Parameters.Scaling != Parameters.Scale.None)
             {
-                ScaleFile scaleFile = new ScaleFile(outputName, dataTable.Weights);
+                ScaleFile scaleFile = new ScaleFile(outputName);
                 string scaleOutputName = Parameters.TempFileStem + ".scale";
                 files.Add(scaleOutputName);
 
@@ -76,7 +76,7 @@ namespace Thesis.DPrep
             //
             if (Parameters.Randomize)
             {
-                ShuffleFile bScale = new ShuffleFile(files.Last(), dataTable.Weights);
+                ShuffleFile bScale = new ShuffleFile(files.Last());
                 string randOutputFile = Parameters.TempFileStem + ".rand";
                 files.Add(randOutputFile);
                 bScale.MultiShuffle(randOutputFile, Parameters.Iterations, Parameters.RandFiles, Parameters.Seed);

@@ -23,9 +23,8 @@ namespace Thesis
 
             _baseReader = baseReader;
 
-            _realFieldsCount = Fields.Count(f => f.Type == Field.FieldType.Continuous);
-            _discreteFieldsCount = Fields.Count(f => f.Type == Field.FieldType.Discrete ||
-                                                     f.Type == Field.FieldType.DiscreteDataDriven);
+            _realFieldsCount = Fields.RealCount();
+            _discreteFieldsCount = Fields.DiscreteCount();
             
             GetDataProperties();
         }

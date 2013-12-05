@@ -12,16 +12,11 @@ namespace Thesis.DPrep
     {
         OrcaBinaryReader _infile;
 
-        Weights _weights;
-
-        public ScaleFile(string dataFile, Weights weights)
+        public ScaleFile(string dataFile)
         {
             Contract.Requires(!String.IsNullOrEmpty(dataFile));
-            Contract.Requires<ArgumentNullException>(weights != null);
 
             _infile = new OrcaBinaryReader(dataFile);
-
-            _weights = weights;
         }
 
         /// <summary>
@@ -42,7 +37,7 @@ namespace Thesis.DPrep
             }
 
             // process rest of examples
-            _infile.ForEach((rec) =>
+            foreach (var rec in _infile)
             {
                 for (int i = 0; i < _infile.RealFieldsCount; i++)
                 {
@@ -58,7 +53,7 @@ namespace Thesis.DPrep
                         }
                     }
                 }
-            });
+            }
 
             maxr = max;
             minr = min;
@@ -77,7 +72,7 @@ namespace Thesis.DPrep
             var sumsqv = new double[_infile.RealFieldsCount];
             var num = new int[_infile.RealFieldsCount];
 
-            _infile.ForEach((rec) =>
+            foreach (var rec in _infile)
             {
                 for (int i = 0; i < _infile.RealFieldsCount; i++)
                 {
@@ -108,7 +103,7 @@ namespace Thesis.DPrep
                     // error checkin
                     // check mean /std are not NaN
                 }
-            });
+            }
 
             meanr = mean;
             stdr = std;
@@ -126,7 +121,7 @@ namespace Thesis.DPrep
             //-------------------------------
             // open file for writing
             //
-            using (var outfile = new OrcaBinaryWriter(filename, _weights))
+            using (var outfile = new OrcaBinaryWriter(filename, _infile.Fields))
             {
                 float[] range = new float[_infile.RealFieldsCount];
 
@@ -139,26 +134,26 @@ namespace Thesis.DPrep
                 // read in file and scale it
                 //
                 float[] Rscale = new float[_infile.RealFieldsCount];
-                _infile.ForEach((rec) =>
+                foreach (var rec in _infile)
+                {
+                    for (int i = 0; i < _infile.RealFieldsCount; i++)
                     {
-                        for (int i = 0; i < _infile.RealFieldsCount; i++)
+                        if (float.IsNaN(rec.Real[i]))
                         {
-                            if (float.IsNaN(rec.Real[i]))
-                            {
-                                Rscale[i] = float.NaN;
-                            }
-                            else if (range[i] != 0)
-                            {
-                                Rscale[i] = (rec.Real[i] - min[i]) / range[i];
-                            }
-                            else
-                            {
-                                Rscale[i] = 0;
-                            }
+                            Rscale[i] = float.NaN;
                         }
+                        else if (range[i] != 0)
+                        {
+                            Rscale[i] = (rec.Real[i] - min[i]) / range[i];
+                        }
+                        else
+                        {
+                            Rscale[i] = 0;
+                        }
+                    }
 
-                        outfile.WriteRecord(new Record(rec.Id, Rscale, rec.Discrete));
-                    });
+                    outfile.WriteRecord(new Record(rec.Id, Rscale, rec.Discrete));
+                }
             }
         }
 
@@ -174,13 +169,13 @@ namespace Thesis.DPrep
             //-------------------------------
             // open file for writing
             //
-            using (var outfile = new OrcaBinaryWriter(filename, _weights))
+            using (var outfile = new OrcaBinaryWriter(filename, _infile.Fields))
             {
                 //--------------------------------
                 // read in file and scale it
                 //
                 float[] Rscale = new float[_infile.RealFieldsCount];
-                _infile.ForEach((rec) =>
+                foreach (var rec in _infile)
                 {
                     for (int i = 0; i < _infile.RealFieldsCount; i++)
                     {
@@ -199,7 +194,7 @@ namespace Thesis.DPrep
                     }
 
                     outfile.WriteRecord(new Record(rec.Id, Rscale, rec.Discrete));
-                });
+                }
             }
         }
 
