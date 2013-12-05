@@ -108,7 +108,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatchDataReader.cs" />
     <Compile Include="NeighborsDistance.cs" />
     <Compile Include="Orca.cs" />
     <Compile Include="Parameters.cs" />

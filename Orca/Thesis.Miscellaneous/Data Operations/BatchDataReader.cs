@@ -5,9 +5,8 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Thesis.Orca.Common;
 
-namespace Thesis.Orca
+namespace Thesis
 {
     class BatchDataReader : IDataReader
     {

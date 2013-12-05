@@ -108,23 +108,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data Operations\BatchDataReader.cs" />
     <Compile Include="Collections\BinaryHeap.cs" />
-    <Compile Include="DataFormatException.cs" />
+    <Compile Include="Data Operations\DataFormatException.cs" />
     <Compile Include="DistanceFunctions.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="FieldsHelper.cs" />
-    <Compile Include="IDataReader.cs" />
-    <Compile Include="IDataWriter.cs" />
-    <Compile Include="IRecordParser.cs" />
-    <Compile Include="MinmaxScaleDataReader.cs" />
+    <Compile Include="Data Operations\IDataReader.cs" />
+    <Compile Include="Data Operations\IDataWriter.cs" />
+    <Compile Include="Data Operations\IRecordParser.cs" />
+    <Compile Include="Data Operations\MinmaxScaleDataReader.cs" />
     <Compile Include="Outlier.cs" />
-    <Compile Include="PlainTextParser.cs" />
-    <Compile Include="PlainTextReader.cs" />
+    <Compile Include="Data Operations\PlainTextParser.cs" />
+    <Compile Include="Data Operations\PlainTextReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Record.cs" />
-    <Compile Include="ScaleDataReader.cs" />
-    <Compile Include="StandardScaleDataReader.cs" />
-    <Compile Include="StringHelper.cs" />
+    <Compile Include="Data Operations\ScaleDataReader.cs" />
+    <Compile Include="Data Operations\StandardScaleDataReader.cs" />
+    <Compile Include="Data Operations\StringHelper.cs" />
     <Compile Include="Weights.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
