@@ -14,6 +14,9 @@ namespace Thesis
         float[] _mean;
         float[] _std;
 
+        public StandardScaleDataReader(IDataReader baseReader)
+            : base(baseReader) { }
+
         protected override void GetDataProperties()
         {
             // initialize vectors 

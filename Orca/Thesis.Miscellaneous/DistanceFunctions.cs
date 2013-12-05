@@ -9,7 +9,10 @@ namespace Thesis
 {
     public static class DistanceFunctions
     {
-        public static double Euсlid(Record a, Record b, Weights weights)
+        /// <summary>
+        /// Squared Euclid distance.
+        /// </summary>
+        public static double SqrEuсlid(Record a, Record b, Weights weights)
         {
             Contract.Requires(a.Real.Length == b.Real.Length);
             Contract.Requires(a.Discrete.Length == b.Discrete.Length);
@@ -50,7 +53,12 @@ namespace Thesis
                     d += weights.Discrete[i];
             }
 
-            return Math.Sqrt(d);
+            return d;
+        }
+
+        public static double Euclid(Record a, Record b, Weights weights)
+        {
+            return Math.Sqrt(SqrEuсlid(a, b, weights));
         }
     }
 }

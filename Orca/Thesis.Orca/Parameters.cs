@@ -82,7 +82,7 @@ namespace Thesis.Orca
             BatchSize = 1000;
 
             ScoreFunction = ScoreFunctions.Average;
-            DistanceFunction = DistanceFunctions.Euсlid;
+            DistanceFunction = DistanceFunctions.Euclid;
         }
     }
 }

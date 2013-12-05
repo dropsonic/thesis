@@ -14,6 +14,9 @@ namespace Thesis
         float[] _min;
         float[] _range;
 
+        public MinmaxScaleDataReader(IDataReader baseReader)
+            : base(baseReader) { }
+
         protected override void GetDataProperties()
         {
             // initialize vectors 

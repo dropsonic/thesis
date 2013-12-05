@@ -110,7 +110,6 @@
   <ItemGroup>
     <Compile Include="Collections\BinaryHeap.cs" />
     <Compile Include="DataFormatException.cs" />
-    <Compile Include="DataReaderBase.cs" />
     <Compile Include="DistanceFunctions.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="IDataReader.cs" />
