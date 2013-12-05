@@ -32,7 +32,7 @@ namespace Thesis.Orca
         public IEnumerable<Outlier> Run(string dataFile, bool returnAll = false)
         {
             // Test cases
-            using (BatchOrcaBinaryReader batchInFile = new BatchOrcaBinaryReader(dataFile, 
+            using (BatchDataReader batchInFile = new BatchDataReader(new OrcaBinaryReader(dataFile), 
                                                       Parameters.BatchSize))
             // Reference database (in this case - whole input data)
             using (OrcaBinaryReader inFile = new OrcaBinaryReader(dataFile))
@@ -75,7 +75,7 @@ namespace Thesis.Orca
             }
         }
 
-        private IList<Outlier> FindOutliers(BatchOrcaBinaryReader batchFile, OrcaBinaryReader inFile, Weights weights, double cutoff)
+        private IList<Outlier> FindOutliers(BatchDataReader batchFile, OrcaBinaryReader inFile, Weights weights, double cutoff)
         {
             Contract.Requires<ArgumentNullException>(batchFile != null);
             Contract.Requires<ArgumentNullException>(inFile != null);

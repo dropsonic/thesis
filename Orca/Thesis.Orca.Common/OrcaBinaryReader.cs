@@ -12,7 +12,7 @@ namespace Thesis.Orca.Common
     /// <summary>
     /// Represents Orca format binary file reader.
     /// </summary>
-    public class OrcaBinaryReader : IDataReader, IDisposable
+    public class OrcaBinaryReader : IDataReader
     {
         BinaryReader _infile;
 

@@ -108,7 +108,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatchOrcaBinaryReader.cs" />
+    <Compile Include="BatchDataReader.cs" />
     <Compile Include="NeighborsDistance.cs" />
     <Compile Include="Orca.cs" />
     <Compile Include="Parameters.cs" />

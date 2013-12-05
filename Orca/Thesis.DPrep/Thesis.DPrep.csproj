@@ -113,7 +113,6 @@
     <Compile Include="DPrep.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScaleFile.cs" />
     <Compile Include="ShuffleFile.cs" />
   </ItemGroup>
   <ItemGroup>

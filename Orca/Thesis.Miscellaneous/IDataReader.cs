@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Thesis
 {
-    public interface IDataReader: IEnumerable<Record>
+    public interface IDataReader: IEnumerable<Record>, IDisposable
     {
         IList<Field> Fields { get; }
 

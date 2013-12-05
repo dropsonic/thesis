@@ -29,7 +29,7 @@ namespace Thesis
                 max[i] = float.MinValue;
             }
 
-            foreach (var record in this)
+            foreach (var record in BaseReader)
             {
                 for (int i = 0; i < RealFieldsCount; i++)
                 {
@@ -52,7 +52,11 @@ namespace Thesis
         protected override void ScaleRecord(Record record)
         {
             for (int i = 0; i < RealFieldsCount; i++)
+            {
+                if (_range[i] == 0)
+                    record.Real[i] = 0;
                 record.Real[i] = (record.Real[i] - _min[i]) / _range[i];
+            }
         }
     }
 }

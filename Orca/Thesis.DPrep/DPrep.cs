@@ -35,6 +35,19 @@ namespace Thesis.DPrep
             List<string> files = new List<string>();
 
             //-------------------------------------------------------------
+            // Scale data set 
+            //
+            switch (Parameters.Scaling)
+            {
+                case Parameters.Scale.ZeroToOne:
+                    reader = new MinmaxScaleDataReader(reader);
+                    break;
+                case Parameters.Scale.Std:
+                    reader = new StandardScaleDataReader(reader);
+                    break;
+            }
+
+            //-------------------------------------------------------------
             // Create the DataTable (load the Names File)
             //
             DataTable dataTable = new DataTable(reader);
@@ -45,31 +58,6 @@ namespace Thesis.DPrep
             string outputName = Parameters.TempFileStem + ".out";
             files.Add(outputName);
             int convertedRecords = dataTable.ConvertToBinary(outputName);
-
-            //-------------------------------------------------------------
-            // Scale data set 
-            //
-            if (Parameters.Scaling != Parameters.Scale.None)
-            {
-                ScaleFile scaleFile = new ScaleFile(outputName);
-                string scaleOutputName = Parameters.TempFileStem + ".scale";
-                files.Add(scaleOutputName);
-
-                if (Parameters.Scaling == Parameters.Scale.ZeroToOne)
-                {
-                    float[] max, min;
-                    scaleFile.GetMaxMin(out max, out min);
-                    scaleFile.ScaleZeroToOne(scaleOutputName, max, min);
-                }
-                else if (Parameters.Scaling == Parameters.Scale.Std)
-                {
-                    float[] mean, std;
-                    scaleFile.GetMeanStd(out mean, out std);
-                    scaleFile.ScaleStd(scaleOutputName, mean, std);
-                }
-
-                scaleFile.Dispose();
-            }
 
             //-------------------------------------------------------------
             // Randomize data set 

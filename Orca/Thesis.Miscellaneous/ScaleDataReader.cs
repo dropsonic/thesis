@@ -17,6 +17,11 @@ namespace Thesis
         private int _realFieldsCount;
         private int _discreteFieldsCount;
 
+        protected IDataReader BaseReader 
+        { 
+            get { return _baseReader; }
+        }
+
         public ScaleDataReader(IDataReader baseReader)
         {
             Contract.Requires<ArgumentNullException>(baseReader != null);
@@ -55,7 +60,8 @@ namespace Thesis
         public Record ReadRecord()
         {
             var record = _baseReader.ReadRecord();
-            ScaleRecord(record);
+            if (record != null)
+                ScaleRecord(record);
             return record;
         }
 
@@ -88,6 +94,36 @@ namespace Thesis
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+        #endregion
+
+        #region IDisposable
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool m_Disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!m_Disposed)
+            {
+                if (disposing)
+                {
+                    // Managed resources are released here.
+                    _baseReader.Dispose();
+                }
+
+                // Unmanaged resources are released here.
+                m_Disposed = true;
+            }
+        }
+
+        ~ScaleDataReader()
+        {
+            Dispose(false);
         }
         #endregion
     }

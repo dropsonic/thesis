@@ -5,26 +5,53 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Thesis.Orca.Common;
 
-namespace Thesis.DataCleansing
+namespace Thesis.Orca
 {
-    /// <summary>
-    /// Decorator for IDataReader: filters all specified anomalies.
-    /// </summary>
-    public class CleanDataReader : IDataReader
+    class BatchDataReader : IDataReader
     {
-        private IDataReader _baseReader;
-        private HashSet<int> _anomalies;
+        IDataReader _baseReader;
 
-        public CleanDataReader(IDataReader baseReader, IEnumerable<Outlier> anomalies)
+        int _batchSize;
+        int _lastOffset;
+
+        public int Offset { get; private set; }
+
+        public IList<Record> CurrentBatch { get; private set; }
+
+        public BatchDataReader(IDataReader baseReader, int batchSize)
         {
             Contract.Requires<ArgumentNullException>(baseReader != null);
-            Contract.Requires<ArgumentNullException>(anomalies != null);
+            Contract.Requires<ArgumentOutOfRangeException>(batchSize > 0);
 
             _baseReader = baseReader;
-            _anomalies = new HashSet<int>(anomalies.Select(a => a.Id));
+            _batchSize = batchSize;
         }
 
+        /// <summary>
+        /// Reads next batch of records.
+        /// </summary>s
+        public bool GetNextBatch()
+        {
+            CurrentBatch = new List<Record>(_batchSize);
+
+            int nr = 0;
+            for (int i = 0; i < _batchSize; i++)
+            {
+                if (_baseReader.EndOfData)
+                    break;
+                CurrentBatch.Add(_baseReader.ReadRecord());
+                nr++;
+            }
+
+            Offset += _lastOffset;
+            _lastOffset = nr;
+
+            return nr > 0;
+        }
+
+        #region IDataReader
         public IList<Field> Fields
         {
             get { return _baseReader.Fields; }
@@ -32,14 +59,7 @@ namespace Thesis.DataCleansing
 
         public Record ReadRecord()
         {
-            var record = _baseReader.ReadRecord();
-            if (EndOfData)
-                return null;
-
-            if (_anomalies.Contains(record.Id)) // if this record is anomaly
-                return ReadRecord();            // go to next record
-            else
-                return record;
+            return _baseReader.ReadRecord();
         }
 
         public void Reset()
@@ -72,6 +92,7 @@ namespace Thesis.DataCleansing
         {
             return this.GetEnumerator();
         }
+        #endregion
 
         #region IDisposable
         public void Dispose()
@@ -97,7 +118,7 @@ namespace Thesis.DataCleansing
             }
         }
 
-        ~CleanDataReader()
+        ~BatchDataReader()
         {
             Dispose(false);
         }

@@ -26,7 +26,7 @@ namespace Thesis
             double[] sumsqv = new double[RealFieldsCount];
             int[] num = new int[RealFieldsCount];
 
-            foreach (var record in this)
+            foreach (var record in BaseReader)
             {
                 for (int i = 0; i < RealFieldsCount; i++)
                 {
@@ -61,7 +61,11 @@ namespace Thesis
         protected override void ScaleRecord(Record record)
         {
             for (int i = 0; i < RealFieldsCount; i++)
+            {
+                if (_std[i] == 0)
+                    record.Real[i] = 0;
                 record.Real[i] = _std[i] == 0 ? 0 : (record.Real[i] - _mean[i]) / _std[i];
+            }
         }
     }
 }

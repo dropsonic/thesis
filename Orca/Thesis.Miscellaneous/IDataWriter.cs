@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Thesis
 {
-    public interface IDataWriter
+    public interface IDataWriter : IDisposable
     {
         void WriteRecord(Record record);
     }

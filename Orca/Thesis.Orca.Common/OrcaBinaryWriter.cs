@@ -11,7 +11,7 @@ namespace Thesis.Orca.Common
     /// <summary>
     /// Represents Orca format binary file writer.
     /// </summary>
-    public class OrcaBinaryWriter : IDataWriter, IDisposable
+    public class OrcaBinaryWriter : IDataWriter
     {
         BinaryWriter _outfile;
 

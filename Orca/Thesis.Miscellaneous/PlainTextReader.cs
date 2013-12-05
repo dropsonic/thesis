@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Thesis
 {
-    public class PlainTextReader : IDataReader, IDisposable
+    public class PlainTextReader : IDataReader
     {
         private IRecordParser<string> _parser;
 
