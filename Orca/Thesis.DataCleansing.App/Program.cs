@@ -32,8 +32,10 @@ namespace Thesis.DataCleansing.App
                 IRecordParser<string> parser = new PlainTextParser();
                 
                 IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser);
+                IDataReader scaledReader = new MinmaxScaleDataReader(reader); // scaling
+
                 var dprep = new DPrep.DPrep();
-                dprep.Run(reader, outputFile);
+                dprep.Run(scaledReader, outputFile);
 
                 var orca = new Orca.Orca();
                 var outliers = orca.Run(outputFile, true);

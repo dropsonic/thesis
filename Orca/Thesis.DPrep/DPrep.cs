@@ -35,19 +35,6 @@ namespace Thesis.DPrep
             List<string> files = new List<string>();
 
             //-------------------------------------------------------------
-            // Scale data set 
-            //
-            switch (Parameters.Scaling)
-            {
-                case Parameters.Scale.ZeroToOne:
-                    reader = new MinmaxScaleDataReader(reader);
-                    break;
-                case Parameters.Scale.Std:
-                    reader = new StandardScaleDataReader(reader);
-                    break;
-            }
-
-            //-------------------------------------------------------------
             // Create the DataTable (load the Names File)
             //
             DataTable dataTable = new DataTable(reader);

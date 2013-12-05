@@ -65,6 +65,9 @@ namespace Thesis.Orca
         public void Reset()
         {
             _baseReader.Reset();
+            Offset = 0;
+            _lastOffset = 0;
+            CurrentBatch = null;
         }
 
         public bool EndOfData
