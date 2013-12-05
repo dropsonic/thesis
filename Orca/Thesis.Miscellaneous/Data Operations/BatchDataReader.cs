@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Thesis
 {
-    class BatchDataReader : IDataReader
+    public class BatchDataReader : IDataReader
     {
         IDataReader _baseReader;
 
