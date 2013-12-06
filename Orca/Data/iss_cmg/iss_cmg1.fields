@@ -1,0 +1,30 @@
+Current Time : ignore
+Momentum Percentage : ignore
+Active Momentum : ignore
+Momentum Capacity : ignore
+Loss Of Attitude Control : ignore
+Desaturation Request : ignore
+Online CMG1 : discrete
+Wheel Speed CMG1 : continuous
+Spin Motor Current CMG1 : continuous
+Vibration CMG1 : continuous
+Spin Bearing Temperature CMG1 : continuous
+Hall Resolver Temperature CMG1 : continuous
+Online CMG2 : ignore
+Wheel Speed CMG2 : ignore
+Spin Motor Current CMG2 : ignore
+Vibration CMG2 : ignore
+Spin Bearing Temperature CMG2 : ignore
+Hall Resolver Temperature CMG2 : ignore
+Online CMG3 : ignore
+Wheel Speed CMG3 : ignore
+Spin Motor Current CMG3 : ignore
+Vibration CMG3 : ignore
+Spin Bearing Temperature CMG3 : ignore
+Hall Resolver Temperature CMG3 : ignore
+Online CMG4 : ignore
+Wheel Speed CMG4 : ignore
+Spin Motor Current CMG4 : ignore
+Vibration CMG4 : ignore
+Spin Bearing Temperature CMG4 : ignore
+Hall Resolver Temperature CMG4 : ignore

@@ -74,6 +74,8 @@ namespace Thesis
                 Shuffle(_shuffleReader, _shuffleFile);
                 SetFileReader(_shuffleFile);
             }
+
+            ResetFileReader();
         }
 
         private void Shuffle(IDataReader sourceReader, string filename)

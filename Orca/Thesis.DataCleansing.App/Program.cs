@@ -24,14 +24,14 @@ namespace Thesis.DataCleansing.App
                 Environment.Exit(0);
             }
 
+            string dataFile = args[0];
+            string fieldsFile = args[1];
+            string binFile = String.Concat(dataFile, ".bin");
+            string shuffleFile = String.Concat(binFile, ".shuffle");
+
             try
             {
-                string dataFile = args[0];
-                string fieldsFile = args[1];
-
                 IRecordParser<string> parser = new PlainTextParser();
-                string binFile = String.Concat(dataFile, ".bin");
-                string shuffleFile = String.Concat(binFile, ".shuffle");
 
                 using (IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser)) // read input data   
                 using (IDataReader binReader = new BinaryDataReader(reader, binFile))
@@ -72,11 +72,7 @@ namespace Thesis.DataCleansing.App
                             }
                         }
                     }
-
-                    File.Delete(shuffleFile);
                 }
-
-                File.Delete(binFile);
             }
             catch (DataFormatException)
             {
@@ -85,6 +81,11 @@ namespace Thesis.DataCleansing.App
             catch (Exception ex)
             {
                 Console.WriteLine("Error: {0} Please contact the developer.", ex.Message);
+            }
+            finally
+            {
+                File.Delete(shuffleFile);
+                File.Delete(binFile);
             }
         }
     }
