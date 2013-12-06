@@ -18,7 +18,7 @@ namespace Thesis.DataCleansing.App
                 Console.WriteLine("Something went wrong. Please contact the developer.");
             };
 
-            if (args.Length < 3)
+            if (args.Length < 2)
             {
                 Console.WriteLine("Wrong args.");
                 Environment.Exit(0);
@@ -28,7 +28,6 @@ namespace Thesis.DataCleansing.App
             {
                 string dataFile = args[0];
                 string fieldsFile = args[1];
-                string outputFile = args[2];
 
                 IRecordParser<string> parser = new PlainTextParser();
                 string binFile = String.Concat(dataFile, ".bin");
@@ -76,6 +75,8 @@ namespace Thesis.DataCleansing.App
 
                     File.Delete(shuffleFile);
                 }
+
+                File.Delete(binFile);
             }
             catch (DataFormatException)
             {
