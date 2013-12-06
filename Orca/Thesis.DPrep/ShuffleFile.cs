@@ -11,7 +11,7 @@ namespace Thesis.DPrep
 {
     class ShuffleFile : IDisposable
     {
-        BinaryDataReader _infile;
+        IDataReader _infile;
 
         Weights _weights;
 
@@ -75,7 +75,7 @@ namespace Thesis.DPrep
             //-------------------------------
             // open files for writing
             //
-            BinaryDataWriter[] tmpFilesOut = new BinaryDataWriter[nTmpFiles];
+            IDataWriter[] tmpFilesOut = new BinaryDataWriter[nTmpFiles];
             try
             {
                 for (int i = 0; i < tmpFileNames.Length; i++)
@@ -115,7 +115,7 @@ namespace Thesis.DPrep
 
                 ResetFileReader(); // closes original file
 
-                using (var outfile = new BinaryDataWriter(filename, _infile.Fields))
+                using (IDataWriter outfile = new BinaryDataWriter(filename, _infile.Fields))
                 {
                     //--------------------------------------
                     // concatenate tmp files in random order
@@ -135,7 +135,7 @@ namespace Thesis.DPrep
 
                     for (int i = 0; i < order.Length; i++)
                     {
-                        BinaryDataReader infile = tmpFilesIn[order[i]];
+                        IDataReader infile = tmpFilesIn[order[i]];
                         foreach (var rec in infile)
                             outfile.WriteRecord(rec);
                     }
