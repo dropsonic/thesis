@@ -108,12 +108,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryShuffle.cs" />
     <Compile Include="Data Operations\BatchDataReader.cs" />
     <Compile Include="Collections\BinaryHeap.cs" />
     <Compile Include="Data Operations\BinaryDataReader.cs" />
     <Compile Include="Data Operations\BinaryDataWriter.cs" />
     <Compile Include="Data Operations\BinaryHelper.cs" />
     <Compile Include="Data Operations\DataFormatException.cs" />
+    <Compile Include="Data Operations\DataHelper.cs" />
     <Compile Include="DistanceFunctions.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="FieldsHelper.cs" />

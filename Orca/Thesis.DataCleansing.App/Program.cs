@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Thesis.Orca;
 
 namespace Thesis.DataCleansing.App
 {
@@ -30,40 +31,48 @@ namespace Thesis.DataCleansing.App
                 string outputFile = args[2];
 
                 IRecordParser<string> parser = new PlainTextParser();
-                
-                IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser);
-                IDataReader scaledReader = new MinmaxScaleDataReader(reader); // scaling
+                string binFile = String.Concat(dataFile, ".bin");
+                string shuffleFile = String.Concat(binFile, ".shuffle");
 
-                var dprep = new DPrep.DPrep();
-                dprep.Run(scaledReader, outputFile);
-
-                var orca = new Orca.Orca();
-                var outliers = orca.Run(outputFile, true);
-
-                IAnomaliesFilter filter = new GaussianFilter();
-                //IAnomaliesFilter filter = new DifferenceFilter(0.05);
-                var anomalies = filter.Filter(outliers);
-
-                Console.WriteLine("Anomalies:");
-                foreach (var anomaly in anomalies)
-                    Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
-
-                Console.WriteLine();
-
-                IDataReader cleanReader = new CleanDataReader(reader, anomalies);
-
-                Console.WriteLine("Results:");
-                foreach (var record in cleanReader)
+                using (IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser)) // read input data   
+                using (IDataReader binReader = new BinaryDataReader(reader, binFile))
+                using (IDataReader scaleReader = new StandardScaleDataReader(binReader))
                 {
-                    StringBuilder s = new StringBuilder("  ");
-                    s.Append("Id = ")
-                     .Append(record.Id)
-                     .Append(" | ")
-                     .Append(String.Join(" ", record.Real))
-                     .Append(" | ")
-                     .Append(String.Join(" ", record.Discrete));
-                    
-                    Console.WriteLine(s.ToString());
+                    scaleReader.Shuffle(shuffleFile);
+
+                    using (IDataReader cases = new BinaryDataReader(shuffleFile))
+                    using (IDataReader references = new BinaryDataReader(shuffleFile))
+                    {
+                        var orca = new OrcaAD();
+                        var outliers = orca.Run(cases, references, true);
+
+                        IAnomaliesFilter filter = new GaussianFilter();
+                        //IAnomaliesFilter filter = new DifferenceFilter(0.05);
+                        var anomalies = filter.Filter(outliers);
+
+                        Console.WriteLine("Anomalies:");
+                        foreach (var anomaly in anomalies)
+                            Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
+
+                        Console.WriteLine();
+
+                        using (IDataReader cleanReader = new CleanDataReader(scaleReader, anomalies))
+                        {
+                            Console.WriteLine("Results:");
+                            foreach (var record in cleanReader)
+                            {
+                                StringBuilder s = new StringBuilder("  ");
+                                s.Append("Id = ")
+                                    .Append(record.Id)
+                                    .Append(" | ")
+                                    .Append(String.Join(" ", record.Real))
+                                    .Append(" | ")
+                                    .Append(String.Join(" ", record.Discrete));
+
+                                Console.WriteLine(s.ToString());
+                            }
+                        }
+                    }
                 }
             }
             catch (DataFormatException)

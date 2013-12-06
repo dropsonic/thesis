@@ -25,6 +25,7 @@ namespace Thesis
             Contract.Requires<ArgumentOutOfRangeException>(batchSize > 0);
 
             _baseReader = baseReader;
+            _baseReader.Reset();
             _batchSize = batchSize;
         }
 

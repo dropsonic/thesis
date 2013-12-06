@@ -9,5 +9,6 @@ namespace Thesis
     public interface IDataWriter : IDisposable
     {
         void WriteRecord(Record record);
+        int Count { get; }
     }
 }

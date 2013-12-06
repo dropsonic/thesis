@@ -116,10 +116,6 @@
     <Compile Include="ThresholdFilter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Thesis.DPrep\Thesis.DPrep.csproj">
-      <Project>{7032a3a3-60c0-43b1-a5c6-5afb32047a57}</Project>
-      <Name>Thesis.DPrep</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Thesis.Miscellaneous\Thesis.Miscellaneous.csproj">
       <Project>{ef5599f1-e728-41d6-86ee-321069fc3cd4}</Project>
       <Name>Thesis.Miscellaneous</Name>

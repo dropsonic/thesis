@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Thesis.Orca.Common;
 using System.Diagnostics.Contracts;
 using Thesis.Collections;
 using System.Diagnostics;
 
 namespace Thesis.Orca
 {
-    public class Orca
+    public class OrcaAD
     {
         public Parameters Parameters { get; set; }
 
-        public Orca()
+        public OrcaAD()
         {
             Parameters = new Parameters();
         }
 
-        public Orca(Parameters parameters)
+        public OrcaAD(Parameters parameters)
         {
             Contract.Requires<ArgumentNullException>(parameters != null);
 
@@ -32,6 +31,8 @@ namespace Thesis.Orca
         /// <returns></returns>
         public IEnumerable<Outlier> Run(IDataReader cases, IDataReader references, bool returnAll = false)
         {
+            Contract.Requires<ArgumentNullException>(cases != null);
+            Contract.Requires<ArgumentNullException>(references != null);
             Contract.Requires<ArgumentException>(!object.ReferenceEquals(cases, references));
 
             // Test cases
@@ -157,7 +158,7 @@ namespace Thesis.Orca
                 if (candidates.Count == 0)
                     break;
 
-                Trace.Message(String.Format("Offset: {0} | Ref #{1} processed.", cases.Offset, i));
+                Trace.Message(String.Format("Offset: {0} | Ref #{1} processed.", cases.Offset, references.Index));
             }
 
             //--------------------------------

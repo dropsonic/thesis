@@ -56,6 +56,8 @@ namespace Thesis
                     }
                 }
             }
+
+            Reset();
         }
 
         protected override void ScaleRecord(Record record)

@@ -30,7 +30,8 @@ namespace Thesis
 
             _realFieldsCount = Fields.RealCount();
             _discreteFieldsCount = Fields.DiscreteCount();
-            
+
+            Reset();
             GetDataProperties();
         }
 

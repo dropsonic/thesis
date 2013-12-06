@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Thesis.Orca.Common
+namespace Thesis
 {
     /// <summary>
     /// Represents binary record format file reader.
@@ -27,6 +27,28 @@ namespace Thesis.Orca.Common
         IList<Field> _fields;
 
         public BinaryDataReader(string filename)
+        {
+            InitReader(filename);
+        }
+
+        /// <summary>
+        /// Copies all record from source to binary file using BinaryDataWriter
+        /// and opens data reader on that file.
+        /// </summary>
+        /// <param name="source">Source data reader.</param>
+        /// <param name="filename">New binary file name.</param>
+        public BinaryDataReader(IDataReader source, string filename)
+        {
+            var writer = new BinaryDataWriter(source, filename);
+            writer.Dispose();
+            InitReader(filename);
+        }
+
+        /// <summary>
+        /// Initializes reader.
+        /// </summary>
+        /// <param name="filename">Input data file name.</param>
+        private void InitReader(string filename)
         {
             _infile = new BinaryReader(File.OpenRead(filename));
             _fields = new List<Field>();
@@ -90,6 +112,9 @@ namespace Thesis.Orca.Common
 
         public Record ReadRecord()
         {
+            if (EndOfData)
+                return null;
+
             var id = _infile.ReadInt32();
             var real = _infile.ReadFloatArray(RealFieldsCount);
             var discrete = _infile.ReadIntArray(DiscreteFieldsCount);

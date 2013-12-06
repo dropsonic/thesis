@@ -47,6 +47,8 @@ namespace Thesis
             // calculate range
             for (int i = 0; i < RealFieldsCount; i++)
                 _range[i] = max[i] - _min[i];
+
+            Reset();
         }
 
         protected override void ScaleRecord(Record record)
