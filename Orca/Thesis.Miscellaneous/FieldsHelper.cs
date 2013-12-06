@@ -18,5 +18,14 @@ namespace Thesis
             return fields.Count(f => f.Type == Field.FieldType.Discrete ||
                                      f.Type == Field.FieldType.DiscreteDataDriven);
         }
+
+        public static Weights Weights(this IEnumerable<Field> fields)
+        {
+            var real = fields.Where(f => f.Type == Field.FieldType.Continuous).Select(f => f.Weight).ToArray();
+            var discrete = fields.Where(f => f.Type == Field.FieldType.Discrete)
+                                     .Concat(fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven))
+                                     .Select(f => f.Weight).ToArray();
+            return new Weights() { Real = real, Discrete = discrete };
+        }
     }
 }

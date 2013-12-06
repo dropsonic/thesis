@@ -26,21 +26,22 @@ namespace Thesis.Orca
             Parameters = parameters;
         }
 
-        /// <param name="dataFile">Binary file with input data from DPrep.</param>
+        /// <param name="cases">Data reader for input data.</param>
+        /// <param name="references">Data reader for reference data (can't be the same reader object).</param>
         /// <param name="returnAll">If true, returns score info for all records in input data.</param>
         /// <returns></returns>
-        public IEnumerable<Outlier> Run(string dataFile, bool returnAll = false)
+        public IEnumerable<Outlier> Run(IDataReader cases, IDataReader references, bool returnAll = false)
         {
+            Contract.Requires<ArgumentException>(!object.ReferenceEquals(cases, references));
+
             // Test cases
-            using (BatchDataReader batchInFile = new BatchDataReader(new BinaryDataReader(dataFile), 
-                                                      Parameters.BatchSize))
-            // Reference database (in this case - whole input data)
-            using (BinaryDataReader inFile = new BinaryDataReader(dataFile))
+            using (BatchDataReader batchInFile = new BatchDataReader(cases, Parameters.BatchSize))
+            // Reference database
             {
                 List<Outlier> outliers = new List<Outlier>();
                 bool done = false;
                 double cutoff = Parameters.Cutoff;
-                Weights weights = new Weights(inFile.Fields);
+                Weights weights = cases.Fields.Weights();
 
                 //-----------------------
                 // run the outlier search 
@@ -50,10 +51,10 @@ namespace Thesis.Orca
                 {
                     Trace.PrintRecords(batchInFile.CurrentBatch);
 
-                    var o = FindOutliers(batchInFile, inFile, weights, cutoff);
+                    var o = FindOutliers(batchInFile, references, weights, cutoff);
                     outliers.AddRange(o);
 
-                    inFile.Reset();
+                    references.Reset();
 
                     //-------------------------------
                     // sort the current best outliers 
@@ -75,16 +76,15 @@ namespace Thesis.Orca
             }
         }
 
-        private IList<Outlier> FindOutliers(BatchDataReader batchFile, BinaryDataReader inFile, Weights weights, double cutoff)
+        private IList<Outlier> FindOutliers(BatchDataReader cases, IDataReader references, Weights weights, double cutoff)
         {
-            Contract.Requires<ArgumentNullException>(batchFile != null);
-            Contract.Requires<ArgumentNullException>(inFile != null);
+            Contract.Requires<ArgumentNullException>(cases != null);
+            Contract.Requires<ArgumentNullException>(references != null);
 
             int k = Parameters.NeighborsCount; // number of neighbors
             
-            var records = new List<Record>(batchFile.CurrentBatch);
+            var records = new List<Record>(cases.CurrentBatch);
             int batchRecCount = records.Count;
-            int recCount = inFile.RecordsCount;
 
 
             // distance to neighbors — Neighbors(b) in original description
@@ -115,10 +115,8 @@ namespace Thesis.Orca
             int candidates_i;
 
             // loop over objects in reference table
-            for (int i = 0; i < recCount; i++)
+            foreach (var descRecord in references)
             {
-                Record descRecord = inFile.ReadRecord();
-
                 neighborsDist_i = 0;
                 minkDist_i = 0;
                 candidates_i = 0;
@@ -129,7 +127,7 @@ namespace Thesis.Orca
 
                     if (dist < minkDist[minkDist_i])
                     {
-                        if (batchFile.Offset + candidates[candidates_i] != i)
+                        if (cases.Offset + candidates[candidates_i] != references.Index - 1)
                         {
                             BinaryHeap<double> kvec = neighborsDist[neighborsDist_i].Distances;
                             kvec.Push(dist);
@@ -146,7 +144,7 @@ namespace Thesis.Orca
                                 minkDist.RemoveAt(minkDist_i--);
 
                                 if (candidates.Count == 0)
-                                    i = recCount; // exit top loop and return
+                                    break;
                             }
                         }
                     }
@@ -156,7 +154,10 @@ namespace Thesis.Orca
                     candidates_i++;
                 }
 
-                Trace.Message(String.Format("Offset: {0} | Ref #{1} processed.", batchFile.Offset, i));
+                if (candidates.Count == 0)
+                    break;
+
+                Trace.Message(String.Format("Offset: {0} | Ref #{1} processed.", cases.Offset, i));
             }
 
             //--------------------------------

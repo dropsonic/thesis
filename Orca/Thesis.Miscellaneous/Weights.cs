@@ -12,18 +12,6 @@ namespace Thesis
         public float[] Real { get; set; }
         public float[] Discrete { get; set; }
 
-        public Weights() { }
-
-        public Weights(IEnumerable<Field> fields)
-        {
-            Contract.Requires<ArgumentNullException>(fields != null);
-
-            Real = fields.Where(f => f.Type == Field.FieldType.Continuous).Select(f => f.Weight).ToArray();
-            Discrete = fields.Where(f => f.Type == Field.FieldType.Discrete)
-                                     .Concat(fields.Where(f => f.Type == Field.FieldType.DiscreteDataDriven))
-                                     .Select(f => f.Weight).ToArray();
-        }
-
         public static Weights Identity(int realFieldsCount, int discreteFieldsCount)
         {
             Contract.Requires<ArgumentOutOfRangeException>(realFieldsCount >= 0);
