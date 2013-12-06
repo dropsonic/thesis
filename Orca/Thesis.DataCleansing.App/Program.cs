@@ -36,7 +36,7 @@ namespace Thesis.DataCleansing.App
 
                 using (IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser)) // read input data   
                 using (IDataReader binReader = new BinaryDataReader(reader, binFile))
-                using (IDataReader scaleReader = new StandardScaleDataReader(binReader))
+                using (IDataReader scaleReader = new MinmaxScaleDataReader(binReader))
                 {
                     scaleReader.Shuffle(shuffleFile);
 
@@ -56,7 +56,7 @@ namespace Thesis.DataCleansing.App
 
                         Console.WriteLine();
 
-                        using (IDataReader cleanReader = new CleanDataReader(scaleReader, anomalies))
+                        using (IDataReader cleanReader = new CleanDataReader(binReader, anomalies))
                         {
                             Console.WriteLine("Results:");
                             foreach (var record in cleanReader)
@@ -73,6 +73,8 @@ namespace Thesis.DataCleansing.App
                             }
                         }
                     }
+
+                    File.Delete(shuffleFile);
                 }
             }
             catch (DataFormatException)
