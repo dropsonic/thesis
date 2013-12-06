@@ -54,6 +54,7 @@ namespace Thesis.DataCleansing.App
                             Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
 
                         Console.WriteLine();
+                        Console.ReadKey();
 
                         using (IDataReader cleanReader = new CleanDataReader(binReader, anomalies))
                         {
