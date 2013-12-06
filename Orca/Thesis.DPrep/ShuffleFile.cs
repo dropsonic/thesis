@@ -103,7 +103,7 @@ namespace Thesis.DPrep
             // open tmpfiles for reading 
             //
 
-            BinaryDataReader[] tmpFilesIn = new BinaryDataReader[nTmpFiles];
+            IDataReader[] tmpFilesIn = new BinaryDataReader[nTmpFiles];
             try
             {
                 for (int i = 0; i < tmpFilesIn.Length; i++)
