@@ -39,6 +39,20 @@ namespace Thesis.Orca.Common
             WriteHeader();
         }
 
+        /// <summary>
+        /// Creates new BinaryDataWriter and copies all records from IDataReader source.
+        /// </summary>
+        public BinaryDataWriter(IDataReader source, string filename)
+        {
+            _outfile = new BinaryWriter(File.Create(filename));
+            WriteHeader();
+
+            foreach (var record in source)
+                WriteRecord(record);
+
+            WriteHeader(_count);
+        }
+
         private void WriteHeader()
         {
             //long oldPos = _outfile.BaseStream.Position;

@@ -25,42 +25,14 @@ namespace Thesis.DPrep
             Parameters = parameters;
         }
 
-        /// <summary>
-        /// Converts the data set to a binary file.
-        /// </summary>
-        /// <returns>Records count.</returns>
-        private int ConvertToBinary(IDataReader reader, string filename)
-        {
-            Contract.Requires(!String.IsNullOrEmpty(filename));
-            Contract.Requires<ArgumentNullException>(reader != null);
-
-            using (var outfile = new BinaryDataWriter(filename, reader.Fields))
-            {
-                //----------------------
-                // write the example to the file
-                //
-                foreach (var record in reader)
-                    outfile.WriteRecord(record);
-            }
-
-            return reader.Index;
-        }
-
         /// <returns>Number of converted records.</returns>
-        public int Run(IDataReader reader, string destFile)
+        public void Run(IDataReader reader, string destFile)
         {
             Contract.Requires<ArgumentNullException>(reader != null);
             Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(destFile));
 
             Random random = new Random(Parameters.Seed);
             List<string> files = new List<string>();
-
-            //-------------------------------------------------------------
-            // Convert Data set to binary format
-            //
-            string outputName = "tmp.out";
-            files.Add(outputName);
-            int convertedRecords = ConvertToBinary(reader, outputName);
 
             //-------------------------------------------------------------
             // Randomize data set 
@@ -93,8 +65,6 @@ namespace Thesis.DPrep
                 catch
                 { }
             }
-
-            return convertedRecords;
         }
     }
 }

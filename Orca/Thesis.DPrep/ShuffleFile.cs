@@ -52,16 +52,15 @@ namespace Thesis.DPrep
             Random rand = new Random(seed);
             for (int i = 0; i < iterations; i++)
             {
-                Shuffle(destFile, 10000, tmpFiles, rand);
+                Shuffle(destFile, tmpFiles, rand);
                 SetFileReader(destFile);
             }
             ResetFileReader();
         }
 
-        private void Shuffle(string filename, int blockSize, int nTmpFiles, Random rand)
+        private void Shuffle(string filename, int nTmpFiles, Random rand)
         {
             Contract.Requires(!String.IsNullOrEmpty(filename));
-            Contract.Requires<ArgumentOutOfRangeException>(blockSize > 0);
             Contract.Requires<ArgumentOutOfRangeException>(nTmpFiles > 0);
             Contract.Requires<ArgumentNullException>(rand != null);
 
@@ -136,7 +135,6 @@ namespace Thesis.DPrep
 
                     for (int i = 0; i < order.Length; i++)
                     {
-                        int count = blockSize;
                         BinaryDataReader infile = tmpFilesIn[order[i]];
                         foreach (var rec in infile)
                             outfile.WriteRecord(rec);

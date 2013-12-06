@@ -112,7 +112,7 @@
     <Compile Include="Collections\BinaryHeap.cs" />
     <Compile Include="Data Operations\BinaryDataReader.cs" />
     <Compile Include="Data Operations\BinaryDataWriter.cs" />
-    <Compile Include="Data Operations\BinaryExtensions.cs" />
+    <Compile Include="Data Operations\BinaryHelper.cs" />
     <Compile Include="Data Operations\DataFormatException.cs" />
     <Compile Include="DistanceFunctions.cs" />
     <Compile Include="Field.cs" />
