@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7032A3A3-60C0-43B1-A5C6-5AFB32047A57}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{63D4FA89-64F9-4DC3-9D2E-91252DEE5216}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Thesis.DPrep</RootNamespace>
-    <AssemblyName>Thesis.DPrep</AssemblyName>
+    <RootNamespace>Thesis.DataCleansing.App</RootNamespace>
+    <AssemblyName>Thesis.DataCleansing.App</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -57,6 +58,7 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -108,14 +110,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parameters.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShuffleFile.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Thesis.DataCleansing\Thesis.DataCleansing.csproj">
+      <Project>{be9252dd-f3a3-4b6a-a400-0078a45a9626}</Project>
+      <Name>Thesis.DataCleansing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Thesis.Miscellaneous\Thesis.Miscellaneous.csproj">
       <Project>{ef5599f1-e728-41d6-86ee-321069fc3cd4}</Project>
       <Name>Thesis.Miscellaneous</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Thesis.Orca\Thesis.Orca.csproj">
+      <Project>{a0860067-5ad2-4255-a86c-000cbad04eb8}</Project>
+      <Name>Thesis.Orca</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

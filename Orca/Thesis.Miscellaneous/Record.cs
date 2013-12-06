@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Thesis.Orca.Common
+namespace Thesis
 {
     [DebuggerDisplay("Id = {Id}")]
-    public class Record
+    public class Record : ICloneable
     {
         public int Id { get; set; }
         public float[] Real { get; set; }
@@ -21,6 +21,16 @@ namespace Thesis.Orca.Common
             Id = id;
             Real = real;
             Discrete = discrete;
+        }
+
+        object ICloneable.Clone()
+        {
+            return this.Clone();
+        }
+
+        public Record Clone()
+        {
+            return new Record(Id, (float[])Real.Clone(), (int[])Discrete.Clone());
         }
     }
 }

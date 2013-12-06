@@ -25,7 +25,7 @@ namespace Thesis.Orca.App
 
             try
             {
-                Parameters parameters = new Parameters(args[0]);
+                Parameters parameters = new Parameters();
                 int numOutliers;
                 if (args.Length > 1 && int.TryParse(args[1], out numOutliers))
                     parameters.NumOutliers = numOutliers;
@@ -69,7 +69,7 @@ namespace Thesis.Orca.App
 
                 Orca orca = new Orca(parameters);
                 Console.WriteLine("Processing data...");
-                var results = orca.Run();
+                var results = orca.Run(args[0]);
                 Console.WriteLine("Done!");
                 Console.WriteLine();
 
@@ -79,7 +79,7 @@ namespace Thesis.Orca.App
                     {
                         foreach (var result in results)
                         {
-                            writer.WriteLine("{0}, {1}", result.Record.Id, result.Score);
+                            writer.WriteLine("{0}, {1}", result.Id, result.Score);
                         }
                     }
                 }
@@ -89,7 +89,7 @@ namespace Thesis.Orca.App
                     int i = 1;
                     foreach (var result in results)
                     {
-                        Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Record.Id, result.Score);
+                        Console.WriteLine("  {0}) Record #{1}: score = {2}", i++, result.Id, result.Score);
                     }
                 }
             }

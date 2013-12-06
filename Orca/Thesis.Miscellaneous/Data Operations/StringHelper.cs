@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics.Contracts;
 
-namespace Thesis.DPrep
+namespace Thesis
 {
-    internal static class ParserHelper
+    static class StringHelper
     {
-        internal static string[] Tokenize(string line, char[] delimiters)
+        public static string[] Tokenize(string line, char[] delimiters)
         {
             Contract.Requires<ArgumentNullException>(line != null);
             Contract.Requires<ArgumentNullException>(delimiters != null);

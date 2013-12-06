@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7032A3A3-60C0-43B1-A5C6-5AFB32047A57}</ProjectGuid>
+    <ProjectGuid>{BE9252DD-F3A3-4B6A-A400-0078A45A9626}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Thesis.DPrep</RootNamespace>
-    <AssemblyName>Thesis.DPrep</AssemblyName>
+    <RootNamespace>Thesis.DataCleansing</RootNamespace>
+    <AssemblyName>Thesis.DataCleansing</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
@@ -108,14 +108,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parameters.cs" />
+    <Compile Include="CleanDataReader.cs" />
+    <Compile Include="DifferenceFilter.cs" />
+    <Compile Include="GaussianFilter.cs" />
+    <Compile Include="IAnomaliesFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShuffleFile.cs" />
+    <Compile Include="ThresholdFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Thesis.Miscellaneous\Thesis.Miscellaneous.csproj">
       <Project>{ef5599f1-e728-41d6-86ee-321069fc3cd4}</Project>
       <Name>Thesis.Miscellaneous</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Thesis.Orca\Thesis.Orca.csproj">
+      <Project>{a0860067-5ad2-4255-a86c-000cbad04eb8}</Project>
+      <Name>Thesis.Orca</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

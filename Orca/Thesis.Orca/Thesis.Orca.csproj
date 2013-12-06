@@ -108,20 +108,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatchInFile.cs" />
     <Compile Include="NeighborsDistance.cs" />
-    <Compile Include="Orca.cs" />
-    <Compile Include="Outlier.cs" />
-    <Compile Include="Parameters.cs" />
+    <Compile Include="OrcaAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScoreFunctions.cs" />
     <Compile Include="Trace.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Thesis.Orca.Common\Thesis.Orca.Common.csproj">
-      <Project>{64ce960c-437d-4094-b1d9-3cc337b9ba0c}</Project>
-      <Name>Thesis.Orca.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Thesis.Miscellaneous\Thesis.Miscellaneous.csproj">
       <Project>{ef5599f1-e728-41d6-86ee-321069fc3cd4}</Project>
       <Name>Thesis.Miscellaneous</Name>

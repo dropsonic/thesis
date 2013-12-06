@@ -24,18 +24,24 @@ namespace Thesis.DPrep.App
 
             try
             {
-                Parameters parameters = new Parameters(args[0], args[1], args[2]);
+                Parameters parameters = new Parameters();
                 if (args.Contains("-norand"))
                     parameters.Randomize = false;
 
+                IRecordParser<string> parser = new PlainTextParser();
+                IDataReader textReader = new PlainTextReader(args[0], args[1], parser);
                 DPrep dprep = new DPrep(parameters);
                 Console.WriteLine("Converting data...");
-                int convertedRecords = dprep.Run();
-                Console.WriteLine("Done! {0} record(s) converted.", convertedRecords);
+                dprep.Run(textReader, args[2]);
+                Console.WriteLine("Done!");
+            }
+            catch (DataFormatException)
+            {
+                Console.WriteLine("Incorrect input data format.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: {0}. Please contact the developer.", ex.Message);
+                Console.WriteLine("Error: {0} Please contact the developer.", ex.Message);
             }
         }
     }

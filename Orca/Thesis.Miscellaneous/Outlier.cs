@@ -4,14 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Thesis.Orca.Common;
 
-namespace Thesis.Orca
+namespace Thesis
 {
-    [DebuggerDisplay("Id = {Record.Id}; Score = {Score}")]
+    [DebuggerDisplay("Id = {Id}; Score = {Score}")]
     public struct Outlier : IComparable<Outlier>
     {
-        public Record Record { get; set; }
+        //public Record Record { get; set; }
+        public int Id { get; set; }
         public double Score { get; set; }
         //public IEnumerable<int> Neighbors { get; set; }
 

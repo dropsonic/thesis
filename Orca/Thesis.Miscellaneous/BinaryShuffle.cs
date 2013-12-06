@@ -5,89 +5,105 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Thesis.Orca.Common;
 
-namespace Thesis.DPrep
+namespace Thesis
 {
-    class ShuffleFile : IDisposable
+    class BinaryShuffle
     {
-        IDataReader _infile;
+        private IDataReader _sourceReader;
+        private IDataReader _shuffleReader;
 
-        Weights _weights;
+        private string _shuffleFile;
 
-        string _dataFile;
+        private int _iterations;
+        private int _randFilesCount;
+        private Random _rand;
 
-        public ShuffleFile(string dataFile)
-        {
-            Contract.Requires(!String.IsNullOrEmpty(dataFile));
-
-            _dataFile = dataFile;
-
-            SetFileReader(dataFile);
+        protected IDataReader BaseReader 
+        { 
+            get { return _sourceReader; }
         }
+
+        /// <param name="sourceReader">Reader for input data.</param>
+        /// <param name="shuffleFile">Name of shuffle binary file.</param>
+        /// <param name="iterations">Number of shuffle iterations.</param>
+        /// <param name="randFilesCount">Number of random part-files.</param>
+        public BinaryShuffle(IDataReader sourceReader, string shuffleFile, 
+                             int iterations = 5, int randFilesCount = 10)
+        {
+            Contract.Requires<ArgumentNullException>(sourceReader != null);
+            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(shuffleFile));
+            Contract.Requires<ArgumentOutOfRangeException>(iterations >= 1);
+            Contract.Requires<ArgumentOutOfRangeException>(randFilesCount >= 1);
+
+            _sourceReader = sourceReader;
+            _shuffleFile = shuffleFile;
+            _iterations = iterations;
+            _randFilesCount = randFilesCount;
+
+            _rand = new Random((int)DateTime.Now.Ticks);
+
+            MultiShuffle();
+        }
+
 
         private void SetFileReader(string filename)
         {
             Contract.Requires(!String.IsNullOrEmpty(filename));
 
             // if infile_ already points to a file, close it
-            if (_infile != null)
-                _infile.Dispose();
+            if (_shuffleReader != null)
+                _shuffleReader.Dispose();
 
-            _infile = new BinaryDataReader(filename);
+            _shuffleReader = new BinaryDataReader(filename);
         }
 
         private void ResetFileReader()
         {
-            if (_infile != null)
-                _infile.Dispose();
+            if (_shuffleReader != null)
+                _shuffleReader.Dispose();
         }
-        
 
-        public void MultiShuffle(string destFile, int iterations, int tmpFiles, int seed)
+        public void MultiShuffle()
         {
-            Contract.Requires<ArgumentOutOfRangeException>(iterations > 0);
-            Contract.Requires<ArgumentOutOfRangeException>(tmpFiles > 0);
-
-            Random rand = new Random(seed);
-            for (int i = 0; i < iterations; i++)
+            Shuffle(_sourceReader, _shuffleFile);
+            _shuffleReader = new BinaryDataReader(_shuffleFile);
+            
+            for (int i = 1; i < _iterations; i++)
             {
-                Shuffle(destFile, tmpFiles, rand);
-                SetFileReader(destFile);
+                Shuffle(_shuffleReader, _shuffleFile);
+                SetFileReader(_shuffleFile);
             }
+
             ResetFileReader();
         }
 
-        private void Shuffle(string filename, int nTmpFiles, Random rand)
+        private void Shuffle(IDataReader sourceReader, string filename)
         {
-            Contract.Requires(!String.IsNullOrEmpty(filename));
-            Contract.Requires<ArgumentOutOfRangeException>(nTmpFiles > 0);
-            Contract.Requires<ArgumentNullException>(rand != null);
-
             //-------------------------
             // set up tmp file names
             //
-            string[] tmpFileNames = new string[nTmpFiles];
-            for (int i = 0; i < nTmpFiles; i++)
+            string[] tmpFileNames = new string[_randFilesCount];
+            for (int i = 0; i < _randFilesCount; i++)
                 tmpFileNames[i] = filename + ".tmp." + i.ToString();
 
 
             //-------------------------------
             // open files for writing
             //
-            IDataWriter[] tmpFilesOut = new BinaryDataWriter[nTmpFiles];
+            IDataWriter[] tmpFilesOut = new BinaryDataWriter[_randFilesCount];
             try
             {
                 for (int i = 0; i < tmpFileNames.Length; i++)
-                    tmpFilesOut[i] = new BinaryDataWriter(tmpFileNames[i], _infile.Fields);
+                    tmpFilesOut[i] = new BinaryDataWriter(tmpFileNames[i], _sourceReader.Fields);
 
                 //--------------------------------
                 // read in data file and randomly shuffle examples to
                 // temporary files
                 //
-                foreach (var rec in _infile)
+                foreach (var rec in _sourceReader)
                 {
-                    int index = rand.Next(tmpFilesOut.Length);
+                    int index = _rand.Next(tmpFilesOut.Length);
                     tmpFilesOut[index].WriteRecord(rec);
                 }
             }
@@ -103,7 +119,7 @@ namespace Thesis.DPrep
             // open tmpfiles for reading 
             //
 
-            IDataReader[] tmpFilesIn = new BinaryDataReader[nTmpFiles];
+            IDataReader[] tmpFilesIn = new BinaryDataReader[_randFilesCount];
             try
             {
                 for (int i = 0; i < tmpFilesIn.Length; i++)
@@ -115,19 +131,19 @@ namespace Thesis.DPrep
 
                 ResetFileReader(); // closes original file
 
-                using (IDataWriter outfile = new BinaryDataWriter(filename, _infile.Fields))
+                using (IDataWriter outfile = new BinaryDataWriter(filename, _sourceReader.Fields))
                 {
                     //--------------------------------------
                     // concatenate tmp files in random order
                     //
-                    int[] order = new int[nTmpFiles];
-                    for (int i = 0; i < nTmpFiles; i++)
+                    int[] order = new int[_randFilesCount];
+                    for (int i = 0; i < _randFilesCount; i++)
                         order[i] = i;
 
                     // The modern version of the Fisher–Yates shuffle (the Knuth shuffle)
-                    for (int i = order.Length-1; i >= 0; i--)
+                    for (int i = order.Length - 1; i >= 0; i--)
                     {
-                        int j = rand.Next(i + 1);
+                        int j = _rand.Next(i + 1);
                         int temp = order[i];
                         order[i] = order[j];
                         order[j] = temp;
@@ -154,38 +170,8 @@ namespace Thesis.DPrep
             //
             foreach (var fileName in tmpFileNames)
                 File.Delete(fileName);
-        }
 
-
-        
-        #region IDisposable
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            ResetFileReader();
         }
- 
-        private bool m_Disposed = false;
- 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!m_Disposed)
-            {
-                if (disposing)
-                {
-                // Managed resources are released here.
-                    _infile.Dispose();
-                }
- 
-                // Unmanaged resources are released here.
-                m_Disposed = true;
-            }
-        }
- 
-        ~ShuffleFile()    
-        {        
-            Dispose(false);
-        }
-        #endregion
     }
 }
