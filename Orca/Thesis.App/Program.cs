@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Thesis.DataCleansing;
+using Thesis.DDMS;
 using Thesis.Orca;
 
 namespace Thesis.App
@@ -35,8 +36,8 @@ namespace Thesis.App
                 IRecordParser<string> parser = new PlainTextParser();
 
                 using (IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser)) // read input data   
-                using (IDataReader binReader = new BinaryDataReader(reader, binFile))
-                using (IDataReader scaleReader = new MinmaxScaleDataReader(binReader))
+                using (IDataReader binReader = new BinaryDataReader(reader, binFile))          // convert input data to binary format
+                using (ScaleDataReader scaleReader = new MinmaxScaleDataReader(binReader))         // scale input data
                 {
                     scaleReader.Shuffle(shuffleFile);
 
@@ -55,23 +56,35 @@ namespace Thesis.App
                             Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
 
                         Console.WriteLine();
-                        Console.ReadKey();
 
-                        using (IDataReader cleanReader = new CleanDataReader(binReader, anomalies))
+                        using (IDataReader cleanReader = new CleanDataReader(scaleReader, anomalies)) // clean input data from anomalies
                         {
-                            Console.WriteLine("Results:");
-                            foreach (var record in cleanReader)
-                            {
-                                StringBuilder s = new StringBuilder("  ");
-                                s.Append("Id = ")
-                                    .Append(record.Id)
-                                    .Append(" | ")
-                                    .Append(String.Join(" ", record.Real))
-                                    .Append(" | ")
-                                    .Append(String.Join(" ", record.Discrete));
+                            Console.WriteLine("Enter epsilon:");
+                            double eps;
+                            while (!double.TryParse(Console.ReadLine(), out eps))
+                                Console.WriteLine("Wrong format. Please enter epsilon again.");
 
-                                Console.WriteLine(s.ToString());
-                            }
+                            var nominal = new Regime(eps, cleanReader, DistanceFunctions.Euclid);
+                            Console.WriteLine("Knowledge base has been created.\n");
+                            Console.WriteLine("Enter record, or 'q' to quit.");
+
+                            string line = String.Empty;
+                            do 
+                            {
+                                line = Console.ReadLine();
+                                if (line == "q") break;
+
+                                var record = parser.Parse(line, cleanReader.Fields);
+                                if (record == null)
+                                {
+                                    Console.WriteLine("Wrong record format. Please enter record again.");
+                                    continue;
+                                }
+
+                                scaleReader.ScaleRecord(record);
+                                bool result = nominal.Contains(record);
+                                Console.WriteLine("{0}\n", result ? "Nominal regime" : "Anomaly behavior");
+                            } while (true);
                         }
                     }
                 }

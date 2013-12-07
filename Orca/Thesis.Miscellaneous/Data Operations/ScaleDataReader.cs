@@ -40,7 +40,7 @@ namespace Thesis
         /// </summary>
         protected abstract void GetDataProperties();
 
-        protected abstract void ScaleRecord(Record record);
+        public abstract void ScaleRecord(Record record);
 
         protected int RealFieldsCount
         {

@@ -63,6 +63,9 @@ namespace Thesis.DDMS
         /// </summary>
         public bool Contains(Record record)
         {
+            if (record == null)
+                return false;
+
             // if record is inside at least one cluster
             if (_clusters.Any(c => c.Contains(record)))
                 return true;
@@ -90,6 +93,7 @@ namespace Thesis.DDMS
             // Calculate center of the cluster
             Record center = new Record();
             center.Real = new float[realFieldsCount];
+            center.Discrete = new int[discreteFieldsCount];
             for (int i = 0; i < realFieldsCount; i++)
                 center.Real[i] = (cluster.LowerBound[i] + cluster.UpperBound[i]) / 2;
             for (int i = 0; i < discreteFieldsCount; i++)

@@ -60,7 +60,7 @@ namespace Thesis
             Reset();
         }
 
-        protected override void ScaleRecord(Record record)
+        public override void ScaleRecord(Record record)
         {
             for (int i = 0; i < RealFieldsCount; i++)
             {
