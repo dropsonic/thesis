@@ -6,15 +6,34 @@ using System.Threading.Tasks;
 
 namespace Thesis.DDMS
 {
+    class ClusterBoundary
+    {
+        public float[] Real { get; set; }
+        public HashSet<int>[] Discrete { get; set; }
+
+        public ClusterBoundary(Record init)
+        {
+            Real = (float[])init.Real.Clone();
+            int discreteFieldsCount = init.Discrete.Length;
+            Discrete = new HashSet<int>[discreteFieldsCount];
+            for (int i = 0; i < discreteFieldsCount; i++)
+            {
+                Discrete[i] = new HashSet<int>();
+                Discrete[i].Add(init.Discrete[i]);
+            }
+        }
+    }
+
     class Cluster
     {
-        public Record UpperBound { get; set; }
-        public Record LowerBound { get; set; }
+        public ClusterBoundary UpperBound { get; set; }
+        public ClusterBoundary LowerBound { get; set; }
+
 
         public Cluster(Record init)
         {
-            UpperBound = init.Clone();
-            LowerBound = init.Clone();
+            LowerBound = new ClusterBoundary(init);
+            UpperBound = new ClusterBoundary(init);
         }
 
         public bool Contains(Record record)
@@ -27,6 +46,7 @@ namespace Thesis.DDMS
                 if (record.Real[i] < LowerBound.Real[i])
                     return false;
             }
+
 
             return true;
         }
