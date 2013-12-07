@@ -6,49 +6,71 @@ using System.Threading.Tasks;
 
 namespace Thesis.DDMS
 {
-    class ClusterBoundary
-    {
-        public float[] Real { get; set; }
-        public HashSet<int>[] Discrete { get; set; }
-
-        public ClusterBoundary(Record init)
-        {
-            Real = (float[])init.Real.Clone();
-            int discreteFieldsCount = init.Discrete.Length;
-            Discrete = new HashSet<int>[discreteFieldsCount];
-            for (int i = 0; i < discreteFieldsCount; i++)
-            {
-                Discrete[i] = new HashSet<int>();
-                Discrete[i].Add(init.Discrete[i]);
-            }
-        }
-    }
-
     class Cluster
     {
-        public ClusterBoundary UpperBound { get; set; }
-        public ClusterBoundary LowerBound { get; set; }
+        public float[] UpperBound { get; set; }
+        public float[] LowerBound { get; set; }
 
+        /// <summary>
+        /// Appropriate discrete values for this cluster.
+        /// </summary>
+        public HashSet<int>[] DiscreteValues { get; set; }
 
         public Cluster(Record init)
         {
-            LowerBound = new ClusterBoundary(init);
-            UpperBound = new ClusterBoundary(init);
+            LowerBound = (float[])init.Real.Clone();
+            UpperBound = (float[])init.Real.Clone();
+            DiscreteValues = init.Discrete.Select(i =>
+                {
+                    var hs = new HashSet<int>();
+                    hs.Add(i);
+                    return hs;
+                }).ToArray();
         }
 
+        /// <summary>
+        /// Determines if record lies inside cluster boundaries.
+        /// </summary>
         public bool Contains(Record record)
         {
-            int realFieldsCount = UpperBound.Real.Length;
+            int realFieldsCount = UpperBound.Length;
             for (int i = 0; i < realFieldsCount; i++)
             {
-                if (record.Real[i] > UpperBound.Real[i])
+                if (record.Real[i] > UpperBound[i])
                     return false;
-                if (record.Real[i] < LowerBound.Real[i])
+                if (record.Real[i] < LowerBound[i])
                     return false;
             }
 
+            int discreteFieldsCount = DiscreteValues.Length;
+            for (int i = 0; i < discreteFieldsCount; i++)
+            {
+                if (!DiscreteValues[i].Contains(record.Discrete[i]))
+                    return false;
+            }
 
             return true;
+        }
+
+        /// <summary>
+        /// Adds record to the cluster (expands cluster bounds, if necessary).
+        /// </summary>
+        public void Add(Record record)
+        {
+            // Expand cluster bounds
+            int realFieldsCount = UpperBound.Length;
+            for (int i = 0; i < realFieldsCount; i++)
+            {
+                if (record.Real[i] > UpperBound[i])
+                    UpperBound[i] = record.Real[i];
+                else if (record.Real[i] < LowerBound[i])
+                    LowerBound[i] = record.Real[i];
+            }
+
+            // Add discrete values to cluster appropriate values
+            int discreteFieldsCount = DiscreteValues.Length;
+            for (int i = 0; i < discreteFieldsCount; i++)
+                DiscreteValues[i].Add(record.Discrete[i]);
         }
     }
 }

@@ -31,6 +31,15 @@ namespace Thesis.DDMS
             if (IsEmpty) // if cluster database empty
                 // form input vector into cluster and insert into cluster database
                 AddCluster(new Cluster(record));
+
+            // if record is inside at least one cluster, do nothing;
+            // else:
+            if (!_clusters.Any(c => c.Contains(record)))
+            {
+                // add record to the closest cluster
+                Cluster closest = FindClosest(record);
+                closest.Add(record);
+            }
         }
 
         private void AddCluster(Cluster cluster)
