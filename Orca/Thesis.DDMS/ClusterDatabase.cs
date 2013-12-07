@@ -11,19 +11,28 @@ namespace Thesis.DDMS
     {
         private IList<Cluster> _clusters = new List<Cluster>();
         private double _eps;
-        private Func<Record, Record, Weights, double> _distanceFunc;
+        private Weights _weights;
+        private Func<Record, Record, Weights, double> _distance;
 
         private bool IsEmpty
         {
             get { return _clusters.Count == 0; }
         }
 
-        public ClusterDatabase(double eps, Func<Record, Record, Weights, double> distanceFunc)
+        public int Size
+        {
+            get { return _clusters.Count; }
+        }
+
+        public ClusterDatabase(double eps, Weights weights, Func<Record, Record, Weights, double> distanceFunc)
         {
             Contract.Requires<ArgumentOutOfRangeException>(eps >= 0);
+            Contract.Requires<ArgumentNullException>(weights != null);
             Contract.Requires<ArgumentNullException>(distanceFunc != null);
 
             _eps = eps;
+            _weights = weights;
+            _distance = distanceFunc;
         }
 
         public void AddRecord(Record record)
@@ -36,9 +45,15 @@ namespace Thesis.DDMS
             // else:
             if (!_clusters.Any(c => c.Contains(record)))
             {
-                // add record to the closest cluster
-                Cluster closest = FindClosest(record);
-                closest.Add(record);
+                double dist;
+                Cluster closest = FindClosest(record, out dist);
+                // if distance to the closest cluster is greater then epsilon
+                if (dist > _eps)
+                    // add new cluster initialized by this record
+                    AddCluster(new Cluster(record));
+                else
+                    // add record to the closest cluster
+                    closest.Add(record);
             }
         }
 
@@ -49,11 +64,43 @@ namespace Thesis.DDMS
         }
 
         /// <summary>
+        /// Calculates distance between record and cluster.
+        /// </summary>
+        private double Distance(Cluster cluster, Record record)
+        {
+            int realFieldsCount = record.Real.Length;
+            int discreteFieldsCount = record.Discrete.Length;
+
+            // Calculate center of the cluster
+            Record center = new Record();
+            center.Real = new float[realFieldsCount];
+            for (int i = 0; i < realFieldsCount; i++)
+                center.Real[i] = (cluster.LowerBound[i] + cluster.UpperBound[i]) / 2;
+            for (int i = 0; i < discreteFieldsCount; i++)
+                // if cluster contains value, keep it the same as in record
+                center.Discrete[i] = cluster.DiscreteValues[i].Contains(record.Discrete[i]) ? record.Discrete[i] : -1;
+
+            return _distance(center, record, _weights);
+        }
+
+        /// <summary>
         /// Finds closest cluster from specified record.
         /// </summary>
-        private Cluster FindClosest(Record record)
+        private Cluster FindClosest(Record record, out double dist)
         {
+            dist = double.PositiveInfinity;
+            Cluster closest = null;
+            foreach (var cluster in _clusters)
+            {
+                double d = Distance(cluster, record);
+                if (d < dist)
+                {
+                    dist = d;
+                    closest = cluster;
+                }
+            }
 
+            return closest;
         }
     }
 }

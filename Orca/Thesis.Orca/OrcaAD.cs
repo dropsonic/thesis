@@ -18,6 +18,7 @@ namespace Thesis.Orca
         private double _cutoff;
         private int _batchSize;
 
+        #region Constructors
         /// <param name="distanceFunction">Distance function for calculating the distance between two examples with weights.</param>
         /// <param name="numOutliers">Number of outliers.</param>
         /// <param name="neighborsCount"></param>
@@ -77,6 +78,7 @@ namespace Thesis.Orca
             _cutoff = cutoff;
             _batchSize = batchSize;
         }
+        #endregion
 
         /// <param name="cases">Data reader for input data.</param>
         /// <param name="references">Data reader for reference data (can't be the same reader object).</param>
