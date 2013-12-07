@@ -57,6 +57,22 @@ namespace Thesis.DDMS
             }
         }
 
+        /// <summary>
+        /// Determines if record is inside or close enough
+        /// to at least one cluster in database.
+        /// </summary>
+        public bool Contains(Record record)
+        {
+            // if record is inside at least one cluster
+            if (_clusters.Any(c => c.Contains(record)))
+                return true;
+
+            double dist;
+            Cluster closest = FindClosest(record, out dist);
+            // if distance to the closest cluster is less then epsilon, return true
+            return dist <= _eps;
+        }
+
         private void AddCluster(Cluster cluster)
         {
             if (cluster != null)
