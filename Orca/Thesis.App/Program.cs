@@ -37,7 +37,7 @@ namespace Thesis.App
 
                 using (IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser)) // read input data   
                 using (IDataReader binReader = new BinaryDataReader(reader, binFile))          // convert input data to binary format
-                using (ScaleDataReader scaleReader = new MinmaxScaleDataReader(binReader))         // scale input data
+                using (ScaleDataReader scaleReader = new MinmaxScaleDataReader(binReader))     // scale input data
                 {
                     scaleReader.Shuffle(shuffleFile);
 
@@ -64,15 +64,29 @@ namespace Thesis.App
                             while (!double.TryParse(Console.ReadLine(), out eps))
                                 Console.WriteLine("Wrong format. Please enter epsilon again.");
 
-                            var nominal = new Regime(eps, cleanReader, DistanceFunctions.Euclid);
-                            Console.WriteLine("Knowledge base has been created.\n");
-                            Console.WriteLine("Enter record, or 'q' to quit.");
+                            var model = new SystemModel(eps);
+                            model.AddRegime("Nominal", cleanReader);
+                            var nominal = model.Regimes.First();
+
+                            Console.WriteLine("Knowledge base has been created. {0} cluster(s) total:", nominal.Clusters.Count);
+                            int i = 0;
+                            foreach (var cluster in nominal.Clusters)
+                            {
+                                Console.WriteLine("  --------------------------");
+                                Console.WriteLine("  Cluster #{0}:", ++i);
+                                Console.WriteLine("  Lower bound: {0}", String.Join(" | ", cluster.LowerBound));
+                                Console.WriteLine("  Upper bound: {0}", String.Join(" | ", cluster.UpperBound));
+                                Console.WriteLine("  Appropriate discrete values: {0}", String.Join(" | ", cluster.DiscreteValues.Select(f => String.Join("; ", f))));
+                            }
+                            Console.WriteLine("  --------------------------");
+
+                            Console.WriteLine("\nEnter record, or press enter to quit.");
 
                             string line = String.Empty;
                             do 
                             {
                                 line = Console.ReadLine();
-                                if (line == "q") break;
+                                if (String.IsNullOrEmpty(line)) break;
 
                                 var record = parser.Parse(line, cleanReader.Fields);
                                 if (record == null)
@@ -82,8 +96,11 @@ namespace Thesis.App
                                 }
 
                                 scaleReader.ScaleRecord(record);
-                                bool result = nominal.Contains(record);
-                                Console.WriteLine("{0}\n", result ? "Nominal regime" : "Anomaly behavior");
+                                Regime currentRegime = model.DetectRegime(record);
+                                if (currentRegime == null)
+                                    Console.WriteLine("Anomaly behavior detected.\n");
+                                else
+                                    Console.WriteLine("Current regime: {0}\n", currentRegime.Name);
                             } while (true);
                         }
                     }

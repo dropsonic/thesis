@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Thesis.DDMS
 {
-    class Cluster
+    public class Cluster
     {
         public float[] UpperBound { get; set; }
         public float[] LowerBound { get; set; }
@@ -16,7 +16,7 @@ namespace Thesis.DDMS
         /// </summary>
         public HashSet<int>[] DiscreteValues { get; set; }
 
-        public Cluster(Record init)
+        internal Cluster(Record init)
         {
             LowerBound = (float[])init.Real.Clone();
             UpperBound = (float[])init.Real.Clone();
@@ -31,7 +31,7 @@ namespace Thesis.DDMS
         /// <summary>
         /// Determines if record lies inside cluster boundaries.
         /// </summary>
-        public bool Contains(Record record)
+        internal bool Contains(Record record)
         {
             int realFieldsCount = UpperBound.Length;
             for (int i = 0; i < realFieldsCount; i++)
@@ -55,7 +55,7 @@ namespace Thesis.DDMS
         /// <summary>
         /// Adds record to the cluster (expands cluster bounds, if necessary).
         /// </summary>
-        public void Add(Record record)
+        internal void Add(Record record)
         {
             // Expand cluster bounds
             int realFieldsCount = UpperBound.Length;

@@ -112,6 +112,7 @@
     <Compile Include="ClusterDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regime.cs" />
+    <Compile Include="SystemModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Thesis.Miscellaneous\Thesis.Miscellaneous.csproj">

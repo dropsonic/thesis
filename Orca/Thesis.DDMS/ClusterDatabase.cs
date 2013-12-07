@@ -9,7 +9,7 @@ namespace Thesis.DDMS
 {
     class ClusterDatabase
     {
-        private IList<Cluster> _clusters = new List<Cluster>();
+        private List<Cluster> _clusters = new List<Cluster>();
         private double _eps;
         private Weights _weights;
         private Func<Record, Record, Weights, double> _distance;
@@ -22,6 +22,11 @@ namespace Thesis.DDMS
         public int Size
         {
             get { return _clusters.Count; }
+        }
+
+        public IReadOnlyCollection<Cluster> Clusters
+        {
+            get { return _clusters.AsReadOnly(); }
         }
 
         public ClusterDatabase(double eps, Weights weights, Func<Record, Record, Weights, double> distanceFunc)
@@ -38,22 +43,26 @@ namespace Thesis.DDMS
         public void AddRecord(Record record)
         {
             if (IsEmpty) // if cluster database empty
+            {
                 // form input vector into cluster and insert into cluster database
                 AddCluster(new Cluster(record));
-
-            // if record is inside at least one cluster, do nothing;
-            // else:
-            if (!_clusters.Any(c => c.Contains(record)))
+            }
+            else
             {
-                double dist;
-                Cluster closest = FindClosest(record, out dist);
-                // if distance to the closest cluster is greater then epsilon
-                if (dist > _eps)
-                    // add new cluster initialized by this record
-                    AddCluster(new Cluster(record));
-                else
-                    // add record to the closest cluster
-                    closest.Add(record);
+                // if record is inside at least one cluster, do nothing;
+                // else:
+                if (!_clusters.Any(c => c.Contains(record)))
+                {
+                    double dist;
+                    Cluster closest = FindClosest(record, out dist);
+                    // if distance to the closest cluster is greater then epsilon
+                    if (dist > _eps)
+                        // add new cluster initialized by this record
+                        AddCluster(new Cluster(record));
+                    else
+                        // add record to the closest cluster
+                        closest.Add(record);
+                }
             }
         }
 
@@ -63,17 +72,25 @@ namespace Thesis.DDMS
         /// </summary>
         public bool Contains(Record record)
         {
+            // if distance to the closest cluster is less then epsilon, return true
+            return Distance(record) <= _eps;
+        }
+
+        /// <summary>
+        /// Calculates distance from record to the closest cluster. 
+        /// </summary>
+        public double Distance(Record record)
+        {
             if (record == null)
-                return false;
+                return double.PositiveInfinity;
 
             // if record is inside at least one cluster
             if (_clusters.Any(c => c.Contains(record)))
-                return true;
+                return 0;
 
             double dist;
             Cluster closest = FindClosest(record, out dist);
-            // if distance to the closest cluster is less then epsilon, return true
-            return dist <= _eps;
+            return dist;
         }
 
         private void AddCluster(Cluster cluster)
