@@ -8,7 +8,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using System.Threading;
 
-namespace TelemetryGenerator
+namespace Thesis.TelemetryGenerator
 {
     class Program
     {

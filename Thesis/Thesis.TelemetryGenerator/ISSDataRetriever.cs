@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TelemetryGenerator
+namespace Thesis.TelemetryGenerator
 {
     /// <summary>
     /// Retrieves live data from the ISSLive website (http), parses it and writes to the file.
@@ -39,7 +39,7 @@ namespace TelemetryGenerator
             {
                 //Write header
                 if (writeHeader)
-                    WriteLine(writer, GetFieldNames(), separator);
+                    writer.WriteLine("% {0}", String.Join(separator, GetFieldNames()));
                 else
                     writer.WriteLine("% {0}", DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
@@ -52,7 +52,7 @@ namespace TelemetryGenerator
                         var record = GetRecord();
                         if (record[0] != previousKey) // if page has been updated
                         {
-                            WriteLine(writer, record, separator);
+                            writer.WriteLine(String.Join(separator, record));
                             previousKey = record[0];
                             OnLineCompleted();
                         }
@@ -78,11 +78,6 @@ namespace TelemetryGenerator
         {
             if (LineFailed != null)
                 LineFailed(this, EventArgs.Empty);
-        }
-
-        void WriteLine(TextWriter writer, string[] values, string separator)
-        {
-            writer.WriteLine(String.Join(separator, values));
         }
 
         string[] GetRecord()
