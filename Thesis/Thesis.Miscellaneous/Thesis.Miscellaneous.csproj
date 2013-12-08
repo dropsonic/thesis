@@ -109,28 +109,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryShuffle.cs" />
-    <Compile Include="Data Operations\BatchDataReader.cs" />
+    <Compile Include="Data Reading and Writing\BatchDataReader.cs" />
     <Compile Include="Collections\BinaryHeap.cs" />
-    <Compile Include="Data Operations\BinaryDataReader.cs" />
-    <Compile Include="Data Operations\BinaryDataWriter.cs" />
-    <Compile Include="Data Operations\BinaryHelper.cs" />
-    <Compile Include="Data Operations\DataFormatException.cs" />
-    <Compile Include="Data Operations\DataHelper.cs" />
+    <Compile Include="Data Reading and Writing\Binary\BinaryDataReader.cs" />
+    <Compile Include="Data Reading and Writing\Binary\BinaryDataWriter.cs" />
+    <Compile Include="Data Reading and Writing\Binary\BinaryHelper.cs" />
+    <Compile Include="Data Reading and Writing\DataFormatException.cs" />
+    <Compile Include="Data Reading and Writing\DataHelper.cs" />
+    <Compile Include="Data Scaling\MinmaxScaling.cs" />
+    <Compile Include="Data Scaling\StandardScaling.cs" />
     <Compile Include="DistanceFunctions.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="FieldsHelper.cs" />
-    <Compile Include="Data Operations\IDataReader.cs" />
-    <Compile Include="Data Operations\IDataWriter.cs" />
-    <Compile Include="Data Operations\IRecordParser.cs" />
-    <Compile Include="Data Operations\MinmaxScaleDataReader.cs" />
+    <Compile Include="Data Reading and Writing\IDataReader.cs" />
+    <Compile Include="Data Reading and Writing\IDataWriter.cs" />
+    <Compile Include="Data Reading and Writing\IRecordParser.cs" />
+    <Compile Include="Data Scaling\IScaling.cs" />
     <Compile Include="Outlier.cs" />
-    <Compile Include="Data Operations\PlainTextParser.cs" />
-    <Compile Include="Data Operations\PlainTextReader.cs" />
+    <Compile Include="Data Reading and Writing\Plain Text\PlainTextParser.cs" />
+    <Compile Include="Data Reading and Writing\Plain Text\PlainTextReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Record.cs" />
-    <Compile Include="Data Operations\ScaleDataReader.cs" />
-    <Compile Include="Data Operations\StandardScaleDataReader.cs" />
-    <Compile Include="Data Operations\StringHelper.cs" />
+    <Compile Include="Data Reading and Writing\ScaleDataReader.cs" />
+    <Compile Include="Data Reading and Writing\Plain Text\StringHelper.cs" />
     <Compile Include="Weights.cs" />
   </ItemGroup>
   <ItemGroup>

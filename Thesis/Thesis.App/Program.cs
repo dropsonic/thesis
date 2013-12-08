@@ -13,6 +13,11 @@ namespace Thesis.App
 {
     class Program
     {
+        static string GetBinName(string name)
+        {
+            return String.Concat(name, ".bin");
+        }
+
         static void Main(string[] args)
         {
             Contract.ContractFailed += (s, e) =>
@@ -25,27 +30,59 @@ namespace Thesis.App
                 Console.WriteLine("Wrong args.");
                 Environment.Exit(0);
             }
-
-            string dataFile = args[0];
-            string fieldsFile = args[1];
-            string binFile = String.Concat(dataFile, ".bin");
-            string shuffleFile = String.Concat(binFile, ".shuffle");
+            
+            string fieldsFile = args[0];
+            string dataFile = args[1];
+            string shuffleFile = String.Concat(dataFile, ".shuffle");
 
             try
             {
+                foreach (string filename in args)
+                    if (!File.Exists(filename))
+                        throw new ApplicationException("File not found.");
+
                 IRecordParser<string> parser = new PlainTextParser();
 
-                using (IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser)) // read input data   
-                using (IDataReader binReader = new BinaryDataReader(reader, binFile))          // convert input data to binary format
-                using (ScaleDataReader scaleReader = new MinmaxScaleDataReader(binReader))     // scale input data
+                using (IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser))      // read input data   
+                using (IDataReader binReader = new BinaryDataReader(reader, GetBinName(dataFile)))  // convert input data to binary format
                 {
-                    scaleReader.Shuffle(shuffleFile);
+                    IScaling scaling = new MinmaxScaling(binReader);
 
-                    using (IDataReader cases = new BinaryDataReader(shuffleFile))
-                    using (IDataReader references = new BinaryDataReader(shuffleFile))
+                    Console.WriteLine("Enter epsilon:");
+                    double eps;
+                    while (!double.TryParse(Console.ReadLine(), out eps))
+                        Console.WriteLine("Wrong format. Please enter epsilon again.");
+
+                    var model = new SystemModel(eps);
+
+                    for (int i = 2; i < args.Length; i++)
                     {
-                        var orca = new OrcaAD(DistanceFunctions.Euclid, neighborsCount: 10);
-                        var outliers = orca.Run(cases, references, true);
+                        string fileName = args[i];
+                        string regimeName = Path.GetFileNameWithoutExtension(fileName);
+
+                        using (IDataReader tempReader = new PlainTextReader(fileName, fieldsFile, parser))
+                        using (IDataReader tempBinReader = new BinaryDataReader(tempReader, GetBinName(fileName)))
+                        {
+                            using (IDataReader tempScaleReader = new ScaleDataReader(tempBinReader, scaling))
+                            {
+                                model.AddRegime(regimeName, tempScaleReader);
+                            }
+                        }
+                    }
+
+                    using (ScaleDataReader scaleReader = new ScaleDataReader(binReader, scaling)) // scale input data
+                    {
+                        scaleReader.Shuffle(shuffleFile);
+                        IEnumerable<Outlier> outliers = Enumerable.Empty<Outlier>();
+
+                        using (IDataReader cases = new BinaryDataReader(shuffleFile))
+                        using (IDataReader references = new BinaryDataReader(shuffleFile))
+                        {
+                            var orca = new OrcaAD(DistanceFunctions.Euclid, neighborsCount: 10);
+                            outliers = orca.Run(cases, references, true);
+                        }
+
+                        File.Delete(shuffleFile);
 
                         IAnomaliesFilter filter = new GaussianFilter();
                         //IAnomaliesFilter filter = new DifferenceFilter(0.05);
@@ -59,31 +96,30 @@ namespace Thesis.App
 
                         using (IDataReader cleanReader = new CleanDataReader(scaleReader, anomalies)) // clean input data from anomalies
                         {
-                            Console.WriteLine("Enter epsilon:");
-                            double eps;
-                            while (!double.TryParse(Console.ReadLine(), out eps))
-                                Console.WriteLine("Wrong format. Please enter epsilon again.");
-
-                            var model = new SystemModel(eps);
                             model.AddRegime("Nominal", cleanReader);
-                            var nominal = model.Regimes.First();
 
-                            Console.WriteLine("Knowledge base has been created. {0} cluster(s) total:", nominal.Clusters.Count);
-                            int i = 0;
-                            foreach (var cluster in nominal.Clusters)
+                            Console.WriteLine("Knowledge base has been created. {0} regime(s) total:", model.Regimes.Count);
+                            foreach (var regime in model.Regimes)
                             {
+                                Console.WriteLine("\n***** {0} *****", regime.Name);
+                                Console.WriteLine("{0} cluster(s) in regime.", regime.Clusters.Count);
+                                int i = 0;
+                                foreach (var cluster in regime.Clusters)
+                                {
+                                    Console.WriteLine("  --------------------------");
+                                    Console.WriteLine("  Cluster #{0}:", ++i);
+                                    Console.WriteLine("  Lower bound: {0}", String.Join(" | ", scaling.Unscale(cluster.LowerBound)));
+                                    Console.WriteLine("  Upper bound: {0}", String.Join(" | ", scaling.Unscale(cluster.UpperBound)));
+                                    Console.WriteLine("  Appropriate discrete values: {0}", String.Join(" | ", cluster.DiscreteValues.Select(f => String.Join("; ", f))));
+                                }
                                 Console.WriteLine("  --------------------------");
-                                Console.WriteLine("  Cluster #{0}:", ++i);
-                                Console.WriteLine("  Lower bound: {0}", String.Join(" | ", cluster.LowerBound));
-                                Console.WriteLine("  Upper bound: {0}", String.Join(" | ", cluster.UpperBound));
-                                Console.WriteLine("  Appropriate discrete values: {0}", String.Join(" | ", cluster.DiscreteValues.Select(f => String.Join("; ", f))));
+                                Console.WriteLine("******************", regime.Name);
                             }
-                            Console.WriteLine("  --------------------------");
 
                             Console.WriteLine("\nEnter record, or press enter to quit.");
 
                             string line = String.Empty;
-                            do 
+                            do
                             {
                                 line = Console.ReadLine();
                                 if (String.IsNullOrEmpty(line)) break;
@@ -95,7 +131,7 @@ namespace Thesis.App
                                     continue;
                                 }
 
-                                scaleReader.ScaleRecord(record);
+                                scaling.Scale(record);
                                 Regime currentRegime = model.DetectRegime(record);
                                 if (currentRegime == null)
                                     Console.WriteLine("Anomaly behavior detected.\n");
@@ -113,11 +149,6 @@ namespace Thesis.App
             catch (Exception ex)
             {
                 Console.WriteLine("Error: {0} Please contact the developer.", ex.Message);
-            }
-            finally
-            {
-                File.Delete(shuffleFile);
-                File.Delete(binFile);
             }
         }
     }
