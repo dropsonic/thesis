@@ -24,7 +24,9 @@ namespace Thesis
 
         private long _dataOffset; // 0 + size of header
 
-        IList<Field> _fields;
+        private IList<Field> _fields;
+
+        private readonly string _tempFile;
 
         public BinaryDataReader(string filename)
         {
@@ -36,12 +38,15 @@ namespace Thesis
         /// and opens data reader on that file.
         /// </summary>
         /// <param name="source">Source data reader.</param>
-        /// <param name="filename">New binary file name.</param>
-        public BinaryDataReader(IDataReader source, string filename)
+        /// <param name="tempFile">Temporary binary file name.</param>
+        /// <param name="keepBinary">true, if binary file should be deleted hereafter.</param>
+        public BinaryDataReader(IDataReader source, string tempFile, bool keepBinary = false)
         {
-            var writer = new BinaryDataWriter(source, filename);
+            var writer = new BinaryDataWriter(source, tempFile);
             writer.Dispose();
-            InitReader(filename);
+            if (!keepBinary)
+                _tempFile = tempFile;
+            InitReader(tempFile);
         }
 
         /// <summary>
@@ -164,6 +169,8 @@ namespace Thesis
                 {
                     // Managed resources are released here.
                     _infile.Close();
+                    if (!String.IsNullOrEmpty(_tempFile))
+                        File.Delete(_tempFile);
                 }
 
                 // Unmanaged resources are released here.
