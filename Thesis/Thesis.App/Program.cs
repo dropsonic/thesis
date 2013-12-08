@@ -34,98 +34,102 @@ namespace Thesis.App
             string fieldsFile = args[0];
             string dataFile = args[1];
             string shuffleFile = String.Concat(dataFile, ".shuffle");
+            IRecordParser<string> parser = new PlainTextParser();
 
             try
             {
-
-                IRecordParser<string> parser = new PlainTextParser();
-
-                Console.WriteLine("Enter epsilon:");
-                double eps;
-                while (!double.TryParse(Console.ReadLine(), out eps))
-                    Console.WriteLine("Wrong format. Please enter epsilon again.");
-
-                var model = new SystemModel(eps);
-
-                for (int i = 2; i < args.Length; i++)
-                {
-                    string fileName = args[i];
-                    string regimeName = Path.GetFileNameWithoutExtension(fileName);
-
-                    using (IDataReader tempReader = new PlainTextReader(fileName, fieldsFile, parser))
-                    using (IDataReader tempBinReader = new BinaryDataReader(tempReader, GetBinName(fileName)))
-                    using (IDataReader tempScaleReader = new MinmaxScaleDataReader(tempBinReader))
-                    {
-                        model.AddRegime(regimeName, tempScaleReader);
-                    }
-                }
-
                 using (IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser))      // read input data   
                 using (IDataReader binReader = new BinaryDataReader(reader, GetBinName(dataFile)))  // convert input data to binary format
-                using (ScaleDataReader scaleReader = new MinmaxScaleDataReader(binReader))          // scale input data
                 {
-                    scaleReader.Shuffle(shuffleFile);
+                    IScaling scaling = new MinmaxScaling(binReader);
 
-                    using (IDataReader cases = new BinaryDataReader(shuffleFile))
-                    using (IDataReader references = new BinaryDataReader(shuffleFile))
+                    Console.WriteLine("Enter epsilon:");
+                    double eps;
+                    while (!double.TryParse(Console.ReadLine(), out eps))
+                        Console.WriteLine("Wrong format. Please enter epsilon again.");
+
+                    var model = new SystemModel(eps);
+
+                    for (int i = 2; i < args.Length; i++)
                     {
-                        var orca = new OrcaAD(DistanceFunctions.Euclid, neighborsCount: 10);
-                        var outliers = orca.Run(cases, references, true);
+                        string fileName = args[i];
+                        string regimeName = Path.GetFileNameWithoutExtension(fileName);
 
-                        IAnomaliesFilter filter = new GaussianFilter();
-                        //IAnomaliesFilter filter = new DifferenceFilter(0.05);
-                        var anomalies = filter.Filter(outliers);
-
-                        Console.WriteLine("Anomalies:");
-                        foreach (var anomaly in anomalies)
-                            Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
-
-                        Console.WriteLine();
-
-                        using (IDataReader cleanReader = new CleanDataReader(scaleReader, anomalies)) // clean input data from anomalies
+                        using (IDataReader tempReader = new PlainTextReader(fileName, fieldsFile, parser))
+                        using (IDataReader tempBinReader = new BinaryDataReader(tempReader, GetBinName(fileName)))
                         {
-                            model.AddRegime("Nominal", cleanReader);
-
-                            Console.WriteLine("Knowledge base has been created. {0} regime(s) total:", model.Regimes.Count);
-                            foreach (var regime in model.Regimes)
+                            using (IDataReader tempScaleReader = new ScaleDataReader(tempBinReader, scaling))
                             {
-                                Console.WriteLine("\n***** {0} *****", regime.Name);
-                                Console.WriteLine("{0} cluster(s) in regime.", regime.Clusters.Count);
-                                int i = 0;
-                                foreach (var cluster in regime.Clusters)
-                                {
-                                    Console.WriteLine("  --------------------------");
-                                    Console.WriteLine("  Cluster #{0}:", ++i);
-                                    Console.WriteLine("  Lower bound: {0}", String.Join(" | ", cluster.LowerBound));
-                                    Console.WriteLine("  Upper bound: {0}", String.Join(" | ", cluster.UpperBound));
-                                    Console.WriteLine("  Appropriate discrete values: {0}", String.Join(" | ", cluster.DiscreteValues.Select(f => String.Join("; ", f))));
-                                }
-                                Console.WriteLine("  --------------------------");
-                                Console.WriteLine("******************", regime.Name);
+                                model.AddRegime(regimeName, tempScaleReader);
                             }
+                        }
+                    }
 
-                            Console.WriteLine("\nEnter record, or press enter to quit.");
+                    using (ScaleDataReader scaleReader = new ScaleDataReader(binReader, scaling)) // scale input data
+                    {
+                        scaleReader.Shuffle(shuffleFile);
 
-                            string line = String.Empty;
-                            do 
+                        using (IDataReader cases = new BinaryDataReader(shuffleFile))
+                        using (IDataReader references = new BinaryDataReader(shuffleFile))
+                        {
+                            var orca = new OrcaAD(DistanceFunctions.Euclid, neighborsCount: 10);
+                            var outliers = orca.Run(cases, references, true);
+
+                            IAnomaliesFilter filter = new GaussianFilter();
+                            //IAnomaliesFilter filter = new DifferenceFilter(0.05);
+                            var anomalies = filter.Filter(outliers);
+
+                            Console.WriteLine("Anomalies:");
+                            foreach (var anomaly in anomalies)
+                                Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
+
+                            Console.WriteLine();
+
+                            using (IDataReader cleanReader = new CleanDataReader(scaleReader, anomalies)) // clean input data from anomalies
                             {
-                                line = Console.ReadLine();
-                                if (String.IsNullOrEmpty(line)) break;
+                                model.AddRegime("Nominal", cleanReader);
 
-                                var record = parser.Parse(line, cleanReader.Fields);
-                                if (record == null)
+                                Console.WriteLine("Knowledge base has been created. {0} regime(s) total:", model.Regimes.Count);
+                                foreach (var regime in model.Regimes)
                                 {
-                                    Console.WriteLine("Wrong record format. Please enter record again.");
-                                    continue;
+                                    Console.WriteLine("\n***** {0} *****", regime.Name);
+                                    Console.WriteLine("{0} cluster(s) in regime.", regime.Clusters.Count);
+                                    int i = 0;
+                                    foreach (var cluster in regime.Clusters)
+                                    {
+                                        Console.WriteLine("  --------------------------");
+                                        Console.WriteLine("  Cluster #{0}:", ++i);
+                                        Console.WriteLine("  Lower bound: {0}", String.Join(" | ", scaling.Unscale(cluster.LowerBound)));
+                                        Console.WriteLine("  Upper bound: {0}", String.Join(" | ", scaling.Unscale(cluster.UpperBound)));
+                                        Console.WriteLine("  Appropriate discrete values: {0}", String.Join(" | ", cluster.DiscreteValues.Select(f => String.Join("; ", f))));
+                                    }
+                                    Console.WriteLine("  --------------------------");
+                                    Console.WriteLine("******************", regime.Name);
                                 }
 
-                                scaleReader.ScaleRecord(record);
-                                Regime currentRegime = model.DetectRegime(record);
-                                if (currentRegime == null)
-                                    Console.WriteLine("Anomaly behavior detected.\n");
-                                else
-                                    Console.WriteLine("Current regime: {0}\n", currentRegime.Name);
-                            } while (true);
+                                Console.WriteLine("\nEnter record, or press enter to quit.");
+
+                                string line = String.Empty;
+                                do
+                                {
+                                    line = Console.ReadLine();
+                                    if (String.IsNullOrEmpty(line)) break;
+
+                                    var record = parser.Parse(line, cleanReader.Fields);
+                                    if (record == null)
+                                    {
+                                        Console.WriteLine("Wrong record format. Please enter record again.");
+                                        continue;
+                                    }
+
+                                    scaling.Scale(record);
+                                    Regime currentRegime = model.DetectRegime(record);
+                                    if (currentRegime == null)
+                                        Console.WriteLine("Anomaly behavior detected.\n");
+                                    else
+                                        Console.WriteLine("Current regime: {0}\n", currentRegime.Name);
+                                } while (true);
+                            }
                         }
                     }
                 }

@@ -9,47 +9,20 @@ using System.Threading.Tasks;
 namespace Thesis
 {
     /// <summary>
-    /// Base decorator for all data scaling readers.
+    /// Scales every record on reading with defined scaling method.
     /// </summary>
-    public abstract class ScaleDataReader : IDataReader
+    public class ScaleDataReader : IDataReader
     {
         private IDataReader _baseReader;
-        private int _realFieldsCount;
-        private int _discreteFieldsCount;
+        private IScaling _scaling;
 
-        protected IDataReader BaseReader 
-        { 
-            get { return _baseReader; }
-        }
-
-        public ScaleDataReader(IDataReader baseReader)
+        public ScaleDataReader(IDataReader baseReader, IScaling scaling)
         {
             Contract.Requires<ArgumentNullException>(baseReader != null);
+            Contract.Requires<ArgumentNullException>(scaling != null);
 
             _baseReader = baseReader;
-
-            _realFieldsCount = Fields.RealCount();
-            _discreteFieldsCount = Fields.DiscreteCount();
-
-            Reset();
-            GetDataProperties();
-        }
-
-        /// <summary>
-        /// Calculates data properties on DataReader creation.
-        /// </summary>
-        protected abstract void GetDataProperties();
-
-        public abstract void ScaleRecord(Record record);
-
-        protected int RealFieldsCount
-        {
-            get { return _realFieldsCount; }
-        }
-
-        protected int DiscreteFieldsCount
-        {
-            get { return _discreteFieldsCount; }
+            _scaling = scaling;
         }
 
         #region IDataReader
@@ -62,7 +35,7 @@ namespace Thesis
         {
             var record = _baseReader.ReadRecord();
             if (record != null)
-                ScaleRecord(record);
+                _scaling.Scale(record);
             return record;
         }
 
