@@ -5,4 +5,7 @@
     <StartWorkingDirectory>
     </StartWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartArguments>"..\..\..\Data\woman\data.fields" "..\..\..\Data\woman\Nominal.data" "..\..\..\Data\woman\Wrong sex.data" "..\..\..\Data\woman\Too old.data"</StartArguments>
+  </PropertyGroup>
 </Project>
