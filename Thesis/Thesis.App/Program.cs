@@ -52,7 +52,7 @@ namespace Thesis.App
                     double eps;
                     while (!double.TryParse(Console.ReadLine(), out eps))
                         Console.WriteLine("Wrong format. Please enter epsilon again.");
-
+                   
                     var model = new SystemModel(eps);
 
                     for (int i = 2; i < args.Length; i++)
@@ -88,7 +88,7 @@ namespace Thesis.App
                         //IAnomaliesFilter filter = new DifferenceFilter(0.05);
                         var anomalies = filter.Filter(outliers);
 
-                        Console.WriteLine("Anomalies:");
+                        Console.WriteLine("\nAnomalies:");
                         foreach (var anomaly in anomalies)
                             Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
 
@@ -106,6 +106,7 @@ namespace Thesis.App
                                 int i = 0;
                                 foreach (var cluster in regime.Clusters)
                                 {
+                                    Console.SetBufferSize(Console.BufferWidth, Console.BufferHeight + 10);
                                     Console.WriteLine("  --------------------------");
                                     Console.WriteLine("  Cluster #{0}:", ++i);
                                     Console.WriteLine("  Lower bound: {0}", String.Join(" | ", scaling.Unscale(cluster.LowerBound)));
@@ -124,7 +125,7 @@ namespace Thesis.App
                                 line = Console.ReadLine();
                                 if (String.IsNullOrEmpty(line)) break;
 
-                                var record = parser.Parse(line, cleanReader.Fields);
+                                var record = parser.TryParse(line, cleanReader.Fields);
                                 if (record == null)
                                 {
                                     Console.WriteLine("Wrong record format. Please enter record again.");
@@ -142,9 +143,9 @@ namespace Thesis.App
                     }
                 }
             }
-            catch (DataFormatException)
+            catch (DataFormatException dfex)
             {
-                Console.WriteLine("Incorrect input data format.");
+                Console.WriteLine("Wrong data format. {0}", dfex.Message);
             }
             catch (Exception ex)
             {

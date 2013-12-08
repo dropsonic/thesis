@@ -27,15 +27,22 @@ namespace Thesis
             : this(new char[] { ',', ';' }, noValueReplacement)
         { }
 
+        /// <summary>
+        /// Parses string and returns record. Returns null if string is a comment.
+        /// </summary>
+        /// <exception cref="Thesis.DataFormatException"/>
         public Record Parse(string input, IList<Field> fields)
         {
             Contract.Requires<ArgumentNullException>(fields != null);
 
             var tokens = StringHelper.Tokenize(input, _recordDelimiters);
 
+            if (tokens.Length == 0) // if comment
+                return null;
+
             // check to make sure there are the correct number of tokens
             if (tokens.Length != fields.Count)
-                return null;
+                throw new DataFormatException("Wrong number of tokens.");
 
             int realFieldsCount = fields.Count(f => f.Type == Field.FieldType.Continuous);
             int discreteFieldsCount = fields.Count(f => f.Type == Field.FieldType.Discrete ||
@@ -73,7 +80,8 @@ namespace Thesis
                             if (value != -1)
                                 discrete[iDiscrete++] = value;
                             else
-                                throw new DataFormatException();
+                                throw new DataFormatException(String.Format(
+                                    "Discrete value '{0}' for field '{1}' doesn't exist.", tokens[i], fields[i]));
                             break;
                         case Field.FieldType.DiscreteDataDriven:
                             int valuec = fields[i].Values.IndexOf(tokens[i]);
@@ -91,6 +99,20 @@ namespace Thesis
             }
 
             return new Record(0, real, discrete);
+        }
+
+        public Record TryParse(string input, IList<Field> fields)
+        {
+            Contract.Requires<ArgumentNullException>(fields != null);
+
+            try
+            {
+                return Parse(input, fields);
+            }
+            catch (DataFormatException)
+            {
+                return null;
+            }
         }
     }
 }
