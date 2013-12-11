@@ -48,8 +48,19 @@ namespace Thesis.DDMS
         /// </summary>
         public Regime DetectRegime(Record record)
         {
+            double distance;
+            Regime closest;
+            return DetectRegime(record, out distance, out closest);
+        }
+
+        /// <summary>
+        /// Detects closest regime to the record and calculates distance between them.
+        /// Returns null, if record is further then epsilon from all regimes.
+        /// </summary>
+        public Regime DetectRegime(Record record, out double distance, out Regime closestRegime)
+        {
             double mind = double.PositiveInfinity;
-            Regime closestRegime = null;
+            closestRegime = null;
 
             foreach (var regime in _regimes)
             {
@@ -61,6 +72,7 @@ namespace Thesis.DDMS
                 }
             }
 
+            distance = mind;
             return mind > _eps ? null : closestRegime;
         }
     }

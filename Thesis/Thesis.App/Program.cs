@@ -133,9 +133,12 @@ namespace Thesis.App
                                 }
 
                                 scaling.Scale(record);
-                                Regime currentRegime = model.DetectRegime(record);
+                                double distance;
+                                Regime closest;
+                                Regime currentRegime = model.DetectRegime(record, out distance, out closest);
                                 if (currentRegime == null)
-                                    Console.WriteLine("Anomaly behavior detected.\n");
+                                    Console.WriteLine("Anomaly behavior detected (closest regime: {0}, distance: {1}).\n", 
+                                        closest.Name, distance);
                                 else
                                     Console.WriteLine("Current regime: {0}\n", currentRegime.Name);
                             } while (true);
