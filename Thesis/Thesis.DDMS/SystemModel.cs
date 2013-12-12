@@ -23,7 +23,7 @@ namespace Thesis.DDMS
         }
 
         public SystemModel(double eps)
-            : this(eps, ClusterDistances.CenterDistance, DistanceFunctions.Euclid)
+            : this(eps, ClusterDistances.NearestBoundDistance, DistanceFunctions.Euclid)
         { }
 
         public SystemModel(double eps, ClusterDistanceMetric distanceFunc, DistanceMetric metric)
