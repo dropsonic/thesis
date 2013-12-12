@@ -12,7 +12,8 @@ namespace Thesis.DDMS
     /// </summary>
     public class SystemModel
     {
-        private Func<Record, Record, Weights, double> _distanceFunc;
+        private ClusterDistanceMetric _distanceFunc;
+        private DistanceMetric _metric;
         private List<Regime> _regimes = new List<Regime>();
         private double _eps;
 
@@ -22,15 +23,17 @@ namespace Thesis.DDMS
         }
 
         public SystemModel(double eps)
-            : this(eps, DistanceFunctions.Euclid)
+            : this(eps, ClusterDistances.CenterDistance, DistanceFunctions.Euclid)
         { }
 
-        public SystemModel(double eps, Func<Record, Record, Weights, double> distanceFunc)
+        public SystemModel(double eps, ClusterDistanceMetric distanceFunc, DistanceMetric metric)
         {
             Contract.Requires<ArgumentOutOfRangeException>(eps >= 0);
             Contract.Requires<ArgumentNullException>(distanceFunc != null);
+            Contract.Requires<ArgumentNullException>(metric != null);
 
             _distanceFunc = distanceFunc;
+            _metric = metric;
             _eps = eps;
         }
 
@@ -38,7 +41,7 @@ namespace Thesis.DDMS
         {
             Contract.Requires<ArgumentNullException>(records != null);
 
-            Regime regime = new Regime(name, _eps, records, _distanceFunc);
+            Regime regime = new Regime(name, _eps, records, _distanceFunc, _metric);
             _regimes.Add(regime);
         }
 

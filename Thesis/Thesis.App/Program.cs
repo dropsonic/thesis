@@ -149,10 +149,12 @@ namespace Thesis.App
             catch (DataFormatException dfex)
             {
                 Console.WriteLine("Wrong data format. {0}", dfex.Message);
+                Console.ReadLine();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: {0} Please contact the developer.", ex.Message);
+                Console.ReadLine();
             }
         }
     }

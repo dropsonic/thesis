@@ -25,14 +25,15 @@ namespace Thesis.DDMS
             get { return _name; }
         }
 
-        public Regime(string name, double eps, IDataReader records, Func<Record, Record, Weights, double> distanceFunc)
+        public Regime(string name, double eps, IDataReader records, ClusterDistanceMetric distanceFunc, DistanceMetric metric)
         {
             Contract.Requires<ArgumentOutOfRangeException>(eps >= 0);
             Contract.Requires<ArgumentNullException>(records != null);
             Contract.Requires<ArgumentNullException>(distanceFunc != null);
+            Contract.Requires<ArgumentNullException>(metric != null);
 
             _name = name;
-            _db = new ClusterDatabase(eps, records.Fields.Weights(), distanceFunc);
+            _db = new ClusterDatabase(eps, records.Fields.Weights(), distanceFunc, metric);
             foreach (var record in records)
                 _db.AddRecord(record);
         }
