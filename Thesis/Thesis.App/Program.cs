@@ -13,9 +13,85 @@ namespace Thesis.App
 {
     class Program
     {
+        static string _fieldsFile;
+        static IAnomaliesFilter _filter;
+        static IRecordParser<string> _parser;
+        static IScaling _scaling;
+        static SystemModel _model;
+        static DistanceMetric _metric;
+        static ClusterDistanceMetric _clusterDistMetric;
+        static IList<Field> _fields;
+
         static string GetBinName(string name)
         {
             return String.Concat(name, ".bin");
+        }
+
+        static void ShowUsage()
+        {
+            Console.WriteLine(new Options().GetUsage());
+            Console.WriteLine();
+            Environment.Exit(-1);
+        }
+
+        static void AddNominalSample(string filename)
+        {
+            if (!File.Exists(filename))
+                throw new ApplicationException("File not found.");
+
+            using (IDataReader reader = new PlainTextReader(filename, _fieldsFile, _parser))    // read input data   
+            using (IDataReader binReader = new BinaryDataReader(reader, GetBinName(filename)))  // convert input data to binary format
+            using (IDataReader scaleReader = new ScaleDataReader(binReader, _scaling))       // scale input data
+            {
+                if (_fields == null)
+                    _fields = reader.Fields;
+
+                string shuffleFile = String.Concat(filename, ".shuffle");
+                scaleReader.Shuffle(shuffleFile);
+                IEnumerable<Outlier> outliers = Enumerable.Empty<Outlier>();
+
+                string regimeName = Path.GetFileNameWithoutExtension(filename);
+
+                using (IDataReader cases = new BinaryDataReader(shuffleFile))
+                using (IDataReader references = new BinaryDataReader(shuffleFile))
+                {
+                    var orca = new OrcaAD(DistanceMetrics.Euclid, neighborsCount: 10);
+                    outliers = orca.Run(cases, references, true);
+                }
+
+                File.Delete(shuffleFile);
+
+                var anomalies = _filter.Filter(outliers);
+
+                Console.WriteLine("\n%%%%%% {0} %%%%%%", regimeName);
+                Console.WriteLine("Anomalies:");
+                foreach (var anomaly in anomalies)
+                    Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
+
+                Console.WriteLine("%%%%%%%%%%%%%%%\n");
+
+                using (IDataReader cleanReader = new CleanDataReader(scaleReader, anomalies)) // clean input data from anomalies
+                {
+                    _model.AddRegime(regimeName, cleanReader);
+                }
+            }
+        }
+
+        static void AddSample(string filename)
+        {
+            if (!File.Exists(filename))
+                throw new ApplicationException("File not found.");
+
+            string regimeName = Path.GetFileNameWithoutExtension(filename);
+
+            using (IDataReader tempReader = new PlainTextReader(filename, _fieldsFile, _parser))
+            using (IDataReader tempBinReader = new BinaryDataReader(tempReader, GetBinName(filename)))
+            {
+                using (IDataReader tempScaleReader = new ScaleDataReader(tempBinReader, _scaling))
+                {
+                    _model.AddRegime(regimeName, tempScaleReader);
+                }
+            }
         }
 
         static void Main(string[] args)
@@ -25,136 +101,141 @@ namespace Thesis.App
                 Console.WriteLine("Something went wrong. Please contact the developer.");
             };
 
-            if (args.Length < 2)
+            var argsParser = CommandLine.Parser.Default;
+            Options options = new Options();
+            if (argsParser.ParseArgumentsStrict(args, options))
             {
-                Console.WriteLine("Wrong args.");
-                Environment.Exit(0);
-            }
-            
-            string fieldsFile = args[0];
-            string dataFile = args[1];
-            string shuffleFile = String.Concat(dataFile, ".shuffle");
-
-            try
-            {
-                foreach (string filename in args)
-                    if (!File.Exists(filename))
-                        throw new ApplicationException("File not found.");
-
-                IRecordParser<string> parser = new PlainTextParser();
-
-                using (IDataReader reader = new PlainTextReader(dataFile, fieldsFile, parser))      // read input data   
-                using (IDataReader binReader = new BinaryDataReader(reader, GetBinName(dataFile)))  // convert input data to binary format
+                // Filter type
+                if (options.Filter == Filter.Gaussian)
+                    _filter = new GaussianFilter();
+                else
                 {
-                    IScaling scaling = new MinmaxScaling(binReader);
+                    FilterOptions filterOpts = new FilterOptions();
+                    if (argsParser.ParseArgumentsStrict(options.Args.ToArray(), filterOpts))
+                    {
+                        if (filterOpts.Value == null)
+                            ShowUsage();
+                        switch (options.Filter)
+                        {
+                            case Filter.Difference:
+                                _filter = new DifferenceFilter((double)filterOpts.Value);
+                                break;
+                            case Filter.Threshold:
+                                _filter = new ThresholdFilter((double)filterOpts.Value);
+                                break;
+                            default:
+                                _filter = new GaussianFilter();
+                                break;
+                        }
+                    }
+                }
+
+                try
+                {
+                    _parser = new PlainTextParser();
+                    _fieldsFile = options.FieldsDescription;
+
+                    IDataReader mainReader = new PlainTextReader(options.NominalSamples[0], options.FieldsDescription, _parser);
+                    switch (options.Normalization)
+                    {
+                        case Normalization.Standard:
+                            _scaling = new StandardScaling(mainReader);
+                            break;
+                        default:
+                            _scaling = new MinmaxScaling(mainReader);
+                            break;
+                    }
+                    mainReader.Dispose();
+
+                    switch (options.Metric)
+                    {
+                        case Metric.SqrEuclid:
+                            _metric = DistanceMetrics.SqrEuсlid;
+                            break;
+                        default:
+                            _metric = DistanceMetrics.Euclid;
+                            break;
+                    }
+
+                    switch(options.ClusterDistanceType)
+                    {
+                        case ClusterDistanceType.KMeans:
+                            _clusterDistMetric = ClusterDistances.CenterDistance;
+                            break;
+                        default:
+                            _clusterDistMetric = ClusterDistances.NearestBoundDistance;
+                            break;
+                    }
 
                     Console.WriteLine("Enter epsilon:");
                     double eps;
                     while (!double.TryParse(Console.ReadLine(), out eps))
                         Console.WriteLine("Wrong format. Please enter epsilon again.");
-                   
-                    var model = new SystemModel(eps);
 
-                    for (int i = 2; i < args.Length; i++)
+                    _model = new SystemModel(eps);
+
+                    foreach (var nominalSample in options.NominalSamples)
+                        AddNominalSample(nominalSample);
+
+                    foreach (var sample in options.Samples)
+                        AddSample(sample);
+
+
+                    Console.WriteLine("Knowledge base has been created. {0} regime(s) total:", _model.Regimes.Count);
+                    foreach (var regime in _model.Regimes)
                     {
-                        string fileName = args[i];
-                        string regimeName = Path.GetFileNameWithoutExtension(fileName);
-
-                        using (IDataReader tempReader = new PlainTextReader(fileName, fieldsFile, parser))
-                        using (IDataReader tempBinReader = new BinaryDataReader(tempReader, GetBinName(fileName)))
+                        Console.WriteLine("\n***** {0} *****", regime.Name);
+                        Console.WriteLine("{0} cluster(s) in regime.", regime.Clusters.Count);
+                        int i = 0;
+                        foreach (var cluster in regime.Clusters)
                         {
-                            using (IDataReader tempScaleReader = new ScaleDataReader(tempBinReader, scaling))
-                            {
-                                model.AddRegime(regimeName, tempScaleReader);
-                            }
+                            Console.SetBufferSize(Console.BufferWidth, Console.BufferHeight + 10);
+                            Console.WriteLine("  --------------------------");
+                            Console.WriteLine("  Cluster #{0}:", ++i);
+                            Console.WriteLine("  Lower bound: {0}", String.Join(" | ", _scaling.Unscale(cluster.LowerBound)));
+                            Console.WriteLine("  Upper bound: {0}", String.Join(" | ", _scaling.Unscale(cluster.UpperBound)));
+                            Console.WriteLine("  Appropriate discrete values: {0}", String.Join(" | ", cluster.DiscreteValues.Select(f => String.Join("; ", f))));
                         }
+                        Console.WriteLine("  --------------------------");
+                        Console.WriteLine("******************", regime.Name);
                     }
 
-                    using (ScaleDataReader scaleReader = new ScaleDataReader(binReader, scaling)) // scale input data
+                    Console.WriteLine("\nEnter record, or press enter to quit.");
+
+                    string line = String.Empty;
+                    do
                     {
-                        scaleReader.Shuffle(shuffleFile);
-                        IEnumerable<Outlier> outliers = Enumerable.Empty<Outlier>();
+                        line = Console.ReadLine();
+                        if (String.IsNullOrEmpty(line)) break;
 
-                        using (IDataReader cases = new BinaryDataReader(shuffleFile))
-                        using (IDataReader references = new BinaryDataReader(shuffleFile))
+                        var record = _parser.TryParse(line, _fields);
+                        if (record == null)
                         {
-                            var orca = new OrcaAD(DistanceMetrics.Euclid, neighborsCount: 10);
-                            outliers = orca.Run(cases, references, true);
+                            Console.WriteLine("Wrong record format. Please enter record again.");
+                            continue;
                         }
 
-                        File.Delete(shuffleFile);
-
-                        IAnomaliesFilter filter = new GaussianFilter();
-                        //IAnomaliesFilter filter = new DifferenceFilter(0.05);
-                        var anomalies = filter.Filter(outliers);
-
-                        Console.WriteLine("\nAnomalies:");
-                        foreach (var anomaly in anomalies)
-                            Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
-
-                        Console.WriteLine();
-
-                        using (IDataReader cleanReader = new CleanDataReader(scaleReader, anomalies)) // clean input data from anomalies
-                        {
-                            model.AddRegime("Nominal", cleanReader);
-
-                            Console.WriteLine("Knowledge base has been created. {0} regime(s) total:", model.Regimes.Count);
-                            foreach (var regime in model.Regimes)
-                            {
-                                Console.WriteLine("\n***** {0} *****", regime.Name);
-                                Console.WriteLine("{0} cluster(s) in regime.", regime.Clusters.Count);
-                                int i = 0;
-                                foreach (var cluster in regime.Clusters)
-                                {
-                                    Console.SetBufferSize(Console.BufferWidth, Console.BufferHeight + 10);
-                                    Console.WriteLine("  --------------------------");
-                                    Console.WriteLine("  Cluster #{0}:", ++i);
-                                    Console.WriteLine("  Lower bound: {0}", String.Join(" | ", scaling.Unscale(cluster.LowerBound)));
-                                    Console.WriteLine("  Upper bound: {0}", String.Join(" | ", scaling.Unscale(cluster.UpperBound)));
-                                    Console.WriteLine("  Appropriate discrete values: {0}", String.Join(" | ", cluster.DiscreteValues.Select(f => String.Join("; ", f))));
-                                }
-                                Console.WriteLine("  --------------------------");
-                                Console.WriteLine("******************", regime.Name);
-                            }
-
-                            Console.WriteLine("\nEnter record, or press enter to quit.");
-
-                            string line = String.Empty;
-                            do
-                            {
-                                line = Console.ReadLine();
-                                if (String.IsNullOrEmpty(line)) break;
-
-                                var record = parser.TryParse(line, cleanReader.Fields);
-                                if (record == null)
-                                {
-                                    Console.WriteLine("Wrong record format. Please enter record again.");
-                                    continue;
-                                }
-
-                                scaling.Scale(record);
-                                double distance;
-                                Regime closest;
-                                Regime currentRegime = model.DetectRegime(record, out distance, out closest);
-                                if (currentRegime == null)
-                                    Console.WriteLine("Anomaly behavior detected (closest regime: {0}, distance: {1}).\n", 
-                                        closest.Name, distance);
-                                else
-                                    Console.WriteLine("Current regime: {0}\n", currentRegime.Name);
-                            } while (true);
-                        }
-                    }
+                        _scaling.Scale(record);
+                        double distance;
+                        Regime closest;
+                        Regime currentRegime = _model.DetectRegime(record, out distance, out closest);
+                        if (currentRegime == null)
+                            Console.WriteLine("Anomaly behavior detected (closest regime: {0}, distance: {1}).\n",
+                                closest.Name, distance);
+                        else
+                            Console.WriteLine("Current regime: {0}\n", currentRegime.Name);
+                    } while (true);
                 }
-            }
-            catch (DataFormatException dfex)
-            {
-                Console.WriteLine("Wrong data format. {0}", dfex.Message);
-                Console.ReadLine();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: {0} Please contact the developer.", ex.Message);
-                Console.ReadLine();
+                catch (DataFormatException dfex)
+                {
+                    Console.WriteLine("Wrong data format. {0}", dfex.Message);
+                    Console.ReadLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: {0} Please contact the developer.", ex.Message);
+                    Console.ReadLine();
+                }
             }
         }
     }

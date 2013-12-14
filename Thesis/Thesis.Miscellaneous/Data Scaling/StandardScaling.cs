@@ -10,7 +10,7 @@ namespace Thesis
     /// <summary>
     /// Standardize real values (scales to mean and standard deviations).
     /// </summary>
-    class StandardScaling
+    public class StandardScaling : IScaling
     {
         private int _realFieldsCount;
 
