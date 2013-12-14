@@ -19,11 +19,6 @@ namespace Thesis
         private int _randFilesCount;
         private Random _rand;
 
-        protected IDataReader BaseReader 
-        { 
-            get { return _sourceReader; }
-        }
-
         /// <param name="sourceReader">Reader for input data.</param>
         /// <param name="shuffleFile">Name of shuffle binary file.</param>
         /// <param name="iterations">Number of shuffle iterations.</param>

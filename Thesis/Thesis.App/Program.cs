@@ -78,7 +78,7 @@ namespace Thesis.App
                         using (IDataReader cases = new BinaryDataReader(shuffleFile))
                         using (IDataReader references = new BinaryDataReader(shuffleFile))
                         {
-                            var orca = new OrcaAD(DistanceFunctions.Euclid, neighborsCount: 10);
+                            var orca = new OrcaAD(DistanceMetrics.Euclid, neighborsCount: 10);
                             outliers = orca.Run(cases, references, true);
                         }
 
@@ -133,9 +133,12 @@ namespace Thesis.App
                                 }
 
                                 scaling.Scale(record);
-                                Regime currentRegime = model.DetectRegime(record);
+                                double distance;
+                                Regime closest;
+                                Regime currentRegime = model.DetectRegime(record, out distance, out closest);
                                 if (currentRegime == null)
-                                    Console.WriteLine("Anomaly behavior detected.\n");
+                                    Console.WriteLine("Anomaly behavior detected (closest regime: {0}, distance: {1}).\n", 
+                                        closest.Name, distance);
                                 else
                                     Console.WriteLine("Current regime: {0}\n", currentRegime.Name);
                             } while (true);
@@ -146,10 +149,12 @@ namespace Thesis.App
             catch (DataFormatException dfex)
             {
                 Console.WriteLine("Wrong data format. {0}", dfex.Message);
+                Console.ReadLine();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: {0} Please contact the developer.", ex.Message);
+                Console.ReadLine();
             }
         }
     }

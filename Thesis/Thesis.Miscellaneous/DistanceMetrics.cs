@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Thesis
 {
-    public static class DistanceFunctions
+    public static class DistanceMetrics
     {
         /// <summary>
         /// Squared Euclid distance.

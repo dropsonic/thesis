@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Thesis
 {
@@ -74,7 +75,7 @@ namespace Thesis
                     switch (fields[i].Type)
                     {
                         case Field.FieldType.Continuous:
-                            real[iReal++] = float.Parse(tokens[i]); break;
+                            real[iReal++] = float.Parse(tokens[i], CultureInfo.InvariantCulture); break;
                         case Field.FieldType.Discrete:
                             int value = fields[i].Values.IndexOf(tokens[i]);
                             if (value != -1)
