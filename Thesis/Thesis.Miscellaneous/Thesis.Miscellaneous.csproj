@@ -119,6 +119,7 @@
     <Compile Include="Data Scaling\MinmaxScaling.cs" />
     <Compile Include="Data Scaling\StandardScaling.cs" />
     <Compile Include="DistanceFunctions.cs" />
+    <Compile Include="DistanceMetric.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="FieldsHelper.cs" />
     <Compile Include="Data Reading and Writing\IDataReader.cs" />
