@@ -11,7 +11,7 @@ namespace Thesis.Orca
 {
     public class OrcaAD
     {
-        private Func<IEnumerable<double>, double> _scoreFunction;
+        private ScoreFunction _scoreFunction;
         private DistanceMetric _distanceFunction;
         private int _numOutliers;
         private int _neighborsCount;
@@ -36,7 +36,7 @@ namespace Thesis.Orca
         /// <param name="neighborsCount"></param>
         /// <param name="cutoff"></param>
         /// <param name="batchSize"></param>
-        public OrcaAD(Func<IEnumerable<double>, double> scoreFunction,
+        public OrcaAD(ScoreFunction scoreFunction,
             int numOutliers = 30, int neighborsCount = 5,
             double cutoff = 0, int batchSize = 1000)
             : this(scoreFunction, DistanceMetrics.SqrEuсlid, numOutliers,
@@ -59,7 +59,7 @@ namespace Thesis.Orca
         /// <param name="neighborsCount"></param>
         /// <param name="cutoff"></param>
         /// <param name="batchSize"></param>
-        public OrcaAD(Func<IEnumerable<double>, double> scoreFunction,
+        public OrcaAD(ScoreFunction scoreFunction,
             DistanceMetric distanceFunction,
             int numOutliers = 30, int neighborsCount = 5, 
             double cutoff = 0, int batchSize = 1000)

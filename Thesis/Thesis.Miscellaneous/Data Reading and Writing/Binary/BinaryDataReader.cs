@@ -16,8 +16,6 @@ namespace Thesis
     {
         BinaryReader _infile;
 
-        public int Index { get; set; }
-
         public int RecordsCount { get; private set; }
         public int RealFieldsCount { get; private set; }
         public int DiscreteFieldsCount { get; private set; }
@@ -110,6 +108,8 @@ namespace Thesis
         }
 
         #region IDataReader
+        public int Index { get; set; }
+
         public IList<Field> Fields
         {
             get { return _fields; }

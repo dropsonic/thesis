@@ -8,14 +8,14 @@ namespace Thesis.Orca
 {
     public static class ScoreFunctions
     {
-        private static readonly Func<IEnumerable<double>, double> _average = new Func<IEnumerable<double>, double>(dist => dist.Sum() / dist.Count());
-        private static readonly Func<IEnumerable<double>, double> _sum = new Func<IEnumerable<double>, double>(dist => dist.Sum());
-        private static readonly Func<IEnumerable<double>, double> _kthNeighbor = new Func<IEnumerable<double>, double>(dist => dist.FirstOrDefault());
+        private static readonly ScoreFunction _average = new ScoreFunction(dist => dist.Sum() / dist.Count());
+        private static readonly ScoreFunction _sum = new ScoreFunction(dist => dist.Sum());
+        private static readonly ScoreFunction _kthNeighbor = new ScoreFunction(dist => dist.FirstOrDefault());
 
         /// <summary>
         /// Average distance to k neighbors.
         /// </summary>
-        public static Func<IEnumerable<double>, double> Average
+        public static ScoreFunction Average
         {
             get { return _average; }
         }
@@ -23,7 +23,7 @@ namespace Thesis.Orca
         /// <summary>
         /// Total distance to k neighbors (sum).
         /// </summary>
-        public static Func<IEnumerable<double>, double> Sum
+        public static ScoreFunction Sum
         {
             get { return _sum; }
         }
@@ -31,7 +31,7 @@ namespace Thesis.Orca
         /// <summary>
         /// Distance to kth neighbor.
         /// </summary>
-        public static Func<IEnumerable<double>, double> KthNeighbor
+        public static ScoreFunction KthNeighbor
         {
             get { return _kthNeighbor; }
         }
