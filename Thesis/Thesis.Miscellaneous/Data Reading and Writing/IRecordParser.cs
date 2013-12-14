@@ -9,5 +9,10 @@ namespace Thesis
     public interface IRecordParser<T>
     {
         Record Parse(T input, IList<Field> fields);
+
+        /// <summary>
+        /// Returns null if parsing failed.
+        /// </summary>
+        Record TryParse(T input, IList<Field> fields);
     }
 }

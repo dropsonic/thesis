@@ -52,7 +52,7 @@ namespace Thesis.App
                     double eps;
                     while (!double.TryParse(Console.ReadLine(), out eps))
                         Console.WriteLine("Wrong format. Please enter epsilon again.");
-
+                   
                     var model = new SystemModel(eps);
 
                     for (int i = 2; i < args.Length; i++)
@@ -88,7 +88,7 @@ namespace Thesis.App
                         //IAnomaliesFilter filter = new DifferenceFilter(0.05);
                         var anomalies = filter.Filter(outliers);
 
-                        Console.WriteLine("Anomalies:");
+                        Console.WriteLine("\nAnomalies:");
                         foreach (var anomaly in anomalies)
                             Console.WriteLine("  Id = {0}, Score = {1}", anomaly.Id, anomaly.Score);
 
@@ -106,6 +106,7 @@ namespace Thesis.App
                                 int i = 0;
                                 foreach (var cluster in regime.Clusters)
                                 {
+                                    Console.SetBufferSize(Console.BufferWidth, Console.BufferHeight + 10);
                                     Console.WriteLine("  --------------------------");
                                     Console.WriteLine("  Cluster #{0}:", ++i);
                                     Console.WriteLine("  Lower bound: {0}", String.Join(" | ", scaling.Unscale(cluster.LowerBound)));
@@ -124,7 +125,7 @@ namespace Thesis.App
                                 line = Console.ReadLine();
                                 if (String.IsNullOrEmpty(line)) break;
 
-                                var record = parser.Parse(line, cleanReader.Fields);
+                                var record = parser.TryParse(line, cleanReader.Fields);
                                 if (record == null)
                                 {
                                     Console.WriteLine("Wrong record format. Please enter record again.");
@@ -132,9 +133,12 @@ namespace Thesis.App
                                 }
 
                                 scaling.Scale(record);
-                                Regime currentRegime = model.DetectRegime(record);
+                                double distance;
+                                Regime closest;
+                                Regime currentRegime = model.DetectRegime(record, out distance, out closest);
                                 if (currentRegime == null)
-                                    Console.WriteLine("Anomaly behavior detected.\n");
+                                    Console.WriteLine("Anomaly behavior detected (closest regime: {0}, distance: {1}).\n", 
+                                        closest.Name, distance);
                                 else
                                     Console.WriteLine("Current regime: {0}\n", currentRegime.Name);
                             } while (true);
@@ -142,13 +146,15 @@ namespace Thesis.App
                     }
                 }
             }
-            catch (DataFormatException)
+            catch (DataFormatException dfex)
             {
-                Console.WriteLine("Incorrect input data format.");
+                Console.WriteLine("Wrong data format. {0}", dfex.Message);
+                Console.ReadLine();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: {0} Please contact the developer.", ex.Message);
+                Console.ReadLine();
             }
         }
     }
