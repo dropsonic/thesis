@@ -55,6 +55,9 @@ namespace Thesis.App
             HelpText = "Cluster distance function. Appropriate values: kmeans, nearest.")]
         public ClusterDistanceType ClusterDistanceType { get; set; }
 
+        [Option('o', "output")]
+        public string OutputFile { get; set; }
+
         [ValueList(typeof(List<string>))]
         public List<string> Args { get; set; }
 
