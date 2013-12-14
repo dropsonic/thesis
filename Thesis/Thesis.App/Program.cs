@@ -78,7 +78,7 @@ namespace Thesis.App
                         using (IDataReader cases = new BinaryDataReader(shuffleFile))
                         using (IDataReader references = new BinaryDataReader(shuffleFile))
                         {
-                            var orca = new OrcaAD(DistanceFunctions.Euclid, neighborsCount: 10);
+                            var orca = new OrcaAD(DistanceMetrics.Euclid, neighborsCount: 10);
                             outliers = orca.Run(cases, references, true);
                         }
 

@@ -39,7 +39,7 @@ namespace Thesis.Orca
         public OrcaAD(Func<IEnumerable<double>, double> scoreFunction,
             int numOutliers = 30, int neighborsCount = 5,
             double cutoff = 0, int batchSize = 1000)
-            : this(scoreFunction, DistanceFunctions.SqrEuсlid, numOutliers,
+            : this(scoreFunction, DistanceMetrics.SqrEuсlid, numOutliers,
                 neighborsCount, cutoff, batchSize)
         { }
 
@@ -49,7 +49,7 @@ namespace Thesis.Orca
         /// <param name="batchSize"></param>
         public OrcaAD(int numOutliers = 30, int neighborsCount = 5,
             double cutoff = 0, int batchSize = 1000)
-            : this(ScoreFunctions.Average, DistanceFunctions.SqrEuсlid, numOutliers,
+            : this(ScoreFunctions.Average, DistanceMetrics.SqrEuсlid, numOutliers,
                 neighborsCount, cutoff, batchSize)
         { }
 
