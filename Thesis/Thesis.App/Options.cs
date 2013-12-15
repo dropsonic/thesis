@@ -72,7 +72,7 @@ namespace Thesis.App
                 AddDashesToOption = true
             };
             help.AddPreOptionsLine("Usage: thesis.app fields.txt -r nominal1.txt nominal2.txt [-a regime1.txt regimeN.txt] [-f threshold 0.5] [-d kmeans] [-m sqreuclid] [-n standard]");
-            help.AddPostOptionsLine("Normalization stats are calculated based on first nominal regime sample.");
+            help.AddPostOptionsLine("Normalization stats are calculated based on first nominal regime sample.\n");
             help.AddOptions(this);
             return help;
         }
