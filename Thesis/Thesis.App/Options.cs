@@ -55,6 +55,10 @@ namespace Thesis.App
             HelpText = "Cluster distance function. Appropriate values: kmeans, nearest.")]
         public ClusterDistanceType ClusterDistanceType { get; set; }
 
+        [Option('v', "novalue", DefaultValue = "?",
+            HelpText = "Non-existing values replacement string.")]
+        public string NoValueReplacement { get; set; }
+
         [Option('o', "output")]
         public string OutputFile { get; set; }
 
@@ -71,7 +75,7 @@ namespace Thesis.App
                 AdditionalNewLineAfterOption = true,
                 AddDashesToOption = true
             };
-            help.AddPreOptionsLine("Usage: thesis.app fields.txt -r nominal1.txt nominal2.txt [-a regime1.txt regimeN.txt] [-f threshold 0.5] [-d kmeans] [-m sqreuclid] [-n standard]");
+            help.AddPreOptionsLine("Usage: thesis.app fields.txt -r nominal1.txt nominal2.txt [-a regime1.txt regimeN.txt] [-f threshold 0.5] [-d kmeans] [-m sqreuclid] [-n standard] [-v N/A]");
             help.AddPostOptionsLine("Normalization stats are calculated based on first nominal regime sample.\n");
             help.AddOptions(this);
             return help;

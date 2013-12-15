@@ -1,0 +1,7 @@
+Current Time : ignore % дата и время
+Online CMG1 : IN USE, DISABLED % состояние (включен/выключен)
+Wheel Speed CMG1 : continuous % скорость вращения
+Spin Motor Current CMG1 : continuous % потребляемый двигателем ротора ток
+Vibration CMG1 : continuous % вибрация, м/с^2
+Spin Bearing Temperature CMG1 : continuous  % температура на креплении ротора
+Hall Resolver Temperature CMG1 : continuous % температура на конвертере Холла

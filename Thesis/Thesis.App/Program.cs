@@ -136,7 +136,7 @@ namespace Thesis.App
 
                 try
                 {
-                    _parser = new PlainTextParser();
+                    _parser = new PlainTextParser(options.NoValueReplacement);
                     _fieldsFile = options.FieldsDescription;
 
                     IDataReader mainReader = new PlainTextReader(options.NominalSamples[0], options.FieldsDescription, _parser);
@@ -224,7 +224,7 @@ namespace Thesis.App
                         Regime closest;
                         Regime currentRegime = _model.DetectRegime(record, out distance, out closest);
                         if (currentRegime == null)
-                            Console.WriteLine("Anomaly behavior detected (closest regime: {0}, distance: {1}).\n",
+                            Console.WriteLine("Anomaly behavior detected (closest regime: {0}, distance: {1:0.00000}).\n",
                                 closest.Name, distance);
                         else
                             Console.WriteLine("Current regime: {0}\n", currentRegime.Name);

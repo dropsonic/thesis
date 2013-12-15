@@ -27,7 +27,7 @@ namespace Thesis
         public PlainTextReader(string dataFile, string fieldsFile, IRecordParser<string> parser,
                                float realWeight = 1.0f, float discreteWeight = 0.4f)
             : this(dataFile, fieldsFile, parser,
-                   new char[] { '.', ',', ':', ';' }, realWeight, discreteWeight)
+                   new char[] { ',', ':', ';' }, realWeight, discreteWeight)
         { }
 
         public PlainTextReader(string dataFile, string fieldsFile, IRecordParser<string> parser, 
