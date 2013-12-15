@@ -22,6 +22,8 @@ namespace Thesis.App
         static ClusterDistanceMetric _clusterDistMetric;
         static IList<Field> _fields;
 
+        static bool _writeToFile;
+
         static string GetBinName(string name)
         {
             return String.Concat(name, ".bin");
@@ -105,6 +107,8 @@ namespace Thesis.App
             Options options = new Options();
             if (argsParser.ParseArgumentsStrict(args, options))
             {
+                _writeToFile = !String.IsNullOrEmpty(options.OutputFile);
+
                 // Filter type
                 if (options.Filter == Filter.Gaussian)
                     _filter = new GaussianFilter();
