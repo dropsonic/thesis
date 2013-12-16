@@ -116,6 +116,7 @@
     <Compile Include="Data Reading and Writing\Binary\BinaryHelper.cs" />
     <Compile Include="Data Reading and Writing\DataFormatException.cs" />
     <Compile Include="Data Reading and Writing\DataHelper.cs" />
+    <Compile Include="Data Reading and Writing\MultipleDataReader.cs" />
     <Compile Include="Data Scaling\MinmaxScaling.cs" />
     <Compile Include="Data Scaling\StandardScaling.cs" />
     <Compile Include="DistanceMetrics.cs" />

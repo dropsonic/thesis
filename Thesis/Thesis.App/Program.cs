@@ -13,6 +13,7 @@ namespace Thesis.App
 {
     class Program
     {
+        static Options _options;
         static string _fieldsFile;
         static IAnomaliesFilter _filter;
         static IRecordParser<string> _parser;
@@ -34,6 +35,23 @@ namespace Thesis.App
             Console.WriteLine(new Options().GetUsage());
             Console.WriteLine();
             Environment.Exit(-1);
+        }
+
+        static void GetScaling()
+        {
+            var readers = _options.NominalSamples.Concat(_options.Samples).Select(s => new PlainTextReader(s, _fieldsFile, _parser));
+            var allReader = new MultipleDataReader(readers);
+            switch (_options.Normalization)
+            {
+                case Normalization.Standard:
+                    _scaling = new StandardScaling(allReader);
+                    break;
+                default:
+                    _scaling = new MinmaxScaling(allReader);
+                    break;
+            }
+            foreach (var reader in readers)
+                reader.Dispose();
         }
 
         static void AddNominalSample(string filename)
@@ -104,22 +122,22 @@ namespace Thesis.App
             };
 
             var argsParser = CommandLine.Parser.Default;
-            Options options = new Options();
-            if (argsParser.ParseArgumentsStrict(args, options))
+            _options = new Options();
+            if (argsParser.ParseArgumentsStrict(args, _options))
             {
-                _writeToFile = !String.IsNullOrEmpty(options.OutputFile);
+                _writeToFile = !String.IsNullOrEmpty(_options.OutputFile);
 
                 // Filter type
-                if (options.Filter == Filter.Gaussian)
+                if (_options.Filter == Filter.Gaussian)
                     _filter = new GaussianFilter();
                 else
                 {
                     FilterOptions filterOpts = new FilterOptions();
-                    if (argsParser.ParseArgumentsStrict(options.Args.ToArray(), filterOpts))
+                    if (argsParser.ParseArgumentsStrict(_options.Args.ToArray(), filterOpts))
                     {
                         if (filterOpts.Value == null)
                             ShowUsage();
-                        switch (options.Filter)
+                        switch (_options.Filter)
                         {
                             case Filter.Difference:
                                 _filter = new DifferenceFilter((double)filterOpts.Value);
@@ -136,22 +154,12 @@ namespace Thesis.App
 
                 try
                 {
-                    _parser = new PlainTextParser(options.NoValueReplacement);
-                    _fieldsFile = options.FieldsDescription;
+                    _parser = new PlainTextParser(_options.NoValueReplacement);
+                    _fieldsFile = _options.FieldsDescription;
 
-                    IDataReader mainReader = new PlainTextReader(options.NominalSamples[0], options.FieldsDescription, _parser);
-                    switch (options.Normalization)
-                    {
-                        case Normalization.Standard:
-                            _scaling = new StandardScaling(mainReader);
-                            break;
-                        default:
-                            _scaling = new MinmaxScaling(mainReader);
-                            break;
-                    }
-                    mainReader.Dispose();
+                    GetScaling();
 
-                    switch (options.Metric)
+                    switch (_options.Metric)
                     {
                         case Metric.SqrEuclid:
                             _metric = DistanceMetrics.SqrEuсlid;
@@ -161,7 +169,7 @@ namespace Thesis.App
                             break;
                     }
 
-                    switch(options.ClusterDistanceType)
+                    switch(_options.ClusterDistanceType)
                     {
                         case ClusterDistanceType.KMeans:
                             _clusterDistMetric = ClusterDistances.CenterDistance;
@@ -178,10 +186,10 @@ namespace Thesis.App
 
                     _model = new SystemModel(eps);
 
-                    foreach (var nominalSample in options.NominalSamples)
+                    foreach (var nominalSample in _options.NominalSamples)
                         AddNominalSample(nominalSample);
 
-                    foreach (var sample in options.Samples)
+                    foreach (var sample in _options.Samples)
                         AddSample(sample);
 
 
